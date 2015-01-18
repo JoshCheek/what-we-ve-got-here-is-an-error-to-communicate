@@ -1,7 +1,7 @@
 at_exit do
   exception = $!
   case exception
-  when ArgumentError
+  when ArgumentError # really, this only works for wrong number of arguments
     $stderr.puts DispayErrors::ArgumentError.new(exception)
     exit! 1 # there has got to be a better way to clear an exception, this could break other at_exit hooks -.^
   end
@@ -10,6 +10,84 @@ end
 require 'coderay'
 require 'pathname'
 module DispayErrors
+  class ArgumentError
+    def initialize(exception)
+      @exception     = exception
+      @parsed        = parse_message exception.message
+      @explanation   = @parsed.fetch :explanation
+      @num_expected  = @parsed.fetch :num_expected
+      @num_received  = @parsed.fetch :num_received
+      @backtrace     = Backtrace.new exception.backtrace
+      @callee_code   = Location.from_backtrace_line exception.backtrace[0],
+                                                    context:   0..5,
+                                                    message:   "EXPECTED #{@parsed.fetch :num_expected}"
+      @caller_code   = Location.from_backtrace_line exception.backtrace[1],
+                                                    next_meth: @callee_code.crnt_meth,
+                                                    context:   -5..5,
+                                                    message:   "SENT #{@parsed.fetch :num_received}"
+    end
+
+    def to_s
+      @to_s ||= begin
+        display = ""
+        display << separator
+        display << class_and_message(@exception.class, @parsed) << "\n"
+        display << separator
+        display << @callee_code.to_s
+        display << "\n"
+        display << @caller_code.to_s
+        display << separator
+        display << @backtrace.to_s
+      end
+    end
+
+    private
+
+    def separator
+      ("="*70) << "\n"
+    end
+
+    # Obviously not all ArgumentErrors are "wrong number of arguments", but it's a proof of concept
+    def parse_message(message)
+      nums = message.scan /\d+/
+      { explanation:  message[/^[^\(]*/].strip,
+        num_expected: nums[1].to_i,
+        num_received: nums[0].to_i,
+      }
+    end
+
+    def class_and_message(type, parsed)
+      white   = "\e[38;5;255m"
+      bri_red = "\e[38;5;196m"
+      dim_red = "\e[38;5;124m"
+      none    = "\e[39m"
+      "#{white}#{type} | "\
+      "#{bri_red}#{parsed.fetch :explanation} "\
+      "#{dim_red}(sent #{white}#{parsed.fetch :num_received}"\
+      "#{dim_red} expected #{white}#{parsed.fetch :num_expected}"\
+      "#{dim_red})"\
+      "#{none}"
+    end
+  end
+
+
+  class Backtrace
+    def initialize(backtrace, cwd:Dir.pwd)
+      @backtrace = backtrace
+      @cwd       = cwd
+    end
+
+    def to_s
+      @to_s ||= @backtrace.each_with_object([]) { |line, locations|
+        opts             = {cwd: @cwd, emphasize_path: true}
+        next_loc         = locations.last
+        opts[:next_meth] = next_loc.crnt_meth if next_loc
+        locations << Location.from_backtrace_line(line, opts)
+      }.join("")
+    end
+  end
+
+
   class Location
     def self.from_backtrace_line(line, **options)
       filepath   = line[/^[^:]+/]
@@ -135,83 +213,6 @@ module DispayErrors
       nocolor = str.gsub(/\e\[[\d;]+?m/, "")
       allgray = nocolor.gsub(/^(.*?)\n?$/, "\e[38;5;240m\\1\e[39m\n")
       allgray
-    end
-  end
-
-  class Backtrace
-    def initialize(backtrace, cwd:Dir.pwd)
-      @backtrace = backtrace
-      @cwd       = cwd
-    end
-
-    def to_s
-      @to_s ||= @backtrace.each_with_object([]) { |line, locations|
-        opts             = {cwd: @cwd, emphasize_path: true}
-        next_loc         = locations.last
-        opts[:next_meth] = next_loc.crnt_meth if next_loc
-        locations << Location.from_backtrace_line(line, opts)
-      }.join("")
-    end
-  end
-
-  class ArgumentError
-    def initialize(exception)
-      @exception     = exception
-      @parsed        = parse_message exception.message
-      @explanation   = @parsed.fetch :explanation
-      @num_expected  = @parsed.fetch :num_expected
-      @num_received  = @parsed.fetch :num_received
-      @backtrace     = Backtrace.new exception.backtrace
-      @callee_code   = Location.from_backtrace_line exception.backtrace[0],
-                                                    context:   0..5,
-                                                    message:   "EXPECTED #{@parsed.fetch :num_expected}"
-      @caller_code   = Location.from_backtrace_line exception.backtrace[1],
-                                                    next_meth: @callee_code.crnt_meth,
-                                                    context:   -5..5,
-                                                    message:   "SENT #{@parsed.fetch :num_received}"
-    end
-
-    def to_s
-      @to_s ||= begin
-        display = ""
-        display << separator
-        display << class_and_message(@exception.class, @parsed) << "\n"
-        display << separator
-        display << @callee_code.to_s
-        display << "\n"
-        display << @caller_code.to_s
-        display << separator
-        display << @backtrace.to_s
-      end
-    end
-
-    private
-
-    def separator
-      # "\n" << ("-"*70) << "\n\n"
-      ("="*70) << "\n"
-    end
-
-    # Obviously not all ArgumentErrors are "wrong number of arguments", but it's a proof of concept
-    def parse_message(message)
-      nums = message.scan /\d+/
-      { explanation:  message[/^[^\(]*/].strip,
-        num_expected: nums[1].to_i,
-        num_received: nums[0].to_i,
-      }
-    end
-
-    def class_and_message(type, parsed)
-      white   = "\e[38;5;255m"
-      bri_red = "\e[38;5;196m"
-      dim_red = "\e[38;5;124m"
-      none    = "\e[39m"
-      "#{white}#{type} | "\
-      "#{bri_red}#{parsed.fetch :explanation} "\
-      "#{dim_red}(sent #{white}#{parsed.fetch :num_received}"\
-      "#{dim_red} expected #{white}#{parsed.fetch :num_expected}"\
-      "#{dim_red})"\
-      "#{none}"
     end
   end
 end
