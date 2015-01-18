@@ -32,3 +32,8 @@ or said she wanted during her talk at Software Craftsmanship North America.
 Got to thinking about it again witih Kerri Miller, conversing at DCamp,
 and then at Ruby Conf, she created https://github.com/kerrizor/chatty_exceptions
 which is in this same arena.
+
+License
+--------
+
+[Do what the fuck you want to.  <img src="http://www.wtfpl.net/wp-content/uploads/2012/12/wtfpl.svg" width="15" height="15" alt="WTFPL" />](http://www.wtfpl.net/)
