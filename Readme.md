@@ -1,10 +1,13 @@
 What would it be like to have better error messages?
+
 ====================================================
 
 This is a proof of concept to explore the question.
 See if there's any resonance in the community, etc.
 This isn't fit for real-world use.
 I might try to make it into a real gem if people get excited about it.
+
+![screenshot](https://s3.amazonaws.com/josh.cheek/images/scratch/better-reuby-commandline-errors.png)
 
 Ben Orenstein commented on newbies skimming error messages rather than reading them,
 https://twitter.com/r00k/status/556608103928856576
@@ -36,4 +39,4 @@ which is in this same arena.
 License
 --------
 
-[Do what the fuck you want to.  <img src="http://www.wtfpl.net/wp-content/uploads/2012/12/wtfpl.svg" width="15" height="15" alt="WTFPL" />](http://www.wtfpl.net/)
+[<img src="http://www.wtfpl.net/wp-content/uploads/2012/12/wtfpl.svg" width="15" height="15" alt="WTFPL" /> Do what the fuck you want to.](http://www.wtfpl.net/)
