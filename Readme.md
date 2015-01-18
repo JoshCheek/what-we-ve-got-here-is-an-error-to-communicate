@@ -1,5 +1,5 @@
-What would it take for it error messages to compel you to read them?
-====================================================================
+What would it take for error messages to compel you to read them?
+=================================================================
 
 Ben Orenstein [observed](https://twitter.com/r00k/status/556608103928856576)
 that newbies tend to skim error messages rather than reading them
