@@ -1,5 +1,4 @@
 What would it be like to have better error messages?
-
 ====================================================
 
 This is a proof of concept to explore the question.
