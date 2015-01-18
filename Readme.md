@@ -2,9 +2,10 @@ What would it be like to have better error messages?
 ====================================================
 
 This is a proof of concept to explore the question.
-See if there's any resonance in the community, etc.
+To see if there's any resonance in the community, etc.
 This isn't fit for real-world use.
 I might try to make it into a real gem if people get excited about it.
+I'll have some time to do that during my next braeak in late march 2015.
 
 ![screenshot](https://s3.amazonaws.com/josh.cheek/images/scratch/better-reuby-commandline-errors.png)
 
@@ -28,12 +29,15 @@ out what it's attempting to tell me. It should just be obvious.
 Inspirations:
 -------------
 
-I think initially this was inspired by something Sarah Gray mentioned,
-or said she wanted during her talk at Software Craftsmanship North America.
+I think initially this was inspired by [Sarah Gray's talk](https://vimeo.com/54860297)
+at Software Craftsmanship North America.
 
 Got to thinking about it again witih Kerri Miller, conversing at DCamp,
-and then at Ruby Conf, she created https://github.com/kerrizor/chatty_exceptions
+and then at Ruby Conf, she created [chatty_exceptions](https://github.com/kerrizor/chatty_exceptions)
 which is in this same arena.
+
+Charlie Sommerville's [better_errors](https://rubygems.org/gems/better_errors)
+gem gives you a nice interface like this for Rails.
 
 License
 --------
