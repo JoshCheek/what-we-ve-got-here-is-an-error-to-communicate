@@ -1,14 +1,6 @@
-at_exit do
-  exception = $!
-  case exception
-  when ArgumentError # really, this only works for wrong number of arguments
-    $stderr.puts DispayErrors::ArgumentError.new(exception)
-    exit! 1 # there has got to be a better way to clear an exception, this could break other at_exit hooks -.^
-  end
-end
-
 require 'coderay'
 require 'pathname'
+
 module DispayErrors
   class ArgumentError
     def initialize(exception)
@@ -63,8 +55,8 @@ module DispayErrors
       none    = "\e[39m"
       "#{white}#{type} | "\
       "#{bri_red}#{parsed.fetch :explanation} "\
-      "#{dim_red}(sent #{white}#{parsed.fetch :num_received}"\
-      "#{dim_red} expected #{white}#{parsed.fetch :num_expected}"\
+      "#{dim_red}(expected #{white}#{parsed.fetch :num_expected},"\
+      "#{dim_red} sent #{white}#{parsed.fetch :num_received}"\
       "#{dim_red})"\
       "#{none}"
     end
