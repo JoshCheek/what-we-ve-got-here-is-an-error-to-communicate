@@ -1,6 +1,5 @@
 require 'coderay'
 require 'pathname'
-
 # possible abstractions
 #   parse the different errors
 #   error data structure is independent of the error that caused it

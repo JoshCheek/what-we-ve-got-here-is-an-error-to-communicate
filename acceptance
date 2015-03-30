@@ -14,3 +14,16 @@ Argument Error:
   backtrace:
     It displays each line of the backtrace
     It includes the code from that line
+
+NoMethod Error:
+  Given a file with three lines in the backtrace that explodes on the third
+  displaying the error:
+    It prints the exception class
+    It prints the message (reworded to be more obvious) #<Object> has no method called #<method name>
+  heuristic:
+    It displays the line of the backtrace with the NoMethodError, and 5 lines of code before / after #This is where it blew up
+    It displays the second most recent of the backtrace, and 5 lines of code before / after #This is where the called started
+  backtrace:
+    It displays each line of the backtrace
+    It includes the code from that line
+
