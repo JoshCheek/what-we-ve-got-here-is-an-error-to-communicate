@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/JoshCheek/what-we-ve-got-here-is-an-error-to-communicate.svg?branch=master)](https://travis-ci.org/JoshCheek/what-we-ve-got-here-is-an-error-to-communicate)
+
 What if error messages were compelling to read?
 -----------------------------------------------
 

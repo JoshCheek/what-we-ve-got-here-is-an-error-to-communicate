@@ -1,0 +1,6 @@
+language: ruby
+rvm:
+  - 2
+  - rbx-2
+  - jruby-head
+
