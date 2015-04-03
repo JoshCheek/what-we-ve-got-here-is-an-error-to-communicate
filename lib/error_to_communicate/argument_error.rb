@@ -5,7 +5,7 @@ require 'pathname'
 #   error data structure is independent of the error that caused it
 #   display the data structure
 
-module DispayErrors
+module WhatWeveGotHereIsAnErrorToCommunicate
   class ArgumentError
     def initialize(exception)
       @exception     = exception

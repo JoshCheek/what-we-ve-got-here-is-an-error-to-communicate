@@ -1,7 +1,7 @@
 require 'coderay'
 require 'pathname'
 
-module DispayErrors
+module WhatWeveGotHereIsAnErrorToCommunicate
   class NoMethodError
     def initialize(exception)
       @parsed        = parse_exception exception
