@@ -5,7 +5,7 @@ module WhatWeveGotHereIsAnErrorToCommunicate
     class Backtrace
       class Location
         def self.parse(backtrace_location)
-          ExceptionInfo::Backtrace::Location.new(
+          ExceptionInfo::Location.new(
             filepath:   backtrace_location.to_s[/^[^:]+/],
             linenum:    backtrace_location.to_s[/:(\d+):/,  1].to_i,
             methodname: backtrace_location.to_s[/`(.*?)'$/, 1],
@@ -22,7 +22,7 @@ module WhatWeveGotHereIsAnErrorToCommunicate
           crnt.succ = succ
         end
 
-        ExceptionInfo::Backtrace.new locations: locations
+        locations
       end
     end
   end

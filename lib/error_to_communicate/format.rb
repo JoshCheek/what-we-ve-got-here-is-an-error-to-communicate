@@ -143,15 +143,15 @@ module WhatWeveGotHereIsAnErrorToCommunicate
 
     # Display the Heuristic
     display << separator.call
-    display << display_location.call(location:   exception.backtrace.backtrace[0],
-                                     highlight:  exception.backtrace.backtrace[0].methodname,
+    display << display_location.call(location:   exception.backtrace[0],
+                                     highlight:  exception.backtrace[0].methodname,
                                      context:    0..5,
                                      message:    "EXPECTED #{exception.num_expected}",
                                      emphasisis: :code,
                                      cwd:        cwd)
     display << "\n"
-    display << display_location.call(location:   exception.backtrace.backtrace[1],
-                                     highlight:  exception.backtrace.backtrace[0].methodname,
+    display << display_location.call(location:   exception.backtrace[1],
+                                     highlight:  exception.backtrace[0].methodname,
                                      context:    -5..5,
                                      message:    "SENT #{exception.num_received}",
                                      emphasisis: :code,
@@ -159,13 +159,13 @@ module WhatWeveGotHereIsAnErrorToCommunicate
     display << separator.call
 
     # display the backtrace
-    display << display_location.call(location:   exception.backtrace.backtrace[0],
-                                     highlight:  exception.backtrace.backtrace[0].methodname,
+    display << display_location.call(location:   exception.backtrace[0],
+                                     highlight:  exception.backtrace[0].methodname,
                                      context:    0..0,
                                      emphasisis: :path,
                                      cwd:        cwd)
 
-    display << exception.backtrace.backtrace.each_cons(2).map { |next_loc, crnt_loc|
+    display << exception.backtrace.each_cons(2).map { |next_loc, crnt_loc|
       display_location.call location:   crnt_loc,
                             highlight:  next_loc.methodname,
                             context:    0..0,
