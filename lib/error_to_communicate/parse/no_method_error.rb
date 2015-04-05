@@ -2,7 +2,7 @@ require 'error_to_communicate/exception_info'
 require 'error_to_communicate/parse/backtrace'
 
 module WhatWeveGotHereIsAnErrorToCommunicate
-  class Parse
+  module Parse
     module NoMethodError
       def self.parse?(exception)
         exception.kind_of? ::NoMethodError

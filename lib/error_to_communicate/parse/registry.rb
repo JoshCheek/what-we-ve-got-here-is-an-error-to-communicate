@@ -1,5 +1,5 @@
 module WhatWeveGotHereIsAnErrorToCommunicate
-  class Parse
+  module Parse
     class Registry
       def initialize(parsers=[])
         @parsers = parsers

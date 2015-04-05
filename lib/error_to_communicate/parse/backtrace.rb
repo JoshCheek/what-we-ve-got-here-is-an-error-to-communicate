@@ -1,7 +1,7 @@
 require 'error_to_communicate/exception_info'
 
 module WhatWeveGotHereIsAnErrorToCommunicate
-  class Parse
+  module Parse
     module Backtrace
       def self.parse_locations(backtrace_locations)
         locations = backtrace_locations.map(&method(:parse_location))
