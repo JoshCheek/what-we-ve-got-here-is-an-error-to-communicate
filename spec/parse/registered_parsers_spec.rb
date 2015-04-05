@@ -38,7 +38,10 @@ RSpec.describe 'registered parsers' do
       expect(parser_for err).to eq WhatWeveGotHereIsAnErrorToCommunicate::Parse::NoMethodError
     end
 
-    it 'parses Exception'
+    it 'parses Exception' do
+      err = capture { raise Exception, "wat" }
+      expect(parser_for err).to eq WhatWeveGotHereIsAnErrorToCommunicate::Parse::Exception
+    end
   end
 
   describe 'parse' do

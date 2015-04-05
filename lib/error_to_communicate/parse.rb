@@ -1,4 +1,5 @@
 require 'error_to_communicate/parse/registry'
+require 'error_to_communicate/parse/exception'
 require 'error_to_communicate/parse/argument_error'
 require 'error_to_communicate/parse/no_method_error'
 
@@ -16,5 +17,6 @@ module WhatWeveGotHereIsAnErrorToCommunicate
   Parse::DEFAULT_REGISTRY = Parse::Registry.new [
     Parse::ArgumentError,
     Parse::NoMethodError,
+    Parse::Exception,
   ]
 end
