@@ -17,12 +17,12 @@ module WhatWeveGotHereIsAnErrorToCommunicate
       end
 
       def call
-        @parsed ||= ExceptionInfo.new(
+        @parsed ||= ExceptionInfo::ArgumentError.new(
           classname:    'ArgumentError',
           explanation:  @exception.message[/^[^\(]*/].strip,
+          backtrace:    Backtrace.parse_locations(@exception.backtrace_locations),
           num_expected: @exception.message.scan(/\d+/)[1].to_i,
           num_received: @exception.message.scan(/\d+/)[0].to_i,
-          backtrace:    Backtrace.parse_locations(@exception.backtrace_locations),
         )
       end
     end

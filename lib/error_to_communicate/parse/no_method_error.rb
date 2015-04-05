@@ -17,11 +17,11 @@ module WhatWeveGotHereIsAnErrorToCommunicate
       end
 
       def call
-        @parsed ||= ExceptionInfo.new(
-          classname:              'NoMethodError',
-          explanation:            @exception.message[/^[^\(]*/].strip,
-          undefined_method_name:  @exception.message.split(/\W+/)[2],
-          backtrace:              Backtrace.parse_locations(@exception.backtrace_locations),
+        @parsed ||= ExceptionInfo::NoMethodError.new(
+          classname:             'NoMethodError',
+          explanation:           @exception.message[/^[^\(]*/].strip,
+          backtrace:             Backtrace.parse_locations(@exception.backtrace_locations),
+          undefined_method_name: @exception.message.split(/\W+/)[2],
         )
       end
     end

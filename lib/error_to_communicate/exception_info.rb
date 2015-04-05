@@ -1,18 +1,10 @@
 module WhatWeveGotHereIsAnErrorToCommunicate
   class ExceptionInfo
-    attr_accessor :classname,
-                  :explanation,
-                  :num_expected,
-                  :num_received,
-                  :undefined_method_name,
-                  :backtrace
+    attr_accessor :classname, :explanation, :backtrace
 
     def initialize(attributes)
       self.classname             = attributes.fetch :classname
       self.explanation           = attributes.fetch :explanation
-      self.num_expected          = attributes.fetch :num_expected,          nil # too custom to ArgumentError
-      self.num_received          = attributes.fetch :num_received,          nil # too custom to ArgumentError
-      self.undefined_method_name = attributes.fetch :undefined_method_name, nil # too custom to NoMethodError
       self.backtrace             = attributes.fetch :backtrace
     end
 
@@ -24,6 +16,23 @@ module WhatWeveGotHereIsAnErrorToCommunicate
         self.methodname = attributes.fetch :methodname
         self.pred       = attributes.fetch :pred, nil
         self.succ       = attributes.fetch :succ, nil
+      end
+    end
+
+    class ArgumentError < ExceptionInfo
+      attr_accessor :num_expected, :num_received
+      def initialize(attributes)
+        self.num_expected = attributes.fetch :num_expected
+        self.num_received = attributes.fetch :num_received
+        super
+      end
+    end
+
+    class NoMethodError < ExceptionInfo
+      attr_accessor :undefined_method_name
+      def initialize(attributes)
+        self.undefined_method_name = attributes.fetch :undefined_method_name
+        super
       end
     end
   end
