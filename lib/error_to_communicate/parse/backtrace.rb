@@ -3,8 +3,6 @@ require 'error_to_communicate/exception_info'
 module WhatWeveGotHereIsAnErrorToCommunicate
   class Parse
     module Backtrace
-      extend self
-
       def self.parse_locations(backtrace_locations)
         locations = backtrace_locations.map(&method(:parse_location))
         locations.each_cons(2) do |crnt, succ|
