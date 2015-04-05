@@ -1,5 +1,5 @@
+require 'error_to_communicate/exception_info'
 require 'error_to_communicate/parse/backtrace'
-require 'error_to_communicate/structure/argument_error'
 
 module WhatWeveGotHereIsAnErrorToCommunicate
   class Parse
@@ -17,7 +17,7 @@ module WhatWeveGotHereIsAnErrorToCommunicate
       end
 
       def call
-        @parsed ||= Structure::ArgumentError.new(
+        @parsed ||= ExceptionInfo.new(
           classname:    'ArgumentError',
           explanation:  @exception.message[/^[^\(]*/].strip,
           num_expected: @exception.message.scan(/\d+/)[1].to_i,
