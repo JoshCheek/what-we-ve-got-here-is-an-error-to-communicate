@@ -1,8 +1,8 @@
 module WhatWeveGotHereIsAnErrorToCommunicate
   class Parse
     class Registry
-      def initialize
-        @parsers ||= []
+      def initialize(parsers=[])
+        @parsers = parsers
       end
 
       def <<(parser)

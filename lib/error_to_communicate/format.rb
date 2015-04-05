@@ -2,10 +2,8 @@ require 'coderay'
 require 'pathname'
 
 module WhatWeveGotHereIsAnErrorToCommunicate
-  class Format
-  end
-
   def self.format(info)
+    # FIXME: extract this into some sort of object
     separator = lambda do
       ("="*70) << "\n"
     end
@@ -27,6 +25,11 @@ module WhatWeveGotHereIsAnErrorToCommunicate
       bri_red = "\e[38;5;196m"
       dim_red = "\e[38;5;124m"
       none    = "\e[39m"
+      # FIXME:
+      # Something else should set this?
+      #   I'd say heuristic, but fact is that it needs formatting info.
+      #   Maybe initially, heuristic contains both extracted info and formatting info?
+      # Or maybe we want polymorphism at the formatter level?
       if info.classname == 'NoMethodError'
         "#{white}#{info.classname} | "\
         "#{bri_red}#{info.explanation} "\
@@ -147,6 +150,11 @@ module WhatWeveGotHereIsAnErrorToCommunicate
 
     # Display the Heuristic
     display << separator.call
+
+    # FIXME: Some sort of polymorphism or normalization would be way better here, too
+    # And, at the very least, not switching on classname, but some more abstract piece of info,
+    # b/c classnames are not completely consistent across the implementations
+    # (eg: https://github.com/JoshCheek/seeing_is_believing/blob/cc93b4ee3a83145509c235f64d9454dc3e12d8c9/lib/seeing_is_believing/event_stream/producer.rb#L54-55)
     if info.classname == 'ArgumentError'
       display << display_location.call(location:   info.backtrace[0],
                                        highlight:  info.backtrace[0].methodname,

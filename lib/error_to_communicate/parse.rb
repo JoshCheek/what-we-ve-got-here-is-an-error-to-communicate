@@ -11,6 +11,8 @@ module WhatWeveGotHereIsAnErrorToCommunicate
     options.fetch(:parser, Parse::DEFAULT_REGISTRY).parse(exception)
   end
 
-  Parse::DEFAULT_REGISTRY =
-    Parse::Registry.new << Parse::ArgumentError << Parse::NoMethodError
+  Parse::DEFAULT_REGISTRY = Parse::Registry.new [
+    Parse::ArgumentError,
+    Parse::NoMethodError,
+  ]
 end
