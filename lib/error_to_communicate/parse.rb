@@ -28,4 +28,7 @@ module WhatWeveGotHereIsAnErrorToCommunicate
 
   require 'error_to_communicate/parse/argument_error'
   Parse::DEFAULT << Parse::ArgumentError
+
+  require 'error_to_communicate/parse/no_method_error'
+  Parse::DEFAULT << Parse::NoMethodError
 end

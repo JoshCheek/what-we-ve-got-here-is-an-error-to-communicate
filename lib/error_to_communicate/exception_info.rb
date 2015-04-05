@@ -4,14 +4,16 @@ module WhatWeveGotHereIsAnErrorToCommunicate
                   :explanation,
                   :num_expected,
                   :num_received,
+                  :undefined_method_name,
                   :backtrace
 
     def initialize(attributes)
-      self.classname    = attributes.fetch :classname
-      self.explanation  = attributes.fetch :explanation
-      self.num_expected = attributes.fetch :num_expected
-      self.num_received = attributes.fetch :num_received
-      self.backtrace    = attributes.fetch :backtrace
+      self.classname             = attributes.fetch :classname
+      self.explanation           = attributes.fetch :explanation
+      self.num_expected          = attributes.fetch :num_expected,          nil # too custom to ArgumentError
+      self.num_received          = attributes.fetch :num_received,          nil # too custom to ArgumentError
+      self.undefined_method_name = attributes.fetch :undefined_method_name, nil # too custom to NoMethodError
+      self.backtrace             = attributes.fetch :backtrace
     end
 
     class Location

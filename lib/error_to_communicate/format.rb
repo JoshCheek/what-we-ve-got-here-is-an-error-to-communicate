@@ -29,12 +29,18 @@ module WhatWeveGotHereIsAnErrorToCommunicate
       bri_red = "\e[38;5;196m"
       dim_red = "\e[38;5;124m"
       none    = "\e[39m"
-      "#{white}#{exception.classname} | "\
-      "#{bri_red}#{exception.explanation} "\
-      "#{dim_red}(expected #{white}#{exception.num_expected},"\
-      "#{dim_red} sent #{white}#{exception.num_received}"\
-      "#{dim_red})"\
-      "#{none}"
+      if exception.classname == 'NoMethodError'
+        "#{white}#{exception.classname} | "\
+        "#{bri_red}#{exception.explanation} "\
+        "#{none}"
+      else
+        "#{white}#{exception.classname} | "\
+        "#{bri_red}#{exception.explanation} "\
+        "#{dim_red}(expected #{white}#{exception.num_expected},"\
+        "#{dim_red} sent #{white}#{exception.num_received}"\
+        "#{dim_red})"\
+        "#{none}"
+      end
     end
 
     bound_num = lambda do |attributes|
@@ -143,22 +149,31 @@ module WhatWeveGotHereIsAnErrorToCommunicate
 
     # Display the Heuristic
     display << separator.call
-    display << display_location.call(location:   exception.backtrace[0],
-                                     highlight:  exception.backtrace[0].methodname,
-                                     context:    0..5,
-                                     message:    "EXPECTED #{exception.num_expected}",
-                                     emphasisis: :code,
-                                     cwd:        cwd)
-    display << "\n"
-    display << display_location.call(location:   exception.backtrace[1],
-                                     highlight:  exception.backtrace[0].methodname,
-                                     context:    -5..5,
-                                     message:    "SENT #{exception.num_received}",
-                                     emphasisis: :code,
-                                     cwd:        cwd)
-    display << separator.call
+    if exception.classname == 'ArgumentError'
+      display << display_location.call(location:   exception.backtrace[0],
+                                       highlight:  exception.backtrace[0].methodname,
+                                       context:    0..5,
+                                       message:    "EXPECTED #{exception.num_expected}",
+                                       emphasisis: :code,
+                                       cwd:        cwd)
+      display << "\n"
+      display << display_location.call(location:   exception.backtrace[1],
+                                       highlight:  exception.backtrace[0].methodname,
+                                       context:    -5..5,
+                                       message:    "SENT #{exception.num_received}",
+                                       emphasisis: :code,
+                                       cwd:        cwd)
+    elsif exception.classname == 'NoMethodError'
+      display << display_location.call(location:   exception.backtrace[0],
+                                       highlight:  exception.backtrace[0].methodname,
+                                       context:    -5..5,
+                                       message:    "#{exception.undefined_method_name} is undefined",
+                                       emphasisis: :code,
+                                       cwd:        cwd)
+    end
 
     # display the backtrace
+    display << separator.call
     display << display_location.call(location:   exception.backtrace[0],
                                      highlight:  exception.backtrace[0].methodname,
                                      context:    0..0,

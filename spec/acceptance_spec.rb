@@ -115,9 +115,9 @@ describe 'Acceptace test' do
     expect(invocation.stdout).to     eq ''
     expect(invocation.exitstatus).to eq 1
 
-    # error: It prints the exception class and prints the reworded message
+    # error: It prints the exception class and message
     expect(stderr).to include 'NoMethodError'
-    expect(stderr).to include "An undefined method called backtrace4 was called in Module Test"
+    expect(stderr).to include "undefined method `backtrace4'"
 
     #heuristic:
     #  It displays a message next to the line to communicate that this is where it blew up
@@ -128,21 +128,12 @@ describe 'Acceptace test' do
     expect(stderr).to include '  Test.backtrace4'
     expect(stderr).to include 'end'
 
-    #  It displays a message next to the second line to communicate that this is where the method containing the undefined method was called
-    expect(stderr).to include 'Call initiates here'
-
-    # It displays the second most recent line of the backtrace with some context around it
-    expect(stderr).to include '  end'
-    expect(stderr).to include 'end'
-
-    expect(stderr).to include 'Test.backtrace2'
-
     #backtrace:
     #  It displays each line of the backtrace and includes the code from that line
     expect(stderr).to include 'no_method_error.rb:7'
     expect(stderr).to include 'backtrace4'
 
-    expect(stderr).to include '13' #line that invoked the call to the error
+    expect(stderr).to include '14' #line that invoked the call to the error
     expect(stderr).to include 'backtrace2'
   end
 end
