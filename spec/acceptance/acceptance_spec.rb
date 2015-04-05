@@ -1,28 +1,6 @@
-require 'haiti/command_line_helpers'
+require 'acceptance/spec_helper'
 
-root_dir            = File.expand_path '../..', __FILE__
-lib_dir             = File.join(root_dir, 'lib')
-proving_grounds_dir = File.join(root_dir, 'proving_grounds')
-
-Haiti.configure do |config|
-  config.proving_grounds_dir = proving_grounds_dir
-end
-RSpec.configure do |config|
-  config.disable_monkey_patching = true
-end
-
-describe 'Acceptace test' do
-  include Haiti::CommandLineHelpers
-  before { make_proving_grounds }
-
-  define_method :ruby do |filename|
-    execute "ruby -I #{lib_dir} #{filename}", '', ENV
-  end
-
-  def strip_color(string)
-    string.gsub(/\e\[\d+(;\d+)*?m/, '')
-  end
-
+RSpec.describe 'Acceptace test', acceptance: true do
   example 'Does nothing when there is no error' do
     # Given a file that doesn't error
     write_file 'no_error.rb', <<-BODY
