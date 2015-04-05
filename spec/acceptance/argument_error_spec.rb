@@ -26,7 +26,8 @@ RSpec.context 'ArgumentError', acceptance: true do
 
     # error: It prints the exception class and prints the reworded message
       expect(stderr).to include 'ArgumentError'
-      expect(stderr).to include 'wrong number of arguments (expected 0, sent 1)'
+      expect(stderr).to include 'wrong number of arguments'
+      expect(stderr).to include '(expected 0, sent 1)'
 
     # heuristic:
       # It displays name of the file with the line number of the error

@@ -25,6 +25,8 @@ module WhatWeveGotHereIsAnErrorToCommunicate
           lambda { exception.backtrace_locations.map &method(:parse_mri_location) }
         elsif exception.respond_to?(:awesome_backtrace) # RBX
           lambda { exception.awesome_backtrace.map &method(:parse_rbx_location) }
+        elsif exception.respond_to?(:backtrace) # FALLBACK
+          lambda { exception.backtrace.map &method(:parse_generic_location) }
         end
       end
 
@@ -34,6 +36,16 @@ module WhatWeveGotHereIsAnErrorToCommunicate
           filepath:   loc.absolute_path,
           linenum:    loc.lineno,
           methodname: loc.base_label,
+        )
+      end
+
+      # Definitely not sufficient, but I'll wait until I have better examples of how it fucks up.
+      def self.parse_generic_location(line)
+        filepath, linenum, label, * = line.split(":")
+        ExceptionInfo::Location.new(
+          filepath:   filepath,
+          linenum:    linenum.to_i,
+          methodname: label,
         )
       end
 
