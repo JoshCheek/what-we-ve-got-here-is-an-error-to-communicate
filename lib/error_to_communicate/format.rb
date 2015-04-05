@@ -5,9 +5,7 @@ module WhatWeveGotHereIsAnErrorToCommunicate
   class Format
   end
 
-  def self.format(attributes)
-    exception = attributes.fetch :exception
-
+  def self.format(exception)
     separator = lambda do
       ("="*70) << "\n"
     end
