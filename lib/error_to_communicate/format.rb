@@ -5,7 +5,7 @@ module WhatWeveGotHereIsAnErrorToCommunicate
   class Format
   end
 
-  def self.format(exception)
+  def self.format(info)
     separator = lambda do
       ("="*70) << "\n"
     end
@@ -27,15 +27,15 @@ module WhatWeveGotHereIsAnErrorToCommunicate
       bri_red = "\e[38;5;196m"
       dim_red = "\e[38;5;124m"
       none    = "\e[39m"
-      if exception.classname == 'NoMethodError'
-        "#{white}#{exception.classname} | "\
-        "#{bri_red}#{exception.explanation} "\
+      if info.classname == 'NoMethodError'
+        "#{white}#{info.classname} | "\
+        "#{bri_red}#{info.explanation} "\
         "#{none}"
       else
-        "#{white}#{exception.classname} | "\
-        "#{bri_red}#{exception.explanation} "\
-        "#{dim_red}(expected #{white}#{exception.num_expected},"\
-        "#{dim_red} sent #{white}#{exception.num_received}"\
+        "#{white}#{info.classname} | "\
+        "#{bri_red}#{info.explanation} "\
+        "#{dim_red}(expected #{white}#{info.num_expected},"\
+        "#{dim_red} sent #{white}#{info.num_received}"\
         "#{dim_red})"\
         "#{none}"
       end
@@ -147,38 +147,38 @@ module WhatWeveGotHereIsAnErrorToCommunicate
 
     # Display the Heuristic
     display << separator.call
-    if exception.classname == 'ArgumentError'
-      display << display_location.call(location:   exception.backtrace[0],
-                                       highlight:  exception.backtrace[0].methodname,
+    if info.classname == 'ArgumentError'
+      display << display_location.call(location:   info.backtrace[0],
+                                       highlight:  info.backtrace[0].methodname,
                                        context:    0..5,
-                                       message:    "EXPECTED #{exception.num_expected}",
+                                       message:    "EXPECTED #{info.num_expected}",
                                        emphasisis: :code,
                                        cwd:        cwd)
       display << "\n"
-      display << display_location.call(location:   exception.backtrace[1],
-                                       highlight:  exception.backtrace[0].methodname,
+      display << display_location.call(location:   info.backtrace[1],
+                                       highlight:  info.backtrace[0].methodname,
                                        context:    -5..5,
-                                       message:    "SENT #{exception.num_received}",
+                                       message:    "SENT #{info.num_received}",
                                        emphasisis: :code,
                                        cwd:        cwd)
-    elsif exception.classname == 'NoMethodError'
-      display << display_location.call(location:   exception.backtrace[0],
-                                       highlight:  exception.backtrace[0].methodname,
+    elsif info.classname == 'NoMethodError'
+      display << display_location.call(location:   info.backtrace[0],
+                                       highlight:  info.backtrace[0].methodname,
                                        context:    -5..5,
-                                       message:    "#{exception.undefined_method_name} is undefined",
+                                       message:    "#{info.undefined_method_name} is undefined",
                                        emphasisis: :code,
                                        cwd:        cwd)
     end
 
     # display the backtrace
     display << separator.call
-    display << display_location.call(location:   exception.backtrace[0],
-                                     highlight:  exception.backtrace[0].methodname,
+    display << display_location.call(location:   info.backtrace[0],
+                                     highlight:  info.backtrace[0].methodname,
                                      context:    0..0,
                                      emphasisis: :path,
                                      cwd:        cwd)
 
-    display << exception.backtrace.each_cons(2).map { |next_loc, crnt_loc|
+    display << info.backtrace.each_cons(2).map { |next_loc, crnt_loc|
       display_location.call location:   crnt_loc,
                             highlight:  next_loc.methodname,
                             context:    0..0,
