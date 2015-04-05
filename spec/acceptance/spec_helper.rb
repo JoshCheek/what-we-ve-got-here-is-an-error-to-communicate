@@ -1,21 +1,32 @@
 require 'haiti/command_line_helpers'
 
-root_dir            = File.expand_path '../../..', __FILE__
-lib_dir             = File.join(root_dir, 'lib')
-proving_grounds_dir = File.join(root_dir, 'proving_grounds')
+module AcceptanceSpecHelpers
+  extend self
 
-Haiti.configure do |config|
-  config.proving_grounds_dir = proving_grounds_dir
-end
+  def root_dir
+    File.expand_path '../../..', __FILE__
+  end
 
-AcceptanceSpecHelpers = Module.new do
-  define_method :ruby do |filename|
+  def lib_dir
+    File.join root_dir, 'lib'
+  end
+
+  def proving_grounds_dir
+    File.join root_dir, 'proving_grounds'
+  end
+
+  def ruby(filename)
     execute "ruby -I #{lib_dir} #{filename}", '', ENV
   end
 
   def strip_color(string)
     string.gsub(/\e\[\d+(;\d+)*?m/, '')
   end
+end
+
+# Commandline invocation
+Haiti.configure do |config|
+  config.proving_grounds_dir = AcceptanceSpecHelpers.proving_grounds_dir
 end
 
 RSpec.configure do |config|
