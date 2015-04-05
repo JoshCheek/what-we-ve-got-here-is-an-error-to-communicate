@@ -28,8 +28,7 @@ RSpec.describe 'parsing an ArgumentError' do
   end
 
   def parse(exception)
-    WhatWeveGotHereIsAnErrorToCommunicate::Parse::Backtrace
-      .parse_locations(exception.backtrace_locations)
+    WhatWeveGotHereIsAnErrorToCommunicate::Parse::Backtrace.parse(exception)
   end
 
 

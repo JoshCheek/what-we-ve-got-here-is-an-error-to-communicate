@@ -12,10 +12,10 @@ module WhatWeveGotHereIsAnErrorToCommunicate
         ExceptionInfo::ArgumentError.new(
           exception:    exception,
           classname:    exception.class.to_s,
-          explanation:  exception.message[/^[^\(]*/].strip,
-          backtrace:    Backtrace.parse_locations(exception.backtrace_locations),
-          num_expected: exception.message.scan(/\d+/)[1].to_i,
-          num_received: exception.message.scan(/\d+/)[0].to_i,
+          explanation:  'Wrong number of arguments',
+          backtrace:    Backtrace.parse(exception),
+          num_expected: exception.message.scan(/\d+/)[-2].to_i,
+          num_received: exception.message.scan(/\d+/)[-1].to_i,
         )
       end
     end

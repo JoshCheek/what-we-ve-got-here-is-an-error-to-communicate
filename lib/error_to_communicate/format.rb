@@ -17,7 +17,11 @@ module WhatWeveGotHereIsAnErrorToCommunicate
     end
 
     path_to_dir = lambda do |from, to|
-      to.relative_path_from(from).dirname
+      begin
+        to.relative_path_from(from).dirname
+      rescue ArgumentError # rbx internal code
+        return to
+      end
     end
 
     display_class_and_message = lambda do
@@ -107,7 +111,7 @@ module WhatWeveGotHereIsAnErrorToCommunicate
     display_location = lambda do |attributes|
       location       = attributes.fetch :location
       cwd            = Pathname.new attributes.fetch(:cwd)
-      filepath       = Pathname.new File.expand_path(location.filepath, cwd)
+      filepath       = Pathname.new location.filepath
       line_index     = location.linenum - 1
       highlight      = attributes.fetch :highlight, location.methodname
       end_index      = bound_num.call min: 0, num: line_index+attributes.fetch(:context).end
@@ -122,13 +126,17 @@ module WhatWeveGotHereIsAnErrorToCommunicate
       path_line << ":" << color_linenum.call(location.linenum)
 
       # then display the code
-      code = File.read(filepath).lines[start_index..end_index].join("")
-      code = remove_indentation.call code
-      code = CodeRay.encode          code, :ruby, :terminal
-      code = prefix_linenos_to.call  code, start_index.next
-      code = indent.call             code, "  "
-      code = add_message_to.call     code, message_offset, screaming_red.call(message)
-      code = highlight_text.call     code, message_offset, highlight
+      if filepath.exist?
+        code = File.read(filepath).lines[start_index..end_index].join("")
+        code = remove_indentation.call code
+        code = CodeRay.encode          code, :ruby, :terminal
+        code = prefix_linenos_to.call  code, start_index.next
+        code = indent.call             code, "  "
+        code = add_message_to.call     code, message_offset, screaming_red.call(message)
+        code = highlight_text.call     code, message_offset, highlight
+      else
+        code = "Can't find code\n"
+      end
 
       # adjust for emphasization
       if attributes.fetch(:emphasisis) == :path

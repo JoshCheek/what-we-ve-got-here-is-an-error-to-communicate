@@ -5,7 +5,7 @@ module WhatWeveGotHereIsAnErrorToCommunicate
   module Parse
     module Exception
       def self.parse?(exception)
-        exception.respond_to?(:message) && exception.respond_to?(:backtrace_locations)
+        exception.respond_to?(:message) && Backtrace.parse?(exception)
       end
 
       def self.parse(exception)
@@ -13,7 +13,7 @@ module WhatWeveGotHereIsAnErrorToCommunicate
           exception:   exception,
           classname:   exception.class.to_s,
           explanation: exception.message,
-          backtrace:   Backtrace.parse_locations(exception.backtrace_locations),
+          backtrace:   Backtrace.parse(exception),
         )
       end
     end
