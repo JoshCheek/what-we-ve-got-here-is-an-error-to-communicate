@@ -1,19 +1,44 @@
 require 'acceptance/spec_helper'
 
-RSpec.context 'When there is no error', acceptance: true do
-  it 'does nothing' do
-    # Given a file that doesn't error
+RSpec.context 'non errors are not captured/reported', acceptance: true do
+  example 'no error is raised' do
     write_file 'no_error.rb', <<-BODY
       require 'error_to_communicate/at_exit'
       print "hello, world"
     BODY
 
-    # No exception is printed
     invocation = ruby 'no_error.rb'
 
-    # It exits with 0
+    # No exception
     expect(invocation.stderr).to     eq ''
     expect(invocation.stdout).to     eq 'hello, world'
     expect(invocation.exitstatus).to eq 0
+  end
+
+
+  example 'successful exit' do
+    write_file 'exit_0.rb', <<-BODY
+      require 'error_to_communicate/at_exit'
+      exit 0
+    BODY
+    invocation = ruby 'exit_0.rb'
+
+    # No exception
+    expect(invocation.stderr).to     eq ''
+    expect(invocation.stdout).to     eq ''
+    expect(invocation.exitstatus).to eq 0
+  end
+
+  example 'unsuccessful exit' do
+    write_file 'exit_2.rb', <<-BODY
+      require 'error_to_communicate/at_exit'
+      exit 2
+    BODY
+    invocation = ruby 'exit_2.rb'
+
+    # No exception
+    expect(invocation.stderr).to     eq ''
+    expect(invocation.stdout).to     eq ''
+    expect(invocation.exitstatus).to eq 2
   end
 end
