@@ -4,10 +4,8 @@ require 'error_to_communicate/parse/backtrace'
 module WhatWeveGotHereIsAnErrorToCommunicate
   module Parse
     module Exception
-      # ...uhm, really, it can parse a SystemExit
-      # it's only our current context where this doesn't make sense :/
       def self.parse?(exception)
-        exception.kind_of?(::Exception) && !exception.kind_of?(::SystemExit)
+        exception.respond_to?(:message) && exception.respond_to?(:backtrace_locations)
       end
 
       def self.parse(exception)

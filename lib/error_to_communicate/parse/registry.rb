@@ -1,8 +1,9 @@
 module WhatWeveGotHereIsAnErrorToCommunicate
   module Parse
     class Registry
-      def initialize(parsers=[])
-        @parsers = parsers
+      def initialize(options)
+        @dont_parse = options.fetch :dont_parse
+        @parsers    = options.fetch :parsers
       end
 
       def <<(parser)
@@ -11,6 +12,7 @@ module WhatWeveGotHereIsAnErrorToCommunicate
       end
 
       def parser_for(exception)
+        return nil if @dont_parse.call exception
         @parsers.find { |parser| parser.parse? exception }
       end
 
