@@ -22,7 +22,7 @@ module WhatWeveGotHereIsAnErrorToCommunicate
           explanation:  @exception.message[/^[^\(]*/].strip,
           num_expected: @exception.message.scan(/\d+/)[1].to_i,
           num_received: @exception.message.scan(/\d+/)[0].to_i,
-          backtrace:    Backtrace.parse(backtrace_locations: @exception.backtrace_locations),
+          backtrace:    Backtrace.parse_locations(@exception.backtrace_locations),
         )
       end
     end

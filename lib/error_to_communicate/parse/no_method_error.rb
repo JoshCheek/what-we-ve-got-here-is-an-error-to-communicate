@@ -21,7 +21,7 @@ module WhatWeveGotHereIsAnErrorToCommunicate
           classname:              'NoMethodError',
           explanation:            @exception.message[/^[^\(]*/].strip,
           undefined_method_name:  @exception.message.split(/\W+/)[2],
-          backtrace:              Backtrace.parse(backtrace_locations: @exception.backtrace_locations),
+          backtrace:              Backtrace.parse_locations(@exception.backtrace_locations),
         )
       end
     end
