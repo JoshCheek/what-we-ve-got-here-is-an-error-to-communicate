@@ -14,9 +14,9 @@ module WhatWeveGotHereIsAnErrorToCommunicate
 
       def self.parse_location(backtrace_location)
         ExceptionInfo::Location.new(
-          filepath:   backtrace_location.to_s[/^[^:]+/],
-          linenum:    backtrace_location.to_s[/:(\d+):/,  1].to_i,
-          methodname: backtrace_location.to_s[/`(.*?)'$/, 1],
+          filepath:   backtrace_location.absolute_path,
+          linenum:    backtrace_location.lineno,
+          methodname: backtrace_location.base_label,
         )
       end
     end

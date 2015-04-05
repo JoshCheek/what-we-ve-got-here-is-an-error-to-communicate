@@ -10,7 +10,8 @@ module WhatWeveGotHereIsAnErrorToCommunicate
 
       def self.parse(exception)
         ExceptionInfo::ArgumentError.new(
-          classname:    'ArgumentError',
+          exception:    exception,
+          classname:    exception.class.to_s,
           explanation:  exception.message[/^[^\(]*/].strip,
           backtrace:    Backtrace.parse_locations(exception.backtrace_locations),
           num_expected: exception.message.scan(/\d+/)[1].to_i,

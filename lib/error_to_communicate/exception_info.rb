@@ -1,7 +1,9 @@
 module WhatWeveGotHereIsAnErrorToCommunicate
   class ExceptionInfo
     attr_accessor :classname, :explanation, :backtrace
+    attr_accessor :exception # for dev info only, parse out additional info rather than interacting with it direclty
     def initialize(attributes)
+      self.exception   = attributes.fetch :exception, nil
       self.classname   = attributes.fetch :classname
       self.explanation = attributes.fetch :explanation
       self.backtrace   = attributes.fetch :backtrace
@@ -9,6 +11,7 @@ module WhatWeveGotHereIsAnErrorToCommunicate
   end
 
   class ExceptionInfo::Location
+    # TODO: rename linenum -> line_number
     attr_accessor :filepath, :linenum, :methodname, :pred, :succ
     def initialize(attributes)
       self.filepath   = attributes.fetch :filepath
