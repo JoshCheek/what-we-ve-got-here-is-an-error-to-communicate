@@ -10,7 +10,8 @@ module WhatWeveGotHereIsAnErrorToCommunicate
 
       def self.parse(exception)
         ExceptionInfo::NoMethodError.new(
-          classname:             'NoMethodError',
+          exception:             exception,
+          classname:             exception.class.to_s,
           explanation:           exception.message[/^[^\(]*/].strip,
           backtrace:             Backtrace.parse_locations(exception.backtrace_locations),
           undefined_method_name: exception.message.split(/\W+/)[2],
