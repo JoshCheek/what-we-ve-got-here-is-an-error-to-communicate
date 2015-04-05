@@ -30,16 +30,16 @@ module WhatWeveGotHereIsAnErrorToCommunicate
       #   I'd say heuristic, but fact is that it needs formatting info.
       #   Maybe initially, heuristic contains both extracted info and formatting info?
       # Or maybe we want polymorphism at the formatter level?
-      if info.classname == 'NoMethodError'
-        "#{white}#{info.classname} | "\
-        "#{bri_red}#{info.explanation} "\
-        "#{none}"
-      else
+      if info.classname == 'ArgumentError'
         "#{white}#{info.classname} | "\
         "#{bri_red}#{info.explanation} "\
         "#{dim_red}(expected #{white}#{info.num_expected},"\
         "#{dim_red} sent #{white}#{info.num_received}"\
         "#{dim_red})"\
+        "#{none}"
+      else
+        "#{white}#{info.classname} | "\
+        "#{bri_red}#{info.explanation} "\
         "#{none}"
       end
     end
@@ -174,6 +174,12 @@ module WhatWeveGotHereIsAnErrorToCommunicate
                                        highlight:  info.backtrace[0].methodname,
                                        context:    -5..5,
                                        message:    "#{info.undefined_method_name} is undefined",
+                                       emphasisis: :code,
+                                       cwd:        cwd)
+    else
+      display << display_location.call(location:   info.backtrace[0],
+                                       highlight:  info.backtrace[0].methodname,
+                                       context:    -5..5,
                                        emphasisis: :code,
                                        cwd:        cwd)
     end
