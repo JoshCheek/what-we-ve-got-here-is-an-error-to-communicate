@@ -3,11 +3,13 @@ require 'error_to_communicate/parse/argument_error'
 require 'error_to_communicate/parse/no_method_error'
 
 module WhatWeveGotHereIsAnErrorToCommunicate
-  def self.parse?(exception, options={})
+  extend self
+
+  def parse?(exception, options={})
     options.fetch(:parser, Parse::DEFAULT_REGISTRY).parse?(exception)
   end
 
-  def self.parse(exception, options={})
+  def parse(exception, options={})
     options.fetch(:parser, Parse::DEFAULT_REGISTRY).parse(exception)
   end
 

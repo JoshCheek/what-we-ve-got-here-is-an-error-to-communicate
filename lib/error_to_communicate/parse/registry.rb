@@ -10,14 +10,18 @@ module WhatWeveGotHereIsAnErrorToCommunicate
         self
       end
 
+      def parser_for(exception)
+        @parsers.find { |parser| parser.parse? exception }
+      end
+
       def parse?(exception)
-        @parsers.any? { |parser| parser.parse? exception }
+        !!parser_for(exception)
       end
 
       def parse(exception)
         parser = @parsers.find { |parser| parser.parse? exception }
         return parser.parse exception if parser
-        raise "NO PARSER FOUND FOR #{exception.inspect}"
+        raise ::ArgumentError.new, "No parser found for #{exception.inspect}"
       end
     end
   end
