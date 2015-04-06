@@ -1,4 +1,4 @@
-require 'error_to_communicate/parse'
+require 'error_to_communicate/config'
 
 RSpec.describe 'registered parsers' do
   include WhatWeveGotHereIsAnErrorToCommunicate
@@ -12,8 +12,7 @@ RSpec.describe 'registered parsers' do
 
   describe 'selected parsers' do
     def parser_for(exception)
-      WhatWeveGotHereIsAnErrorToCommunicate::Parse::DEFAULT_REGISTRY
-        .parser_for(exception)
+      WhatWeveGotHereIsAnErrorToCommunicate::Config.new.registry.parser_for(exception)
     end
 
     it 'doesn\'t parse nil' do
@@ -44,7 +43,11 @@ RSpec.describe 'registered parsers' do
     end
   end
 
-  describe 'parse' do
+  describe 'config.parse' do
+    def parse(exception)
+      WhatWeveGotHereIsAnErrorToCommunicate::Config.new.parse(exception)
+    end
+
     it 'parses the exception if anything is willing to do it' do
       exception      = capture { sdfsdfsdf() }
       exception_info = parse exception
