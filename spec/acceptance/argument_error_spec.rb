@@ -26,7 +26,7 @@ RSpec.context 'ArgumentError', acceptance: true do
 
     # error: It prints the exception class and prints the reworded message
       expect(stderr).to include 'ArgumentError'
-      expect(stderr).to include 'wrong number of arguments'
+      expect(stderr).to include 'Wrong number of arguments'
       expect(stderr).to include '(expected 0, sent 1)'
 
     # heuristic:
