@@ -4,7 +4,7 @@ RSpec.context 'ArgumentError', acceptance: true do
   it 'Prints heuristics' do
     # Given a file with three lines in the backtrace that explodes on the third
     write_file 'argument_error.rb', <<-BODY
-      require 'error_to_communicate/at_exit'
+      require 'what_weve_got_here_is_an_error_to_communicate'
       module Test
         def self.backtrace1
         end
