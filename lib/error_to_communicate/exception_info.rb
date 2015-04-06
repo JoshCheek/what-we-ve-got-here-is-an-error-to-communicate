@@ -12,13 +12,13 @@ module WhatWeveGotHereIsAnErrorToCommunicate
 
   class ExceptionInfo::Location
     # TODO: rename linenum -> line_number
-    attr_accessor :filepath, :linenum, :methodname, :pred, :succ
+    attr_accessor :path, :linenum, :label, :pred, :succ
     def initialize(attributes)
-      self.filepath   = attributes.fetch :filepath
-      self.linenum    = attributes.fetch :linenum
-      self.methodname = attributes.fetch :methodname
-      self.pred       = attributes.fetch :pred, nil
-      self.succ       = attributes.fetch :succ, nil
+      self.path    = attributes.fetch :path
+      self.linenum = attributes.fetch :linenum
+      self.label   = attributes.fetch :label
+      self.pred    = attributes.fetch :pred, nil
+      self.succ    = attributes.fetch :succ, nil
     end
   end
 

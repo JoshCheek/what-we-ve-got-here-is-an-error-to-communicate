@@ -24,9 +24,9 @@ module WhatWeveGotHereIsAnErrorToCommunicate
       def self.parse_backtrace_line(line)
         line =~ /^(.*?):(\d+):in `(.*?)'$/ # Are ^ and $ sufficient? Should be \A and (\Z or \z)?
         ExceptionInfo::Location.new(
-          filepath:   $1,
-          linenum:    $2.to_i,
-          methodname: $3,
+          path:    $1,
+          linenum: $2.to_i,
+          label:   $3,
         )
       end
     end

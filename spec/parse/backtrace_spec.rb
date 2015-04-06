@@ -14,10 +14,10 @@ RSpec.describe 'parsing an ArgumentError' do
     WhatWeveGotHereIsAnErrorToCommunicate::Parse::Backtrace.parse(exception)
   end
 
-  it 'records the linenum, and methodname of each backtrace location' do
+  it 'records the linenum, and label of each backtrace location' do
     locations = parse exception
     expect(locations.map &:linenum).to eq [111, 222, 333]
-    expect(locations.map &:methodname).to eq %w[method1 method2 method3]
+    expect(locations.map &:label).to eq %w[method1 method2 method3]
   end
 
   specify 'the predecessor is the parsed location from the previous index, or nil for the first' do
@@ -42,16 +42,16 @@ RSpec.describe 'parsing an ArgumentError' do
     end
   end
 
-  it 'records the filepath whether its absolute or relative' do
-    assert_parses_line "file.rb:111:in `method1'",  filepath: "file.rb"
-    assert_parses_line "/file.rb:111:in `method1'", filepath: "/file.rb"
+  it 'records the path whether its absolute or relative' do
+    assert_parses_line "file.rb:111:in `method1'",  path: "file.rb"
+    assert_parses_line "/file.rb:111:in `method1'", path: "/file.rb"
   end
 
   it 'does not get confused by numbers in directories, filenames, or method names' do
     line = "/a1/b2/c3123/file123.rb:111:in `method1'"
-    assert_parses_line line, filepath:   "/a1/b2/c3123/file123.rb"
-    assert_parses_line line, linenum:    111
-    assert_parses_line line, methodname: "method1"
+    assert_parses_line line, path:    "/a1/b2/c3123/file123.rb"
+    assert_parses_line line, linenum: 111
+    assert_parses_line line, label:   "method1"
   end
 
   context 'random ass colons in the middle of like files and directories and shit' do
@@ -65,9 +65,9 @@ RSpec.describe 'parsing an ArgumentError' do
     # > ["a:b/c:d.rb:1:in `block in <main>'", "a:b/c:d.rb:1:in `<main>'"]
     it 'does not get confused with MRI style results' do
       line = "a:b/c:d.rb:1:in `block in <main>'"
-      assert_parses_line line, filepath:   "a:b/c:d.rb"
-      assert_parses_line line, linenum:    1
-      assert_parses_line line, methodname: "block in <main>"
+      assert_parses_line line, path:    "a:b/c:d.rb"
+      assert_parses_line line, linenum: 1
+      assert_parses_line line, label:   "block in <main>"
     end
 
     # $ chruby-exec rbx -- ruby -v
@@ -81,9 +81,9 @@ RSpec.describe 'parsing an ArgumentError' do
     #    "kernel/loader.rb:799:in `main'"]
     it 'does not get confused with RBX style results' do
       line = "a:b/c:d.rb:1:in `__script__'"
-      assert_parses_line line, filepath:   "a:b/c:d.rb"
-      assert_parses_line line, linenum:    1
-      assert_parses_line line, methodname: "__script__"
+      assert_parses_line line, path:    "a:b/c:d.rb"
+      assert_parses_line line, linenum: 1
+      assert_parses_line line, label:   "__script__"
     end
 
     # $ chruby-exec jruby -- ruby -v
@@ -93,9 +93,9 @@ RSpec.describe 'parsing an ArgumentError' do
     # > ["a:b/c:d.rb:1:in `(root)'"]
     it 'does not get confused by Jruby style results' do
       line = "a:b/c:d.rb:1:in `(root)'"
-      assert_parses_line line, filepath:   "a:b/c:d.rb"
-      assert_parses_line line, linenum:    1
-      assert_parses_line line, methodname: "(root)"
+      assert_parses_line line, path:    "a:b/c:d.rb"
+      assert_parses_line line, linenum: 1
+      assert_parses_line line, label:   "(root)"
     end
   end
 end

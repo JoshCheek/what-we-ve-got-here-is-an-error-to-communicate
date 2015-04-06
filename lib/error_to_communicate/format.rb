@@ -30,9 +30,9 @@ module WhatWeveGotHereIsAnErrorToCommunicate
     display_location = lambda do |attributes|
       location       = attributes.fetch :location
       cwd            = Pathname.new attributes.fetch(:cwd)
-      filepath       = Pathname.new location.filepath
+      path           = Pathname.new location.path
       line_index     = location.linenum - 1
-      highlight      = attributes.fetch :highlight, location.methodname
+      highlight      = attributes.fetch :highlight, location.label
       end_index      = bound_num min: 0, num: line_index+attributes.fetch(:context).end
       start_index    = bound_num min: 0, num: line_index+attributes.fetch(:context).begin
       message        = attributes.fetch :message, ''
@@ -40,13 +40,13 @@ module WhatWeveGotHereIsAnErrorToCommunicate
 
       # first line gives the path
       path_line = ""
-      path_line << color_path("#{path_to_dir cwd, filepath}/")
-      path_line << color_filename(filepath.basename)
+      path_line << color_path("#{path_to_dir cwd, path}/")
+      path_line << color_filename(path.basename)
       path_line << ":" << color_linenum(location.linenum)
 
       # then display the code
-      if filepath.exist?
-        code = File.read(filepath).lines[start_index..end_index].join("")
+      if path.exist?
+        code = File.read(path).lines[start_index..end_index].join("")
         code = remove_indentation code
         code = CodeRay.encode     code, :ruby, :terminal
         code = prefix_linenos_to  code, start_index.next
@@ -84,28 +84,28 @@ module WhatWeveGotHereIsAnErrorToCommunicate
     # (eg: https://github.com/JoshCheek/seeing_is_believing/blob/cc93b4ee3a83145509c235f64d9454dc3e12d8c9/lib/seeing_is_believing/event_stream/producer.rb#L54-55)
     if info.classname == 'ArgumentError'
       display << display_location.call(location:   info.backtrace[0],
-                                       highlight:  info.backtrace[0].methodname,
+                                       highlight:  info.backtrace[0].label,
                                        context:    0..5,
                                        message:    "EXPECTED #{info.num_expected}",
                                        emphasisis: :code,
                                        cwd:        cwd)
       display << "\n"
       display << display_location.call(location:   info.backtrace[1],
-                                       highlight:  info.backtrace[0].methodname,
+                                       highlight:  info.backtrace[0].label,
                                        context:    -5..5,
                                        message:    "SENT #{info.num_received}",
                                        emphasisis: :code,
                                        cwd:        cwd)
     elsif info.classname == 'NoMethodError'
       display << display_location.call(location:   info.backtrace[0],
-                                       highlight:  info.backtrace[0].methodname,
+                                       highlight:  info.backtrace[0].label,
                                        context:    -5..5,
                                        message:    "#{info.undefined_method_name} is undefined",
                                        emphasisis: :code,
                                        cwd:        cwd)
     else
       display << display_location.call(location:   info.backtrace[0],
-                                       highlight:  info.backtrace[0].methodname,
+                                       highlight:  info.backtrace[0].label,
                                        context:    -5..5,
                                        emphasisis: :code,
                                        cwd:        cwd)
@@ -114,14 +114,14 @@ module WhatWeveGotHereIsAnErrorToCommunicate
     # display the backtrace
     display << separator
     display << display_location.call(location:   info.backtrace[0],
-                                     highlight:  info.backtrace[0].methodname,
+                                     highlight:  info.backtrace[0].label,
                                      context:    0..0,
                                      emphasisis: :path,
                                      cwd:        cwd)
 
     display << info.backtrace.each_cons(2).map { |next_loc, crnt_loc|
       display_location.call location:   crnt_loc,
-                            highlight:  next_loc.methodname,
+                            highlight:  next_loc.label,
                             context:    0..0,
                             emphasisis: :path,
                             cwd:        cwd
