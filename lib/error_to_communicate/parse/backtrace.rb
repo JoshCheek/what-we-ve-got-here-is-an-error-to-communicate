@@ -18,14 +18,15 @@ module WhatWeveGotHereIsAnErrorToCommunicate
         locations
       end
 
-      # Definitely not sufficient, but I'll wait until I have better examples of how it fucks up.
+      # TODO: What if the line doesn't match for some reason?
+      # Raise an exception?
+      # Use some reasonable default? (is there one?)
       def self.parse_backtrace_line(line)
-        filepath, linenum, label, * = line.split(":")
-        label = label[/`(.*?)'/, 1]
+        line =~ /^(.*?):(\d+):in `(.*?)'$/ # Are ^ and $ sufficient? Should be \A and (\Z or \z)?
         ExceptionInfo::Location.new(
-          filepath:   filepath,
-          linenum:    linenum.to_i,
-          methodname: label,
+          filepath:   $1,
+          linenum:    $2.to_i,
+          methodname: $3,
         )
       end
     end

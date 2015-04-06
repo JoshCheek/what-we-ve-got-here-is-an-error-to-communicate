@@ -30,9 +30,72 @@ RSpec.describe 'parsing an ArgumentError' do
     expect(locations.map &:succ).to eq [l2, l3, nil]
   end
 
-  it 'records the absolute filepath if it can find the file'
-  it 'records the relative filepath if it can find the file'
-  it 'records the relative filepath if it cannot fild the file'
-  it 'does not get confused by numbers in directories, filenames, or method names'
-  it 'does not get confused by additional context after the method name'
+  # it 'records the absolute filepath if it can find the file'
+  # it 'records the relative filepath if it can find the file'
+  # it 'records the relative filepath if it cannot fild the file'
+
+  def assert_parses_line(line, assertions)
+    parsed = WhatWeveGotHereIsAnErrorToCommunicate::Parse::Backtrace.parse_backtrace_line(line)
+    assertions.each do |method_name, expected|
+      actual = parsed.__send__ method_name
+      expect(actual).to eq expected
+    end
+  end
+
+  it 'records the filepath whether its absolute or relative' do
+    assert_parses_line "file.rb:111:in `method1'",  filepath: "file.rb"
+    assert_parses_line "/file.rb:111:in `method1'", filepath: "/file.rb"
+  end
+
+  it 'does not get confused by numbers in directories, filenames, or method names' do
+    line = "/a1/b2/c3123/file123.rb:111:in `method1'"
+    assert_parses_line line, filepath:   "/a1/b2/c3123/file123.rb"
+    assert_parses_line line, linenum:    111
+    assert_parses_line line, methodname: "method1"
+  end
+
+  context 'random ass colons in the middle of like files and directories and shit' do
+    # $ mkdir 'a:b'
+    # $ echo 'begin; define_method("a:b") { |arg| }; send "a:b"; rescue Exception; p $!.backtrace; end' > 'a:b/c:d.rb'
+
+    # $ chruby-exec 2.2 -- ruby -v
+    # > ruby 2.2.0p0 (2014-12-25 revision 49005) [x86_64-darwin13]
+    #
+    # $ chruby-exec 2.2 -- ruby 'a:b/c:d.rb'
+    # > ["a:b/c:d.rb:1:in `block in <main>'", "a:b/c:d.rb:1:in `<main>'"]
+    it 'does not get confused with MRI style results' do
+      line = "a:b/c:d.rb:1:in `block in <main>'"
+      assert_parses_line line, filepath:   "a:b/c:d.rb"
+      assert_parses_line line, linenum:    1
+      assert_parses_line line, methodname: "block in <main>"
+    end
+
+    # $ chruby-exec rbx -- ruby -v
+    # > rubinius 2.5.0 (2.1.0 50777f41 2015-01-17 3.5.0 JI) [x86_64-darwin14.1.0]
+    #
+    # $ chruby-exec rbx -- ruby 'a:b/c:d.rb'
+    # > ["a:b/c:d.rb:1:in `__script__'",
+    #    "kernel/delta/code_loader.rb:66:in `load_script'",
+    #    "kernel/delta/code_loader.rb:152:in `load_script'",
+    #    "kernel/loader.rb:645:in `script'",
+    #    "kernel/loader.rb:799:in `main'"]
+    it 'does not get confused with RBX style results' do
+      line = "a:b/c:d.rb:1:in `__script__'"
+      assert_parses_line line, filepath:   "a:b/c:d.rb"
+      assert_parses_line line, linenum:    1
+      assert_parses_line line, methodname: "__script__"
+    end
+
+    # $ chruby-exec jruby -- ruby -v
+    # > jruby 1.7.16 (1.9.3p392) 2014-09-25 575b395 on Java HotSpot(TM) 64-Bit Server VM 1.7.0_51-b13 +jit [darwin-x86_64]
+    #
+    # $ chruby-exec jruby -- ruby 'a:b/c:d.rb'
+    # > ["a:b/c:d.rb:1:in `(root)'"]
+    it 'does not get confused by Jruby style results' do
+      line = "a:b/c:d.rb:1:in `(root)'"
+      assert_parses_line line, filepath:   "a:b/c:d.rb"
+      assert_parses_line line, linenum:    1
+      assert_parses_line line, methodname: "(root)"
+    end
+  end
 end
