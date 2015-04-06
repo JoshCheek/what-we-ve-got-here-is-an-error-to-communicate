@@ -2,17 +2,8 @@ require 'spec_helper'
 
 RSpec.shared_examples 'an exception parser' do |parse|
   let :exception do
-    FakeException.new(
-      message:     'some message',
-      backtrace_locations: [
-        { lineno:        123,
-          label:         'some_method_name',
-          base_label:    'block in some_method_name',
-          path:          'a/b/c.rb',
-          absolute_path: '/Users/someone/a/b/c.rb',
-        }
-      ],
-    )
+    FakeException.new message:   'some message',
+                      backtrace: ["/Users/someone/a/b/c.rb:123:in `some_method_name'"]
   end
 
   it 'records the exception, class name, and explanation comes from the message' do
