@@ -1,0 +1,156 @@
+Hypothesis: Everything can be made from the following elements and styling
+  stack (vertical   list)
+  flow  (horizontal list)
+  grid  (basically a table -- overlaid stacks and flows?)
+  text  (an element containing only text)
+
+Shoes:
+  (I'm omitting the methods that seem like they manipulate styles)
+  http://shoesrb.com/manual/Hello.html
+  layout
+    stack
+    flow
+    window
+  generic
+    image
+    video
+    background
+    banner
+    caption
+    code
+    dialog
+    inscription
+  form
+    list_box
+    button
+    check
+    edit_box
+    edit_line
+    radio
+  shapes
+    arc
+    arrow
+    cap
+    line
+    oval
+    rect
+    shape
+    star
+  text
+    para
+    strong
+    title
+    em
+    link
+    ins
+    span
+    sub
+    subtitle
+    sup
+    del
+
+HTML:
+  http://www.w3.org/wiki/HTML/Elements
+  limited to just the ones I was already aware of, or seem useful
+  I've rearranged them a little bit
+  metadata
+    head
+    title
+    link
+    meta
+  sections
+    body
+    section
+    nav
+    article
+    aside
+    h1 - h6
+    header
+    footer
+  grouping
+    hr
+    pre
+    blockquote
+    ol/ul/dl/li/dt/dd
+    figure
+    figcaption
+    div
+    main
+  text
+    p
+    center
+    a
+    acronym
+    abbr
+    br
+    cite
+    code
+    em
+    mark
+    q
+    span
+    small
+    spacer
+    strike
+    strong
+    sub/sup
+    time
+    wbr <-- line break opportunity (who knew!)
+    ins
+    del
+  embedded content
+    img
+    iframe
+    embed
+    object
+    param
+    video
+    audio
+    source
+    track
+    canvas
+    map
+    area
+    math
+    svg
+    applet
+    frame
+    frameset
+    noframes
+    bgsound
+    noembed
+    plaintext
+  tables
+    table
+    caption
+    colgroup
+    col
+    tbody
+    thead
+    tfoot
+    tr
+    td
+    th
+  forms
+    form
+    fieldset
+    legend
+    label
+    input
+    button
+    select
+    datalist
+    optgroup
+    option
+    textarea
+    keygen
+    output
+    progress
+    meter
+  interactive
+    details
+    summary
+    command
+    menu
+  other
+    script
