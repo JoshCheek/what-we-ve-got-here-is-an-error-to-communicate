@@ -6,3 +6,6 @@ Gemfile.lock
 
 # Thoughts and shit
 notes
+
+# the rubygems we compile and distribute
+*.gem
