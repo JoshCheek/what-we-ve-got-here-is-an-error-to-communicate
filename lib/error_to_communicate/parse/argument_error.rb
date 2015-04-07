@@ -5,16 +5,11 @@ module WhatWeveGotHereIsAnErrorToCommunicate
   module Parse
     module ArgumentError
       def self.parse?(exception)
-        exception.kind_of? ::ArgumentError
+        exception.respond_to?(:message) && extract_from(exception)
       end
 
       def self.parse(exception)
-        case exception.message
-        when /(\d+) for (\d+)/
-          num_received, num_expected = $1.to_i, $2.to_i
-        when /given (\d+).*? expected (\d+)/
-          num_received, num_expected = $1.to_i, $2.to_i
-        end
+        num_received, num_expected = extract_from(exception)
         ExceptionInfo::ArgumentError.new(
           exception:    exception,
           classname:    exception.class.to_s,
@@ -23,6 +18,17 @@ module WhatWeveGotHereIsAnErrorToCommunicate
           num_expected: num_expected,
           num_received: num_received,
         )
+      end
+
+      private
+
+      def self.extract_from(exception)
+        case exception.message
+        when /(\d+) for (\d+)/
+          num_received, num_expected = $1.to_i, $2.to_i
+        when /given (\d+).*? expected (\d+)/
+          num_received, num_expected = $1.to_i, $2.to_i
+        end
       end
     end
   end

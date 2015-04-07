@@ -38,6 +38,11 @@ RSpec.describe 'registered parsers' do
       expect(parser_for err).to eq p::NoMethodError
     end
 
+    it 'lets ArgumentErrors that are not wrong number of arguments fall through', t:true do
+      err = capture { raise ArgumentError, "zomg" }
+      expect(parser_for err).to eq p::Exception
+    end
+
     it 'parses Exception' do
       err = capture { raise Exception, "wat" }
       expect(parser_for err).to eq p::Exception
