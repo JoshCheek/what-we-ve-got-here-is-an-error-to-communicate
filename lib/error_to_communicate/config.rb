@@ -13,7 +13,7 @@ module WhatWeveGotHereIsAnErrorToCommunicate
           exception.kind_of? SystemExit
         },
         parsers: [
-          Parse::ArgumentError,
+          Parse::WrongNumberOfArguments,
           Parse::NoMethodError,
           Parse::Exception,
         ]

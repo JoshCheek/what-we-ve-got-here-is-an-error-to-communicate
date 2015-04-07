@@ -22,7 +22,7 @@ module WhatWeveGotHereIsAnErrorToCommunicate
     end
   end
 
-  class ExceptionInfo::ArgumentError < ExceptionInfo
+  class ExceptionInfo::WrongNumberOfArguments < ExceptionInfo
     attr_accessor :num_expected, :num_received
     def initialize(attributes)
       self.num_expected = attributes.fetch :num_expected

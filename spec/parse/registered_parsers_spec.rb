@@ -30,7 +30,7 @@ RSpec.describe 'registered parsers' do
 
     it 'parses wrong number of arguments' do
       err = capture { lambda { }.call :arg }
-      expect(parser_for err).to eq p::ArgumentError
+      expect(parser_for err).to eq p::WrongNumberOfArguments
     end
 
     it 'parses NoMethodErrors' do

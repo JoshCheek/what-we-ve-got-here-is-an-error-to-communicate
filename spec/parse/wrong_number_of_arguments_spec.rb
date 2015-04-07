@@ -2,9 +2,9 @@ require 'spec_helper'
 require 'parse/spec_helper'
 require 'error_to_communicate/parse/argument_error'
 
-RSpec.describe 'parsing an ArgumentError' do
+RSpec.describe 'parsing wrong number of arguments' do
   parse = lambda do |exception|
-    WhatWeveGotHereIsAnErrorToCommunicate::Parse::ArgumentError.parse(exception)
+    WhatWeveGotHereIsAnErrorToCommunicate::Parse::WrongNumberOfArguments.parse(exception)
   end
 
   before do

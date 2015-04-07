@@ -3,14 +3,14 @@ require 'error_to_communicate/parse/backtrace'
 
 module WhatWeveGotHereIsAnErrorToCommunicate
   module Parse
-    module ArgumentError
+    module WrongNumberOfArguments
       def self.parse?(exception)
         exception.respond_to?(:message) && extract_from(exception)
       end
 
       def self.parse(exception)
         num_received, num_expected = extract_from(exception)
-        ExceptionInfo::ArgumentError.new(
+        ExceptionInfo::WrongNumberOfArguments.new(
           exception:    exception,
           classname:    exception.class.to_s,
           explanation:  'Wrong number of arguments',
