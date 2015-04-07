@@ -1,3 +1,4 @@
+require 'spec_helper'
 require 'haiti/command_line_helpers'
 
 module AcceptanceSpecHelpers
@@ -34,12 +35,6 @@ Haiti.configure do |config|
 end
 
 RSpec.configure do |config|
-  # Stop testing after first failure
-  config.fail_fast = true
-
-  # Don't define should/describe on Object
-  config.disable_monkey_patching!
-
   # Helpers for acceptance tests
   config.before(acceptance: true) { make_proving_grounds }
   config.include AcceptanceSpecHelpers,     acceptance: true
