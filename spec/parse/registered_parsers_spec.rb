@@ -1,7 +1,7 @@
 require 'error_to_communicate/config'
 
 RSpec.describe 'registered parsers' do
-  include WhatWeveGotHereIsAnErrorToCommunicate
+  p = WhatWeveGotHereIsAnErrorToCommunicate::Parse
 
   def capture
     yield
@@ -12,7 +12,8 @@ RSpec.describe 'registered parsers' do
 
   describe 'selected parsers' do
     def parser_for(exception)
-      WhatWeveGotHereIsAnErrorToCommunicate::Config.new.registry.parser_for(exception)
+      WhatWeveGotHereIsAnErrorToCommunicate::Config
+        .new.registry.parser_for(exception)
     end
 
     it 'doesn\'t parse nil' do
@@ -27,25 +28,26 @@ RSpec.describe 'registered parsers' do
       expect(parser_for err).to eq nil
     end
 
-    it 'parses ArgumentErrors' do
+    it 'parses wrong number of arguments' do
       err = capture { lambda { }.call :arg }
-      expect(parser_for err).to eq WhatWeveGotHereIsAnErrorToCommunicate::Parse::ArgumentError
+      expect(parser_for err).to eq p::ArgumentError
     end
 
     it 'parses NoMethodErrors' do
       err = capture { sdfsdfsdf() }
-      expect(parser_for err).to eq WhatWeveGotHereIsAnErrorToCommunicate::Parse::NoMethodError
+      expect(parser_for err).to eq p::NoMethodError
     end
 
     it 'parses Exception' do
       err = capture { raise Exception, "wat" }
-      expect(parser_for err).to eq WhatWeveGotHereIsAnErrorToCommunicate::Parse::Exception
+      expect(parser_for err).to eq p::Exception
     end
   end
 
   describe 'config.parse' do
     def parse(exception)
-      WhatWeveGotHereIsAnErrorToCommunicate::Config.new.parse(exception)
+      WhatWeveGotHereIsAnErrorToCommunicate::Config
+        .new.parse(exception)
     end
 
     it 'parses the exception if anything is willing to do it' do
