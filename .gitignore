@@ -1,2 +1,8 @@
+# Where our acceptance tests render
 proving_grounds
+
+# Libs shouldn't lock down deps
 Gemfile.lock
+
+# Thoughts and shit
+notes
