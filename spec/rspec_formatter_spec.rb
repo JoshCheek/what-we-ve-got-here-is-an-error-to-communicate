@@ -7,33 +7,59 @@ RSpec.describe ErrorToCommunicate::RSpecFormatter, formatter: true do
     described_class.new(outstream)
   end
 
-  let(:formatter) { formatter_for({}) }
-
-  # relevant, b/c then I don't have to test the side effects of this backtrace formatter vs that one
-  it 'defaults to using the global backtrace formatter' do
-    expect(formatter.backtrace_formatter)
-      .to equal RSpec.configuration.backtrace_formatter
+  def new_formatter
+    formatter_for({})
   end
 
-  # this shit is all private, but IDK how else to test it :/
-  it 'uses our lib to print the details of failing examples.' do
+  # The interfaces mocked out here were taken from RSpec 3.2.2
+  # They're all private, but IDK how else to test it :/
+  def run_specs_against(formatter, &describe_block)
     configuration = RSpec::Core::Configuration.new
     reporter      = RSpec::Core::Reporter.new(configuration)
+
+    # instead of hard-coding this, can we get the notifications its actually registered for?
     reporter.register_listener formatter, :dump_failures
-    something_only_we_would_print = File.read(__FILE__).lines[__LINE__ - 1].strip
 
     RSpec::Core::ExampleGroup.describe {
-      example {      }
-      example { fail }
-
-      # decoupling from global example filter
+      # decouple from example filters on the global config
       class << self
         alias filtered_examples examples
       end
+      class_eval &describe_block
     }.run(reporter)
     reporter.finish
-    printed = formatter.output.string.gsub(/\e\[\d+(;\d+)*?m/, '') # FIXME: hack until we get it respecting colour on/off
-    expect(printed).to include something_only_we_would_print
+  end
+
+  def this_line_of_code
+    file, line = caller[0].split(":").take(2)
+    File.read(file).lines[line.to_i].strip
+  end
+
+  def get_printed(formatter)
+    # FIXME: hack until we get it respecting colour on/off
+    formatter.output.string.gsub(/\e\[\d+(;\d+)*?m/, '')
+  end
+
+  # relevant, b/c then I don't have to test the side effects of this backtrace formatter vs that one
+  it 'defaults to using the global backtrace formatter' do
+    expect(new_formatter.backtrace_formatter)
+      .to equal RSpec.configuration.backtrace_formatter
+  end
+
+  it 'uses our lib to print the details of failing examples.' do
+    formatter    = new_formatter
+    failure_line = this_line_of_code
+    run_specs_against formatter do
+      example('will fail') { fail }
+    end
+    expect(get_printed formatter).to include failure_line
+
+    formatter    = new_formatter
+    success_line = this_line_of_code
+    run_specs_against formatter do
+      example('will pass') {      }
+    end
+    expect(get_printed formatter).to_not include success_line
   end
 
   it 'includes the failure number and description'
