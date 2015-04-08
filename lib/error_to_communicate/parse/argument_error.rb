@@ -24,9 +24,9 @@ module WhatWeveGotHereIsAnErrorToCommunicate
 
       def self.extract_from(exception)
         case exception.message
-        when /(\d+) for (\d+)/
+        when /^wrong number of arguments.*?\((\d+) for (\d+)\)$/ # MRI / JRuby
           num_received, num_expected = $1.to_i, $2.to_i
-        when /given (\d+).*? expected (\d+)/
+        when /^method '.*?': given (\d+).*? expected (\d+)$/ # RBX
           num_received, num_expected = $1.to_i, $2.to_i
         end
       end
