@@ -18,7 +18,7 @@ module WhatWeveGotHereIsAnErrorToCommunicate
     #
     # How did we figure out how to implement it?
     # See "Down the rabbit hole" section in
-    # https://github.com/JoshCheek/what-we-ve-got-here-is-an-error-to-communicate/blob/ede6844/lib/error_to_communicate/rspec_formatter.rb#L65
+    # https://github.com/JoshCheek/what-we-ve-got-here-is-an-error-to-communicate/blob/ede6844/lib/error_to_communicate/rspec_formatter.rb#L68
     #
     # FIXME: Needs to respect RSpec.configuration.color_enabled?
     #        but we can't currently turn colour off in our output
