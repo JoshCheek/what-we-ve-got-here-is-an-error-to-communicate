@@ -20,13 +20,15 @@ RSpec.describe ErrorToCommunicate::RSpecFormatter, formatter: true do
     # instead of hard-coding this, can we get the notifications its actually registered for?
     reporter.register_listener formatter, :dump_failures
 
-    RSpec::Core::ExampleGroup.describe {
-      # decouple from example filters on the global config
-      class << self
-        alias filtered_examples examples
-      end
-      class_eval &describe_block
-    }.run(reporter)
+    group = RSpec::Core::ExampleGroup.describe(&describe_block)
+
+    # decouple from example filters on the global config
+    class << group
+      alias filtered_examples examples
+      def fail_fast?() false end
+    end
+
+    group.run(reporter)
     reporter.finish
   end
 
