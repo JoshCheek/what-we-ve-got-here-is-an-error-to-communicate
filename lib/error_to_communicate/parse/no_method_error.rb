@@ -14,8 +14,13 @@ module WhatWeveGotHereIsAnErrorToCommunicate
           classname:             exception.class.to_s,
           explanation:           exception.message[/^[^\(]*/].strip,
           backtrace:             Backtrace.parse(exception),
-          undefined_method_name: exception.message.split(/\W+/)[2],
+          undefined_method_name: extract_method_name(exception.message),
         )
+      end
+
+      def self.extract_method_name(message)
+        words = message.split(/\s+/)
+        words[2][1...-1]
       end
     end
   end
