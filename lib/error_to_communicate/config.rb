@@ -1,3 +1,4 @@
+require 'error_to_communicate/version'
 require 'error_to_communicate/parse/registry'
 require 'error_to_communicate/parse/exception'
 require 'error_to_communicate/parse/no_method_error'
