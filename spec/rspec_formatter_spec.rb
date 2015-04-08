@@ -52,12 +52,6 @@ RSpec.describe ErrorToCommunicate::RSpecFormatter, formatter: true do
     formatter.output.string.gsub(/\e\[\d+(;\d+)*?m/, '')
   end
 
-  # relevant, b/c then I don't have to test the side effects of this backtrace formatter vs that one
-  it 'defaults to using the global backtrace formatter' do
-    expect(new_formatter.backtrace_formatter)
-      .to equal RSpec.configuration.backtrace_formatter
-  end
-
   it 'uses our lib to print the details of failing examples.' do
     formatter = new_formatter
     context_around_failure = this_line_of_code
