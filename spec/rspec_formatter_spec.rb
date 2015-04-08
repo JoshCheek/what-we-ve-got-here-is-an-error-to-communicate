@@ -16,20 +16,28 @@ RSpec.describe ErrorToCommunicate::RSpecFormatter, formatter: true do
   # The interfaces mocked out here were taken from RSpec 3.2.2
   # They're all private, but IDK how else to test it :/
   def run_specs_against(formatter, *describe_args, &describe_block)
-    configuration = RSpec::Core::Configuration.new
-    reporter      = RSpec::Core::Reporter.new(configuration)
-
-    # instead of hard-coding this, can we get the notifications its actually registered for?
-    reporter.register_listener formatter, :dump_failures
-
+    # Create the example group
+    # define some methods to decouple it from the global test suite
     group = RSpec::Core::ExampleGroup.describe(*describe_args, &describe_block)
-
-    # decouple from example filters on the global config
     class << group
       alias filtered_examples examples
       def fail_fast?() false end
     end
 
+    # The reporter calls into our formatter
+    reporter = RSpec::Core::Reporter.new(RSpec::Core::Configuration.new)
+
+    # Register the formatter for all notifications it would actually receive
+    registered_notifications = formatter.class.ancestors.flat_map do |ancestor|
+      RSpec::Core::Formatters::Loader.formatters.fetch(ancestor, [])
+    end
+    registered_notifications.each do |notification|
+      reporter.register_listener formatter, notification
+    end
+
+    # Fake out the runner
+    # ordering comes from: http://rspec.info/documentation/3.2/rspec-core/RSpec/Core/Formatters.html
+    reporter.start(expected_example_count=123)
     group.run(reporter)
     reporter.finish
   end
