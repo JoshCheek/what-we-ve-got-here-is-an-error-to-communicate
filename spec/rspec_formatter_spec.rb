@@ -13,14 +13,14 @@ RSpec.describe ErrorToCommunicate::RSpecFormatter, formatter: true do
 
   # The interfaces mocked out here were taken from RSpec 3.2.2
   # They're all private, but IDK how else to test it :/
-  def run_specs_against(formatter, &describe_block)
+  def run_specs_against(formatter, *describe_args, &describe_block)
     configuration = RSpec::Core::Configuration.new
     reporter      = RSpec::Core::Reporter.new(configuration)
 
     # instead of hard-coding this, can we get the notifications its actually registered for?
     reporter.register_listener formatter, :dump_failures
 
-    group = RSpec::Core::ExampleGroup.describe(&describe_block)
+    group = RSpec::Core::ExampleGroup.describe(*describe_args, &describe_block)
 
     # decouple from example filters on the global config
     class << group
@@ -59,12 +59,20 @@ RSpec.describe ErrorToCommunicate::RSpecFormatter, formatter: true do
     formatter    = new_formatter
     success_line = this_line_of_code
     run_specs_against formatter do
-      example('will pass') {      }
+      example('will pass') { }
     end
     expect(get_printed formatter).to_not include success_line
   end
 
-  it 'includes the failure number and description'
+  it 'numbers the failure and prints the failure descriptions' do
+    formatter = new_formatter
+    run_specs_against formatter, 'GroupName' do
+      example('hello') { fail }
+      example('world') { fail }
+    end
+    expect(get_printed formatter).to match /1\)\s*GroupName\s*hello/
+    expect(get_printed formatter).to match /2\)\s*GroupName\s*world/
+  end
 
   it 'respects the backtrace formatter'
     # check for lib/rspec/core in printed output
