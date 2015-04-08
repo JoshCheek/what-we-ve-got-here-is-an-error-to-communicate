@@ -8,29 +8,21 @@ RSpec.describe 'parsing wrong number of arguments' do
   end
 
   # FIXME
-  before do
-    pending 'too tired to figure it out right now. I\'m matching them positionally, but they\'re in opposite positions'
-    raise
+  # it_behaves_like 'an exception parser', sample_message: "wrong number of arguments (1 for 0) (ArgumentError)"
+
+  let(:rbx_message) { "method 'a': given 1, expected 0 (ArgumentError)" }
+  let(:rbx_parsed)  { parse FakeException.new(message: rbx_message) }
+
+  let(:mri_message) { "wrong number of arguments (1 for 0) (ArgumentError)" }
+  let(:mri_parsed)  { parse FakeException.new(message: mri_message) }
+
+  it 'extracts the number of arguments that were passed' do
+    expect(rbx_parsed.num_expected).to eq 0
+    expect(mri_parsed.num_expected).to eq 0
   end
 
-  it_behaves_like 'an exception parser', sample_message: "wrong number of arguments (1 for 0) (ArgumentError)"
-
-  context 'Wrong number of arguments' do
-    let(:rbx_message) { "method 'a': given 1, expected 0 (ArgumentError)" }
-    let(:rbx_parsed)  { parse.call FakeException.new(message: rbx_message) }
-
-    let(:mri_message) { "wrong number of arguments (1 for 0) (ArgumentError)" }
-    let(:mri_parsed)  { parse.call FakeException.new(message: mri_message) }
-
-    it 'extracts the number of arguments that were passed' do
-      pending 'too tired to figure it out right now. I\'m matching them positionally, but they\'re in opposite positions'
-      expect(rbx_parsed.num_expected).to eq 0
-      expect(mri_parsed.num_expected).to eq 0
-    end
-
-    it 'extracts the number of arguments that were received' do
-      expect(rbx_parsed.num_received).to eq 1
-      expect(mri_parsed.num_received).to eq 1
-    end
+  it 'extracts the number of arguments that were received' do
+    expect(rbx_parsed.num_received).to eq 1
+    expect(mri_parsed.num_received).to eq 1
   end
 end
