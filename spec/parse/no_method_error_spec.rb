@@ -10,12 +10,12 @@ RSpec.describe 'parsing a NoMethodError', parse: true do
 
   it_behaves_like 'an exception parser', parse, "undefined method `<' for nil:NilClass"
 
-  def assert_finds_method(method, message)
-    exception_info = parse FakeException.new(message: message)
-    expect(exception_info.undefined_method_name).to eq method
+  def extracts_method_name!(expected, message)
+    actual = WhatWeveGotHereIsAnErrorToCommunicate::Parse::NoMethodError.extract_method_name(message)
+    expect(actual).to eq expected
   end
 
   it 'extracts the name of the method that was called' do
-    assert_finds_method '<', "undefined method `<' for nil:NilClass"
+    extracts_method_name! '<', "undefined method `<' for nil:NilClass"
   end
 end
