@@ -42,17 +42,20 @@ module WhatWeveGotHereIsAnErrorToCommunicate
   class RSpecFormatter < RSpec::Core::Formatters::DocumentationFormatter
     RSpec::Core::Formatters.register self
 
+    attr_writer :backtrace_formatter
+    def backtrace_formatter
+      @backtrace_formatter || RSpec.configuration.backtrace_formatter
+    end
+
     def dump_failures(notification)
       formatted = "\nFailures:\n"
       notification.failure_notifications.each_with_index do |failure, failure_number|
         exception = failure.exception.dup
         metadata  = failure.example.metadata
-        backtrace = RSpec.configuration
-                         .backtrace_formatter
-                         .format_backtrace(exception.backtrace, metadata)
+        backtrace = backtrace_formatter.format_backtrace(exception.backtrace, metadata)
         exception.set_backtrace backtrace
-        exception_info      = WhatWeveGotHereIsAnErrorToCommunicate::CONFIG.parse(exception)
-        formatted_exception = WhatWeveGotHereIsAnErrorToCommunicate.format(exception_info)
+        exception_info      = ErrorToCommunicate::CONFIG.parse(exception)
+        formatted_exception = ErrorToCommunicate.format(exception_info)
 
         formatted << "\n  #{failure_number+1}) #{failure.description}\n"
         formatted << formatted_exception.chomp.gsub(/^/, '    ')
