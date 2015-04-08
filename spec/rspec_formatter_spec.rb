@@ -84,8 +84,10 @@ RSpec.describe ErrorToCommunicate::RSpecFormatter, formatter: true do
       .to_not include substring_that_would_only_be_in_full_backtrace
   end
 
-  it 'respects colour enabling/disabling'
+  it 'respects colour enabling/disabling' do
+    # https://github.com/rspec/rspec-core/blob/2a07aa92560cf6d4ae73ab04ff3b9b565451e83f/spec/rspec/core/formatters/console_codes_spec.rb#L35
     # allow(RSpec.configuration).to receive(:color_enabled?) { true }
-
-  it 'prints to RSpec\s output stream'
+    pending 'We don\'t yet have the ability to turn color printing on/off'
+    fail
+  end
 end
