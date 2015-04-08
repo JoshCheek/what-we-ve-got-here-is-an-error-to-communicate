@@ -2,16 +2,18 @@ require 'parse/spec_helper'
 require 'error_to_communicate/parse/no_method_error'
 
 RSpec.describe 'parsing a NoMethodError', parse: true do
-  parse = lambda do |exception|
-    WhatWeveGotHereIsAnErrorToCommunicate::Parse::NoMethodError.parse(exception)
+  def error_class
+    WhatWeveGotHereIsAnErrorToCommunicate::Parse::NoMethodError
   end
 
-  define_method :parse, &parse
+  def parse(exception)
+    error_class.parse(exception)
+  end
 
-  it_behaves_like 'an exception parser', parse, "undefined method `<' for nil:NilClass"
+  it_behaves_like 'an exception parser', sample_message: "undefined method `<' for nil:NilClass"
 
   def extracts_method_name!(expected, message)
-    actual = WhatWeveGotHereIsAnErrorToCommunicate::Parse::NoMethodError.extract_method_name(message)
+    actual = error_class.extract_method_name(message)
     expect(actual).to eq expected
   end
 

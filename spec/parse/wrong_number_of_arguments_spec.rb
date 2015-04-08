@@ -3,16 +3,17 @@ require 'parse/spec_helper'
 require 'error_to_communicate/parse/argument_error'
 
 RSpec.describe 'parsing wrong number of arguments' do
-  parse = lambda do |exception|
+  def parse(exception)
     WhatWeveGotHereIsAnErrorToCommunicate::Parse::WrongNumberOfArguments.parse(exception)
   end
 
+  # FIXME
   before do
     pending 'too tired to figure it out right now. I\'m matching them positionally, but they\'re in opposite positions'
     raise
   end
 
-  it_behaves_like 'an exception parser', parse
+  it_behaves_like 'an exception parser', sample_message: "wrong number of arguments (1 for 0) (ArgumentError)"
 
   context 'Wrong number of arguments' do
     let(:rbx_message) { "method 'a': given 1, expected 0 (ArgumentError)" }
