@@ -49,19 +49,19 @@ RSpec.describe ErrorToCommunicate::RSpecFormatter, formatter: true do
   end
 
   it 'uses our lib to print the details of failing examples.' do
-    formatter    = new_formatter
-    failure_line = this_line_of_code
+    formatter = new_formatter
+    context_around_failure = this_line_of_code
     run_specs_against formatter do
       example('will fail') { fail }
     end
-    expect(get_printed formatter).to include failure_line
+    expect(get_printed formatter).to include context_around_failure
 
-    formatter    = new_formatter
-    success_line = this_line_of_code
+    formatter = new_formatter
+    context_around_success = this_line_of_code
     run_specs_against formatter do
       example('will pass') { }
     end
-    expect(get_printed formatter).to_not include success_line
+    expect(get_printed formatter).to_not include context_around_success
   end
 
   it 'numbers the failure and prints the failure descriptions' do
