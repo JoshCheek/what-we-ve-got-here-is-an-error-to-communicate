@@ -1,7 +1,7 @@
 require 'error_to_communicate/parse/registry'
 require 'error_to_communicate/parse/exception'
-require 'error_to_communicate/parse/argument_error'
 require 'error_to_communicate/parse/no_method_error'
+require 'error_to_communicate/parse/wrong_number_of_arguments'
 
 module WhatWeveGotHereIsAnErrorToCommunicate
   class Config

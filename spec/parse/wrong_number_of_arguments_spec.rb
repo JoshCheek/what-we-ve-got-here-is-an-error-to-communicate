@@ -1,6 +1,6 @@
 require 'spec_helper'
 require 'parse/spec_helper'
-require 'error_to_communicate/parse/argument_error'
+require 'error_to_communicate/parse/wrong_number_of_arguments'
 
 RSpec.describe 'parsing wrong number of arguments' do
   def parse(exception)
