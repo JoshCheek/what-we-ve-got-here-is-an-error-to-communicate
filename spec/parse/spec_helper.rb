@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 RSpec.shared_examples 'an exception parser' do |attributes|
-  let(:message) { attributes.fetch :sample_message }
+  let(:message)     { attributes.fetch :sample_message }
+  let(:explanation) { attributes.fetch :sample_explanation, message }
 
   let :exception do
     FakeException.new message:   message,
@@ -12,7 +13,7 @@ RSpec.shared_examples 'an exception parser' do |attributes|
     info = parse exception
     expect(info.exception  ).to equal exception
     expect(info.classname  ).to eq 'FakeException'
-    expect(info.explanation).to eq message
+    expect(info.explanation).to eq explanation
   end
 
   it 'records the backtrace locations' do

@@ -7,7 +7,9 @@ RSpec.describe 'parsing wrong number of arguments' do
     WhatWeveGotHereIsAnErrorToCommunicate::Parse::WrongNumberOfArguments.parse(exception)
   end
 
-  # it_behaves_like 'an exception parser', sample_message: "wrong number of arguments (1 for 0) (ArgumentError)"
+  it_behaves_like 'an exception parser',
+    sample_message:     "wrong number of arguments (1 for 0) (ArgumentError)",
+    sample_explanation: "Wrong number of arguments"
 
   describe 'parse?' do
     def will_parse?(exception)
