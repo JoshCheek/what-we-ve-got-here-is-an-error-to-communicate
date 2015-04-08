@@ -2,6 +2,8 @@ require 'stringio'
 require 'spec_helper'
 
 RSpec.describe ErrorToCommunicate::RSpecFormatter, formatter: true do
+  let(:substring_that_would_only_be_in_full_backtrace) { 'lib/rspec/core' }
+
   def formatter_for(attributes)
     outstream = attributes.fetch(:outstream) { StringIO.new }
     described_class.new(outstream)
@@ -74,8 +76,13 @@ RSpec.describe ErrorToCommunicate::RSpecFormatter, formatter: true do
     expect(get_printed formatter).to match /2\)\s*GroupName\s*world/
   end
 
-  it 'respects the backtrace formatter'
-    # check for lib/rspec/core in printed output
+  it 'respects the backtrace formatter (ie the --backtrace flag)' do
+    # only need to check a failing example to show it uses RSpec's backtrace formatter
+    formatter = new_formatter
+    run_specs_against(formatter) { example { fail } }
+    expect(get_printed formatter)
+      .to_not include substring_that_would_only_be_in_full_backtrace
+  end
 
   it 'respects colour enabling/disabling'
     # allow(RSpec.configuration).to receive(:color_enabled?) { true }
