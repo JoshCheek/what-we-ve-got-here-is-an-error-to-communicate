@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'error_to_communicate/parse/backtrace'
 
-RSpec.describe 'parsing an ArgumentError' do
+RSpec.describe 'parsing an ArgumentError', parse: true do
   let :exception do
     FakeException.new backtrace: [
       "file.rb:111:in `method1'",

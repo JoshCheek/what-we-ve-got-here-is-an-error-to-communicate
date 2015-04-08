@@ -1,6 +1,6 @@
 require 'error_to_communicate/config'
 
-RSpec.describe 'registered parsers' do
+RSpec.describe 'registered parsers', parse: true do
   p = WhatWeveGotHereIsAnErrorToCommunicate::Parse
 
   def capture
