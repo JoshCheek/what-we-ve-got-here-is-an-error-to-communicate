@@ -3,9 +3,7 @@ require 'error_to_communicate/format/terminal_helpers'
 
 module WhatWeveGotHereIsAnErrorToCommunicate
   extend Format::TerminalHelpers
-  def self.format(info)
-    cwd = Dir.pwd
-
+  def self.format(info, cwd)
     # FIXME:
     # Something else should set this?
     #   I'd say heuristic, but fact is that it needs formatting info.
