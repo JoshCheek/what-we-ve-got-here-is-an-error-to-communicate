@@ -1,7 +1,7 @@
 require 'rouge'
 
 module WhatWeveGotHereIsAnErrorToCommunicate
-  module Format
+  class Format
     module TerminalHelpers
       def separator
         ("="*70) << "\n"
