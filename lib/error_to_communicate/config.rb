@@ -29,9 +29,9 @@ module WhatWeveGotHereIsAnErrorToCommunicate
 
     attr_accessor :heuristics, :dont_parse
 
-    def initialize(heuristics:, dont_parse:)
-      self.heuristics = heuristics
-      self.dont_parse = dont_parse
+    def initialize(attributes)
+      self.heuristics = attributes.fetch :heuristics
+      self.dont_parse = attributes.fetch :dont_parse
     end
 
     def accept?(exception)
