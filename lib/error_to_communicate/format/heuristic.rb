@@ -1,4 +1,3 @@
-require 'error_to_communicate/format/display_location'
 require 'error_to_communicate/format/terminal_helpers'
 
 # Temporary extraction so I can see what's going on and do some refactorings.
@@ -19,8 +18,8 @@ module WhatWeveGotHereIsAnErrorToCommunicate
       end
 
       class WrongNumberOfArguments
-        include Format::DisplayLocation
         include Format::TerminalHelpers
+
         attr_accessor :info, :cwd
 
         def initialize(exception_info, cwd)
@@ -56,8 +55,8 @@ module WhatWeveGotHereIsAnErrorToCommunicate
 
 
       class NoMethodError
-        include Format::DisplayLocation
         include Format::TerminalHelpers
+
         attr_accessor :info, :cwd
 
         def initialize(exception_info, cwd)
@@ -84,8 +83,8 @@ module WhatWeveGotHereIsAnErrorToCommunicate
 
 
       class Exception
-        include Format::DisplayLocation
         include Format::TerminalHelpers
+
         attr_accessor :info, :cwd
 
         def initialize(exception_info, cwd)

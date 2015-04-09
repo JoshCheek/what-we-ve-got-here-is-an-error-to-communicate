@@ -1,6 +1,5 @@
 require 'pathname'
 require 'error_to_communicate/format/heuristic'
-require 'error_to_communicate/format/display_location'
 require 'error_to_communicate/format/terminal_helpers'
 
 module WhatWeveGotHereIsAnErrorToCommunicate
@@ -9,7 +8,6 @@ module WhatWeveGotHereIsAnErrorToCommunicate
       new(exception_info, cwd).call
     end
 
-    include Format::DisplayLocation
     include Format::TerminalHelpers
 
     attr_accessor :info, :cwd, :heuristic
