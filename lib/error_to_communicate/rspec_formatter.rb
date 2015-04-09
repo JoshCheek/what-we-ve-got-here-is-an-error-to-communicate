@@ -33,8 +33,8 @@ module WhatWeveGotHereIsAnErrorToCommunicate
                                      .format_backtrace(exception.backtrace, metadata)
 
         # format it with our lib
-        heuristic = ErrorToCommunicate::CONFIG.heuristic_for exception
-        formatted = ErrorToCommunicate::CONFIG.format heuristic, Dir.pwd
+        heuristic = ErrorToCommunicate::Config.default.heuristic_for exception
+        formatted = ErrorToCommunicate::Config.default.format heuristic, Dir.pwd
 
         # fit it into the larger failure summary
         result << "\n  #{failure_number+1}) #{failure.description}\n"

@@ -3,6 +3,14 @@ require 'error_to_communicate/exception_info'
 module WhatWeveGotHereIsAnErrorToCommunicate
   # move this onto ExceptionInfo?
   module Parse
+
+    # You could still get around this and blow up later,
+    # but you'd probably have to craft an object to do it...
+    # at which point, you should probably be allowed!
+    def self.parseable?(exception)
+      exception.respond_to?(:message) && exception.respond_to?(:backtrace)
+    end
+
     def self.exception(exception)
       return exception if exception.kind_of? ExceptionInfo # already parsed
       ExceptionInfo.new \

@@ -7,6 +7,8 @@ module HeuristicSpecHelpers
     raise NotImplementedError, 'You need to define the heuristic class!'
   end
 
+  # TODO: this could also be called info_for,
+  # and is probably generally useful enough to move to toplevel spec_helper
   def parse_exception(exception)
     WhatWeveGotHereIsAnErrorToCommunicate::Parse.exception exception
   end

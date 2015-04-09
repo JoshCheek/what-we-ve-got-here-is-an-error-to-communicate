@@ -13,31 +13,38 @@ module WhatWeveGotHereIsAnErrorToCommunicate
       Heuristics::Exception,
     ]
 
-    DEFAULT_DONT_PARSE = lambda do |exception|
-      !exception.kind_of?(Exception) ||
-        exception.kind_of?(SystemExit)
+    # TODO: These are backwards!
+    DEFAULT_DONT_PARSE = lambda do |einfo|
+      einfo.classname == 'SystemExit'
+    end
+
+    def self.new_default
+      new heuristics: DEFAULT_HEURISTICS,
+          dont_parse: DEFAULT_DONT_PARSE
     end
 
     def self.default
-      new heuristics: DEFAULT_HEURISTICS,
-          dont_parse: DEFAULT_DONT_PARSE
+      @default ||= new_default
     end
 
     attr_accessor :heuristics, :dont_parse
 
     def initialize(heuristics:, dont_parse:)
-      self.heuristics   = heuristics
+      self.heuristics = heuristics
       self.dont_parse = dont_parse
     end
 
     def accept?(exception)
-      !dont_parse.call(exception)
+      return false unless Parse.parseable? exception
+      einfo = Parse.exception(exception)
+      !dont_parse.call(einfo) && !!heuristics.find { |h| h.for? einfo }
     end
 
     def heuristic_for(exception)
+      accept?(exception) ||
+        raise(ArgumentError, "Asked for a heuristic on an object we don't accept: #{exception.inspect}")
       einfo = Parse.exception(exception)
-      heuristics.find { |heuristic| heuristic.for? einfo }
-                .new(einfo)
+      heuristics.find { |heuristic| heuristic.for? einfo }.new(einfo)
     end
 
     def format(heuristic, cwd)
