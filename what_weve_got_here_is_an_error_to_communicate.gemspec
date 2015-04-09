@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.files       = `git ls-files`.split("\n")
   s.homepage    = 'https://github.com/JoshCheek/what-we-ve-got-here-is-an-error-to-communicate'
 
-  s.add_runtime_dependency 'coderay', '~> 1.1'
+  s.add_runtime_dependency 'rouge', '~> 1.8'
 
   s.add_development_dependency 'rspec', '~> 3.2'
   s.add_development_dependency 'haiti', '< 0.3',  '>= 0.2.0'

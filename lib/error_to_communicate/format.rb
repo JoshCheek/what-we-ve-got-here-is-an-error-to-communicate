@@ -1,4 +1,3 @@
-require 'coderay'
 require 'pathname'
 require 'error_to_communicate/format/terminal_helpers'
 
@@ -46,9 +45,9 @@ module WhatWeveGotHereIsAnErrorToCommunicate
 
       # then display the code
       if path.exist?
-        code = File.read(path).lines[start_index..end_index].join("")
+        code = File.read(path).lines[start_index..end_index].join("").chomp
         code = remove_indentation code
-        code = CodeRay.encode     code, :ruby, :terminal
+        code = syntax_highlight   code
         code = prefix_linenos_to  code, start_index.next
         code = indent             code, "  "
         code = add_message_to     code, message_offset, screaming_red(message)
@@ -66,6 +65,7 @@ module WhatWeveGotHereIsAnErrorToCommunicate
       end
 
       # all together
+      code << "\n" unless code.end_with? "\n"
       path_line << "\n" << code
     end
 

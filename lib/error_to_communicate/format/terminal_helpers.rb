@@ -1,3 +1,5 @@
+require 'rouge'
+
 module WhatWeveGotHereIsAnErrorToCommunicate
   module Format
     module TerminalHelpers
@@ -59,7 +61,8 @@ module WhatWeveGotHereIsAnErrorToCommunicate
 
       def add_message_to(code, offset, message)
         lines = code.lines
-        lines[offset].chomp! << " " << message << "\n"
+        lines[offset].chomp! # might return nil
+        lines[offset] << " " << message << "\n"
         lines.join("")
       end
 
@@ -91,6 +94,15 @@ module WhatWeveGotHereIsAnErrorToCommunicate
         nocolor = str.gsub(/\e\[[\d;]+?m/, "")
         allgray = nocolor.gsub(/^(.*?)\n?$/, "\e[38;5;240m\\1\e[39m\n")
         allgray
+      end
+
+      # For a list of themes:
+      # https://github.com/JoshCheek/what-we-ve-got-here-is-an-error-to-communicate/issues/36#issuecomment-91200262
+      def syntax_highlight(raw_code)
+        formatter = Rouge::Formatters::Terminal256.new theme: 'colorful'
+        lexer     = Rouge::Lexers::Ruby.new
+        tokens    = lexer.lex raw_code
+        formatter.format(tokens)
       end
     end
   end
