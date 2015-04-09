@@ -4,7 +4,7 @@ module WhatWeveGotHereIsAnErrorToCommunicate
   # move this onto ExceptionInfo?
   module Parse
     def self.exception(exception)
-      return exception if exception.kind_of? ExceptionInfo
+      return exception if exception.kind_of? ExceptionInfo # already parsed
       ExceptionInfo.new \
         exception: exception,
         classname: exception.class.name,
@@ -15,7 +15,7 @@ module WhatWeveGotHereIsAnErrorToCommunicate
     def self.backtrace(exception)
       # Really, there are better methods, e.g. backtrace_locations,
       # but they're unevenly implemented across versions and implementations
-      locations = exception.backtrace.map &method(:backtrace_line)
+      locations = (exception.backtrace||[]).map &method(:backtrace_line)
       locations.each_cons(2) do |crnt, pred|
         crnt.pred = pred
         pred.succ = crnt

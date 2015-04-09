@@ -13,7 +13,7 @@ RSpec.describe 'Heuristic for a NoMethodError', heuristic: true do
 
   it 'is for NoMethodErrors' do
     is_for!     NoMethodError.new('omg')
-    is_not_for! Exception
+    is_not_for! Exception.new('omg')
   end
 
   it 'extracts the name of the method that was called' do

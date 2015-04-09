@@ -38,7 +38,7 @@ module WhatWeveGotHereIsAnErrorToCommunicate
 
         # fit it into the larger failure summary
         result << "\n  #{failure_number+1}) #{failure.description}\n"
-        result << formatted_exception.chomp.gsub(/^/, '    ')
+        result << formatted.chomp.gsub(/^/, '    ')
       end
       output.puts result
     end
