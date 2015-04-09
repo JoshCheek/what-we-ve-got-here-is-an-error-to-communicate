@@ -4,11 +4,11 @@ require 'error_to_communicate/format/display_location'
 require 'error_to_communicate/format/terminal_helpers'
 
 module WhatWeveGotHereIsAnErrorToCommunicate
-  def self.format(exception_info, cwd)
-    Format.new(exception_info, cwd).call
-  end
-
   class Format
+    def self.call(exception_info, cwd)
+      new(exception_info, cwd).call
+    end
+
     include Format::Heuristic
     include Format::DisplayLocation
     include Format::TerminalHelpers
