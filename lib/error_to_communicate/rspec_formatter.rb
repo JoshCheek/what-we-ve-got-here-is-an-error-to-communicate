@@ -34,7 +34,8 @@ module WhatWeveGotHereIsAnErrorToCommunicate
 
         # format it with our lib
         exception_info      = ErrorToCommunicate::CONFIG.parse(exception)
-        formatted_exception = ErrorToCommunicate::Format.call(exception_info, Dir.pwd)
+        heuristic           = ErrorToCommunicate::CONFIG.heuristic_for exception_info
+        formatted_exception = ErrorToCommunicate::CONFIG.format(heuristic, Dir.pwd)
 
         # fit it into the larger failure summary
         formatted << "\n  #{failure_number+1}) #{failure.description}\n"

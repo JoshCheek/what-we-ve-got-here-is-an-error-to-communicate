@@ -1,7 +1,7 @@
 require 'stringio'
 require 'spec_helper'
 
-RSpec.describe ErrorToCommunicate::RSpecFormatter, formatter: true do
+RSpec.describe ErrorToCommunicate::RSpecFormatter, rspec_formatter: true do
   let(:substring_that_would_only_be_in_full_backtrace) { 'lib/rspec/core' }
 
   def formatter_for(attributes)

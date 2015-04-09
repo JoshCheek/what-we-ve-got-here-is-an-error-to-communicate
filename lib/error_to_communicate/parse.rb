@@ -15,9 +15,9 @@ module WhatWeveGotHereIsAnErrorToCommunicate
       # Really, there are better methods, e.g. backtrace_locations,
       # but they're unevenly implemented across versions and implementations
       locations = exception.backtrace.map &method(:backtrace_line)
-      locations.each_cons(2) do |crnt, succ|
-        succ.pred = crnt
-        crnt.succ = succ
+      locations.each_cons(2) do |crnt, pred|
+        crnt.pred = pred
+        pred.succ = crnt
       end
       locations
     end

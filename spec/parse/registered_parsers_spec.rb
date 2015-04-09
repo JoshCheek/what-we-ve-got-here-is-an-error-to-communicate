@@ -10,6 +10,8 @@ RSpec.describe 'registered parsers', parse: true do
     return $!
   end
 
+  before { raise pending 'Come back to this when I know better what I want' }
+
   describe 'selected parsers' do
     def parser_for(exception)
       WhatWeveGotHereIsAnErrorToCommunicate::Config

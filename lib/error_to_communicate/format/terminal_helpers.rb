@@ -142,7 +142,7 @@ module WhatWeveGotHereIsAnErrorToCommunicate
       # For a list of themes:
       # https://github.com/JoshCheek/what-we-ve-got-here-is-an-error-to-communicate/issues/36#issuecomment-91200262
       def syntax_highlight(raw_code)
-        formatter = Rouge::Formatters::Terminal256.new theme: 'colorful'
+        formatter = Rouge::Formatters::Terminal256.new theme: 'github'
         lexer     = Rouge::Lexers::Ruby.new
         tokens    = lexer.lex raw_code
         formatted = formatter.format(tokens)
