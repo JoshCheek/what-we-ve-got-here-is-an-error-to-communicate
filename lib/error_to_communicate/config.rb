@@ -1,32 +1,50 @@
 require 'error_to_communicate/version'
-require 'error_to_communicate/parse/registry'
-require 'error_to_communicate/parse/exception'
-require 'error_to_communicate/parse/no_method_error'
-require 'error_to_communicate/parse/wrong_number_of_arguments'
+require 'error_to_communicate/parse'
+require 'error_to_communicate/format'
 
 module WhatWeveGotHereIsAnErrorToCommunicate
   class Config
-    attr_accessor :registry
+    require 'error_to_communicate/heuristics/exception'
+    require 'error_to_communicate/heuristics/no_method_error'
+    require 'error_to_communicate/heuristics/wrong_number_of_arguments'
+    DEFAULT_HEURISTICS = [
+      Heuristics::WrongNumberOfArguments,
+      Heuristics::NoMethodError,
+      Heuristics::Exception,
+    ]
 
-    def initialize
-      self.registry = Parse::Registry.new(
-        dont_parse: lambda { |exception|
-          exception.kind_of? SystemExit
-        },
-        parsers: [
-          Parse::WrongNumberOfArguments,
-          Parse::NoMethodError,
-          Parse::Exception,
-        ]
-      )
+    DEFAULT_DONT_PARSE = lambda do |exception|
+      !exception.kind_of?(Exception) ||
+        exception.kind_of?(SystemExit)
     end
 
-    def parse?(exception)
-      registry.parse?(exception)
+    def self.default
+      new heuristics: DEFAULT_HEURISTICS,
+          dont_parse: DEFAULT_DONT_PARSE
+    end
+
+    attr_accessor :heuristics, :dont_parse
+
+    def initialize(heuristics:, dont_parse:)
+      self.heuristics   = heuristics
+      self.dont_parse = dont_parse
+    end
+
+    def accept?(exception)
+      !dont_parse.call(exception)
     end
 
     def parse(exception)
-      registry.parse(exception)
+      Parse.exception(exception)
+    end
+
+    def heuristic_for(exception_info)
+      heuristics.find { |heuristic| heuristic.for? exception_info }
+                .new(exception_info)
+    end
+
+    def format(heuristic, cwd)
+      Format.new(heuristic, cwd).call
     end
   end
 end

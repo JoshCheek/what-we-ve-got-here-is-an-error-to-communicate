@@ -1,30 +1,34 @@
 require 'pathname'
-require 'error_to_communicate/format/heuristic'
+require 'error_to_communicate/format/heuristic_presenter'
 require 'error_to_communicate/format/terminal_helpers'
 
 module WhatWeveGotHereIsAnErrorToCommunicate
   class Format
-    def self.call(exception_info, cwd)
-      new(exception_info, cwd).call
-    end
-
     include Format::TerminalHelpers
 
-    attr_accessor :info, :cwd, :heuristic
+    attr_accessor :info, :cwd, :heuristic_presenter
 
-    def initialize(exception_info, cwd)
-      self.info      = exception_info
+    def initialize(heuristic, cwd)
+      self.info      = heuristic.exception_info
       self.cwd       = cwd
-      self.heuristic = Heuristic.for(exception_info, cwd)
+      self.heuristic_presenter = # for now
+        case heuristic.class
+        when Heuristics::WrongNumberOfArguments
+          HeuristicPresenter::WrongNumberOfArguments.new(heuristic, info, cwd)
+        when Heuristics::NoMethodError
+          HeuristicPresenter::NoMethodError.new(heuristic, info, cwd)
+        else
+          HeuristicPresenter::Exception.new(heuristic, info, cwd)
+        end
     end
 
     def call
       display ||= begin
         [ separator_line,
-          *heuristic.header,
+          *heuristic_presenter.header,
 
           separator_line,
-          *heuristic.helpful_info,
+          *heuristic_presenter.helpful_info,
 
           separator_line,
           *info.backtrace.map { |location|
