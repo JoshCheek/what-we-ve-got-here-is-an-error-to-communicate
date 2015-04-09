@@ -3,7 +3,7 @@ require 'rouge'
 module WhatWeveGotHereIsAnErrorToCommunicate
   class Format
     module TerminalHelpers
-      def separator
+      def separator_line
         ("="*70) << "\n"
       end
 
@@ -61,14 +61,13 @@ module WhatWeveGotHereIsAnErrorToCommunicate
 
       def add_message_to(code, offset, message)
         lines = code.lines
-        lines[offset].chomp! # might return nil
-        lines[offset] << " " << message << "\n"
+        lines[offset].chomp! << " " << message << "\n"
         lines.join("")
       end
 
       def highlight_text(code, index, text)
         lines = code.lines
-        return code unless lines[index]
+        return code unless text && lines[index]
         lines[index].gsub!(text, "\e[7m#{text}\e[27m") # invert
         lines.join("")
       end
@@ -102,7 +101,15 @@ module WhatWeveGotHereIsAnErrorToCommunicate
         formatter = Rouge::Formatters::Terminal256.new theme: 'colorful'
         lexer     = Rouge::Lexers::Ruby.new
         tokens    = lexer.lex raw_code
-        formatter.format(tokens)
+        formatted = formatter.format(tokens)
+        formatted << "\n" unless formatted.end_with? "\n"
+        remove_ansi_codes_after_last_newline(formatted)
+      end
+
+      def remove_ansi_codes_after_last_newline(text)
+        *neck, ass = text.lines # ... kinda like head/tail :P
+        return text unless neck.any? && ass[/^(\e\[(\d+;?)*m)*$/]
+        neck.join("").chomp << ass
       end
     end
   end

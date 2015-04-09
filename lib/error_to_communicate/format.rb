@@ -22,31 +22,21 @@ module WhatWeveGotHereIsAnErrorToCommunicate
     def call
       display ||= begin
         # Display the ArgumentError
-        display = ""
-        display << separator
-        display << display_class_and_message(info) << "\n"
+        [ separator_line,
+          display_class_and_message(info),
 
-        # Display the Heuristic
-        display << separator
-        display << heuristic(info, cwd)
+          separator_line,
+          *heuristic(info, cwd),
 
-        # display the backtrace
-        display << separator
-        display << display_location(location:   info.backtrace[0],
-                                    highlight:  info.backtrace[0].label,
-                                    context:    0..0,
-                                    emphasisis: :path,
-                                    cwd:        cwd)
-
-        display << info.backtrace.each_cons(2).map { |next_loc, crnt_loc|
-          display_location location:   crnt_loc,
-                           highlight:  next_loc.label,
-                           context:    0..0,
-                           emphasisis: :path,
-                           cwd:        cwd
-        }.join("")
-
-        display
+          separator_line,
+          *info.backtrace.map { |location|
+            display_location location:   location,
+                             highlight:  (location.pred && location.pred.label),
+                             context:    0..0,
+                             emphasisis: :path,
+                             cwd:        cwd
+          }
+        ].join("")
       end
     end
 
@@ -57,11 +47,11 @@ module WhatWeveGotHereIsAnErrorToCommunicate
         "#{dim_red}(expected #{white}#{info.num_expected},"\
         "#{dim_red} sent #{white}#{info.num_received}"\
         "#{dim_red})"\
-        "#{none}"
+        "#{none}\n"
       else
         "#{white}#{info.classname} | "\
         "#{bri_red}#{info.explanation} "\
-        "#{none}"
+        "#{none}\n"
       end
     end
   end

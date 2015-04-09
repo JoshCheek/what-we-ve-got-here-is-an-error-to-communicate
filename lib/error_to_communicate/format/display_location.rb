@@ -14,14 +14,16 @@ module WhatWeveGotHereIsAnErrorToCommunicate
         message_offset = line_index - start_index
 
         # first line gives the path
-        path_line = ""
-        path_line << color_path("#{path_to_dir cwd, path}/")
-        path_line << color_filename(path.basename)
-        path_line << ":" << color_linenum(location.linenum)
+        path_line = [
+          color_path("#{path_to_dir cwd, path}/"),
+          color_filename(path.basename),
+          ":",
+          color_linenum(location.linenum),
+        ].join("")
 
         # then display the code
         if path.exist?
-          code = File.read(path).lines[start_index..end_index].join("").chomp
+          code = File.read(path).lines[start_index..end_index].join("")
           code = remove_indentation code
           code = syntax_highlight   code
           code = prefix_linenos_to  code, start_index.next
@@ -41,7 +43,6 @@ module WhatWeveGotHereIsAnErrorToCommunicate
         end
 
         # all together
-        code << "\n" unless code.end_with? "\n"
         path_line << "\n" << code
       end
     end
