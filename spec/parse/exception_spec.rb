@@ -7,8 +7,4 @@ RSpec.describe 'parsing an Exception', parse: true do
   end
 
   it_behaves_like 'an exception parser', sample_message: 'literally anything'
-
-  # Going to wait on implementing these as they may not be correct,
-  # e.g. anyone can raise an argument error for any reason.
-  it 'extracts the name of the method that was called'
 end
