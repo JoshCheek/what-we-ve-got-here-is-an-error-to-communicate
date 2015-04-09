@@ -34,13 +34,10 @@ module WhatWeveGotHereIsAnErrorToCommunicate
       !dont_parse.call(exception)
     end
 
-    def parse(exception)
-      Parse.exception(exception)
-    end
-
-    def heuristic_for(exception_info)
-      heuristics.find { |heuristic| heuristic.for? exception_info }
-                .new(exception_info)
+    def heuristic_for(exception)
+      einfo = Parse.exception(exception)
+      heuristics.find { |heuristic| heuristic.for? einfo }
+                .new(einfo)
     end
 
     def format(heuristic, cwd)

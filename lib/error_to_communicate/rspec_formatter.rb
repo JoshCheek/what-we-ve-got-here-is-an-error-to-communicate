@@ -23,7 +23,7 @@ module WhatWeveGotHereIsAnErrorToCommunicate
     # FIXME: Needs to respect RSpec.configuration.color_enabled?
     #        but we can't currently turn colour off in our output
     def dump_failures(notification)
-      formatted = "\nFailures:\n"
+      result = "\nFailures:\n"
       notification.failure_notifications.each_with_index do |failure, failure_number|
         # get the exception with the modified backtrace
         exception = failure.exception.dup
@@ -33,15 +33,14 @@ module WhatWeveGotHereIsAnErrorToCommunicate
                                      .format_backtrace(exception.backtrace, metadata)
 
         # format it with our lib
-        exception_info      = ErrorToCommunicate::CONFIG.parse(exception)
-        heuristic           = ErrorToCommunicate::CONFIG.heuristic_for exception_info
-        formatted_exception = ErrorToCommunicate::CONFIG.format(heuristic, Dir.pwd)
+        heuristic = ErrorToCommunicate::CONFIG.heuristic_for exception
+        formatted = ErrorToCommunicate::CONFIG.format heuristic, Dir.pwd
 
         # fit it into the larger failure summary
-        formatted << "\n  #{failure_number+1}) #{failure.description}\n"
-        formatted << formatted_exception.chomp.gsub(/^/, '    ')
+        result << "\n  #{failure_number+1}) #{failure.description}\n"
+        result << formatted_exception.chomp.gsub(/^/, '    ')
       end
-      output.puts formatted
+      output.puts result
     end
   end
 end

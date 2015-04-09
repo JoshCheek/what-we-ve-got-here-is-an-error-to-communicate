@@ -1,6 +1,6 @@
 require 'acceptance/spec_helper'
 
-RSpec.context 'ArgumentError', acceptance: true do
+RSpec.context 'WrongNumberOfArguments', acceptance: true do
   it 'Prints heuristics' do
     # Given a file with three lines in the backtrace that explodes on the third
     write_file 'argument_error.rb', <<-BODY

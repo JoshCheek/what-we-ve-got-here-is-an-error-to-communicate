@@ -12,7 +12,7 @@ module WhatWeveGotHereIsAnErrorToCommunicate
       self.info      = heuristic.exception_info
       self.cwd       = cwd
       self.heuristic_presenter = # for now
-        case heuristic.class
+        case heuristic
         when Heuristics::WrongNumberOfArguments
           HeuristicPresenter::WrongNumberOfArguments.new(heuristic, info, cwd)
         when Heuristics::NoMethodError

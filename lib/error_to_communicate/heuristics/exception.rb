@@ -1,7 +1,7 @@
 module WhatWeveGotHereIsAnErrorToCommunicate
   module Heuristics
     class Exception
-      def self.for?(exception)
+      def self.for?(einfo)
         true
       end
 

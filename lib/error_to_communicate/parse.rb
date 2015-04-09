@@ -4,6 +4,7 @@ module WhatWeveGotHereIsAnErrorToCommunicate
   # move this onto ExceptionInfo?
   module Parse
     def self.exception(exception)
+      return exception if exception.kind_of? ExceptionInfo
       ExceptionInfo.new \
         exception: exception,
         classname: exception.class.name,

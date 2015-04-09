@@ -1,9 +1,8 @@
 module WhatWeveGotHereIsAnErrorToCommunicate
   module Heuristics
     class WrongNumberOfArguments
-      def self.for?(exception)
-        exception.respond_to?(:message) &&
-          extract_from(exception)
+      def self.for?(einfo)
+        extract_from einfo
       end
 
       attr_accessor :exception_info
@@ -18,8 +17,8 @@ module WhatWeveGotHereIsAnErrorToCommunicate
 
       private
 
-      def self.extract_from(exception_info)
-        case exception_info.message
+      def self.extract_from(einfo)
+        case einfo.message
         when /^wrong number of arguments.*?\((\d+) for (\d+)\)$/ # MRI / JRuby
           num_received, num_expected = $1.to_i, $2.to_i
         when /^method '.*?': given (\d+).*? expected (\d+)$/ # RBX

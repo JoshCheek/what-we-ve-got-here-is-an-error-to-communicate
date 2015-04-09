@@ -1,8 +1,8 @@
 module WhatWeveGotHereIsAnErrorToCommunicate
   module Heuristics
     class NoMethodError
-      def self.for?(exception)
-        exception.kind_of? ::NoMethodError
+      def self.for?(einfo)
+        einfo.classname == 'NoMethodError'
       end
 
       attr_accessor :exception_info
