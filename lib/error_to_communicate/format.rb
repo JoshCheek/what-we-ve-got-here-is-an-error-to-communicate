@@ -9,24 +9,24 @@ module WhatWeveGotHereIsAnErrorToCommunicate
       new(exception_info, cwd).call
     end
 
-    include Format::Heuristic
     include Format::DisplayLocation
     include Format::TerminalHelpers
 
-    attr_accessor :info, :cwd
+    attr_accessor :info, :cwd, :heuristic
 
     def initialize(exception_info, cwd)
-      self.info, self.cwd = exception_info, cwd
+      self.info      = exception_info
+      self.cwd       = cwd
+      self.heuristic = Heuristic.for(exception_info, cwd)
     end
 
     def call
       display ||= begin
-        # Display the ArgumentError
         [ separator_line,
-          display_class_and_message(info),
+          *heuristic.header,
 
           separator_line,
-          *heuristic(info, cwd),
+          *heuristic.helpful_info,
 
           separator_line,
           *info.backtrace.map { |location|
@@ -37,21 +37,6 @@ module WhatWeveGotHereIsAnErrorToCommunicate
                              cwd:        cwd
           }
         ].join("")
-      end
-    end
-
-    def display_class_and_message(info) # FIXME: obviously shitty
-      if info.classname == 'ArgumentError'
-        "#{white}#{info.classname} | "\
-        "#{bri_red}#{info.explanation} "\
-        "#{dim_red}(expected #{white}#{info.num_expected},"\
-        "#{dim_red} sent #{white}#{info.num_received}"\
-        "#{dim_red})"\
-        "#{none}\n"
-      else
-        "#{white}#{info.classname} | "\
-        "#{bri_red}#{info.explanation} "\
-        "#{none}\n"
       end
     end
   end
