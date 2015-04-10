@@ -53,6 +53,7 @@ RSpec.describe ErrorToCommunicate::RSpecFormatter, rspec_formatter: true do
   end
 
   it 'uses our lib to print the details of failing examples.' do
+    # does print
     formatter = new_formatter
     context_around_failure = this_line_of_code
     run_specs_against formatter do
@@ -60,6 +61,7 @@ RSpec.describe ErrorToCommunicate::RSpecFormatter, rspec_formatter: true do
     end
     expect(get_printed formatter).to include context_around_failure
 
+    # does not print
     formatter = new_formatter
     context_around_success = this_line_of_code
     run_specs_against formatter do

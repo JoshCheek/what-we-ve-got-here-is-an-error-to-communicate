@@ -18,28 +18,17 @@ RSpec.describe 'parsing', parse: true do
     let(:exception) { FakeException.new }
     let(:info)      { parse exception }
 
-    def silence_warnings
-      initial_stderr = $stderr
-      mock_stderr    = StringIO.new
-      $stderr        = mock_stderr
-      yield
-    ensure
-      $stderr  = initial_stderr
-      warnings = mock_stderr.string
-      return warnings unless $! # don't swallow exceptions
-    end
-
     it 'records the exception for informational purposes' do
-      silence_warnings do
+      trap_warnings do
         expect(info.exception).to equal exception
       end
     end
 
     it 'warns the first time you try to use it (ie available for debugging, but not for development)' do
-      warnings = silence_warnings { info.exception }
+      warnings = trap_warnings { info.exception }
       expect(warnings).to match /debugging/
 
-      warnings = silence_warnings { info.exception }
+      warnings = trap_warnings { info.exception }
       expect(warnings).to be_empty
     end
   end

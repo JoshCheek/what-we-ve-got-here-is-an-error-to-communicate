@@ -11,7 +11,31 @@ class FakeException
   end
 end
 
+module SpecHelpers
+  def einfo_for(exception)
+    WhatWeveGotHereIsAnErrorToCommunicate::ExceptionInfo.parse exception
+  end
+
+  def heuristic_for(attributes={})
+    heuristic_class.new einfo_for FakeException.new attributes
+  end
+
+  def trap_warnings
+    initial_stderr = $stderr
+    mock_stderr    = StringIO.new
+    $stderr        = mock_stderr
+    yield
+  ensure
+    $stderr  = initial_stderr
+    warnings = mock_stderr.string
+    return warnings unless $! # don't swallow exceptions
+  end
+end
+
+
 RSpec.configure do |config|
+  config.include SpecHelpers
+
   # Stop testing after first failure
   config.fail_fast = true
 
