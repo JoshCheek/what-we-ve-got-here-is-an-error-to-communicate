@@ -13,31 +13,30 @@ module WhatWeveGotHereIsAnErrorToCommunicate
       Heuristics::Exception,
     ]
 
-    # TODO: These are backwards!
-    DEFAULT_DONT_PARSE = lambda do |einfo|
+    DEFAULT_BLACKLIST = lambda do |einfo|
       einfo.classname == 'SystemExit'
     end
 
     def self.new_default
       new heuristics: DEFAULT_HEURISTICS,
-          dont_parse: DEFAULT_DONT_PARSE
+          blacklist:  DEFAULT_BLACKLIST
     end
 
     def self.default
       @default ||= new_default
     end
 
-    attr_accessor :heuristics, :dont_parse
+    attr_accessor :heuristics, :blacklist
 
     def initialize(attributes)
       self.heuristics = attributes.fetch :heuristics
-      self.dont_parse = attributes.fetch :dont_parse
+      self.blacklist  = attributes.fetch :blacklist
     end
 
     def accept?(exception)
       return false unless Parse.parseable? exception
       einfo = Parse.exception(exception)
-      !dont_parse.call(einfo) && !!heuristics.find { |h| h.for? einfo }
+      !blacklist.call(einfo) && !!heuristics.find { |h| h.for? einfo }
     end
 
     def heuristic_for(exception)

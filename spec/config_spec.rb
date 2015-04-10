@@ -25,13 +25,13 @@ RSpec.describe 'configuration', config: true do
       default = WhatWeveGotHereIsAnErrorToCommunicate::Config.default
       expect(default).to be_a_kind_of WhatWeveGotHereIsAnErrorToCommunicate::Config
       expect(default.heuristics).to equal WhatWeveGotHereIsAnErrorToCommunicate::Config::DEFAULT_HEURISTICS
-      expect(default.dont_parse).to equal WhatWeveGotHereIsAnErrorToCommunicate::Config::DEFAULT_DONT_PARSE
+      expect(default.blacklist).to equal WhatWeveGotHereIsAnErrorToCommunicate::Config::DEFAULT_BLACKLIST
     end
   end
 
   describe 'accepting an exception' do
     it 'doesn\'t accept non-exception-looking things' do
-      config = config_for dont_parse: lambda { |e| false }, #  allow everything
+      config = config_for blacklist:  lambda { |e| false }, #  allow everything
                           heuristics: [WhatWeveGotHereIsAnErrorToCommunicate::Heuristics::Exception]
       expect(config.accept? nil).to eq false
       expect(config.accept? "omg").to eq false
@@ -42,13 +42,13 @@ RSpec.describe 'configuration', config: true do
     end
 
     it 'does not accept anything from its blacklist' do
-      config = config_for dont_parse: lambda { |e| true }, # deny everything
+      config = config_for blacklist:  lambda { |e| true }, # deny everything
                           heuristics: [WhatWeveGotHereIsAnErrorToCommunicate::Heuristics::Exception] # accept everything
       expect(config.accept? capture { raise }).to eq false
     end
 
     it 'accepts anything not blacklisted, that it has a heuristic for' do
-      config = config_for dont_parse: lambda { |e| false }, #  allow everything
+      config = config_for blacklist:  lambda { |e| false }, #  allow everything
                           heuristics: [WhatWeveGotHereIsAnErrorToCommunicate::Heuristics::NoMethodError] # accept only NoMethodErrors
       expect(config.accept? capture { jjj() }).to eq true
       expect(config.accept? capture { raise }).to eq false
@@ -62,13 +62,13 @@ RSpec.describe 'configuration', config: true do
     end
 
     it 'raises an ArgumentError if given an acception that it won\'t accept' do
-      config = config_for dont_parse: lambda { |e| true }, # deny everything
+      config = config_for blacklist:  lambda { |e| true }, # deny everything
                           heuristics: [WhatWeveGotHereIsAnErrorToCommunicate::Heuristics::Exception] # accept everything
       expect { config.heuristic_for "not an error" }.to raise_error ArgumentError, /"not an error"/
     end
 
     it 'finds the first heuristic that is willing to accept it' do
-      config = config_for dont_parse: lambda { |e| false }, # accept everything
+      config = config_for blacklist:  lambda { |e| false }, # accept everything
                           heuristics: [
                             WhatWeveGotHereIsAnErrorToCommunicate::Heuristics::NoMethodError, # accept NoMethodError
                             WhatWeveGotHereIsAnErrorToCommunicate::Heuristics::Exception      # accept everything
