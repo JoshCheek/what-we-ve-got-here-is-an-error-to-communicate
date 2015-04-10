@@ -7,12 +7,23 @@ module WhatWeveGotHereIsAnErrorToCommunicate
     attr_accessor :classname
     attr_accessor :message
     attr_accessor :backtrace
-    attr_accessor :exception # for dev info only, parse out additional info rather than interacting with it direclty
+
     def initialize(attributes)
       self.exception = attributes.fetch :exception, nil
       self.classname = attributes.fetch :classname
       self.message   = attributes.fetch :message
       self.backtrace = attributes.fetch :backtrace
+    end
+
+    attr_writer :exception
+    private     :exception=
+    def exception
+      @warned_about_exception ||= begin
+        warn "The exception is recorded for debugging purposes only.\n"
+        warn "Don't write code that depends on it, or we can't generically use the ExceptionInfo structure."
+        true
+      end
+      @exception
     end
   end
 

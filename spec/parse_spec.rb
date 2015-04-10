@@ -6,14 +6,43 @@ RSpec.describe 'parsing', parse: true do
     WhatWeveGotHereIsAnErrorToCommunicate::Parse.exception(exception)
   end
 
-  it 'records the exception, class name, message, and backtrace' do
+  it 'records the class name, message, and backtrace' do
     exception = FakeException.new message:   'Some message',
                                   backtrace: ["/Users/someone/a/b/c.rb:123:in `some_method_name'"]
     info = parse exception
-    expect(info.exception  ).to equal exception
     expect(info.classname  ).to eq 'FakeException'
     expect(info.message    ).to eq 'Some message'
     expect(info.backtrace.map &:linenum).to eq [123]
+  end
+
+  describe 'recording the actual exception' do
+    let(:exception) { FakeException.new }
+    let(:info)      { parse exception }
+
+    def silence_warnings
+      initial_stderr = $stderr
+      mock_stderr    = StringIO.new
+      $stderr        = mock_stderr
+      yield
+    ensure
+      $stderr  = initial_stderr
+      warnings = mock_stderr.string
+      return warnings unless $! # don't swallow exceptions
+    end
+
+    it 'records the exception for informational purposes' do
+      silence_warnings do
+        expect(info.exception).to equal exception
+      end
+    end
+
+    it 'warns the first time you try to use it (ie available for debugging, but not for development)' do
+      warnings = silence_warnings { info.exception }
+      expect(warnings).to match /debugging/
+
+      warnings = silence_warnings { info.exception }
+      expect(warnings).to be_empty
+    end
   end
 
   describe 'backtrace' do
