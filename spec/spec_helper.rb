@@ -16,10 +16,6 @@ module SpecHelpers
     WhatWeveGotHereIsAnErrorToCommunicate::ExceptionInfo.parse exception
   end
 
-  def heuristic_for(attributes={})
-    heuristic_class.new einfo_for FakeException.new attributes
-  end
-
   def trap_warnings
     initial_stderr = $stderr
     mock_stderr    = StringIO.new

@@ -37,5 +37,5 @@ end
 RSpec.configure do |config|
   # Helpers for acceptance tests
   config.before(acceptance: true) { make_proving_grounds }
-  config.include AcceptanceSpecHelpers,     acceptance: true
+  config.include AcceptanceSpecHelpers, acceptance: true
 end

@@ -1,34 +1,30 @@
 require 'spec_helper'
 
 RSpec.describe 'parsing', parse: true do
-  def parse(exception)
-    WhatWeveGotHereIsAnErrorToCommunicate::ExceptionInfo.parse(exception)
-  end
-
   it 'records the class name, message, and backtrace' do
     exception = FakeException.new message:   'Some message',
                                   backtrace: ["/Users/someone/a/b/c.rb:123:in `some_method_name'"]
-    info = parse exception
-    expect(info.classname  ).to eq 'FakeException'
-    expect(info.message    ).to eq 'Some message'
-    expect(info.backtrace.map &:linenum).to eq [123]
+    einfo = einfo_for exception
+    expect(einfo.classname  ).to eq 'FakeException'
+    expect(einfo.message    ).to eq 'Some message'
+    expect(einfo.backtrace.map &:linenum).to eq [123]
   end
 
   describe 'recording the actual exception' do
     let(:exception) { FakeException.new }
-    let(:info)      { parse exception }
+    let(:einfo)     { einfo_for exception }
 
     it 'records the exception for informational purposes' do
       trap_warnings do
-        expect(info.exception).to equal exception
+        expect(einfo.exception).to equal exception
       end
     end
 
     it 'warns the first time you try to use it (ie available for debugging, but not for development)' do
-      warnings = trap_warnings { info.exception }
+      warnings = trap_warnings { einfo.exception }
       expect(warnings).to match /debugging/
 
-      warnings = trap_warnings { info.exception }
+      warnings = trap_warnings { einfo.exception }
       expect(warnings).to be_empty
     end
   end
@@ -38,12 +34,12 @@ RSpec.describe 'parsing', parse: true do
       FakeException.new backtrace: [
         "file.rb:111:in `method1'",
         "file.rb:222:in `method2'",
-        "file.rb:333:in `method3'"
+        "file.rb:333:in `method3'",
       ]
     end
 
     def backtrace_for(exception)
-      parse(exception).backtrace
+      einfo_for(exception).backtrace
     end
 
     it 'records the linenum, and label of each backtrace location' do

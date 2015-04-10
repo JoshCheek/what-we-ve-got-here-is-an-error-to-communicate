@@ -7,6 +7,10 @@ module HeuristicSpecHelpers
     raise NotImplementedError, 'You need to define the heuristic class!'
   end
 
+  def heuristic_for(attributes={})
+    heuristic_class.new einfo_for FakeException.new attributes
+  end
+
   def is_for!(exception)
     expect(heuristic_class).to be_for einfo_for(exception)
   end
