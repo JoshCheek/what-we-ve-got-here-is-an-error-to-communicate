@@ -1,6 +1,6 @@
 require 'error_to_communicate/version'
-require 'error_to_communicate/parse'
 require 'error_to_communicate/format'
+require 'error_to_communicate/exception_info'
 
 module WhatWeveGotHereIsAnErrorToCommunicate
   class Config
@@ -37,15 +37,15 @@ module WhatWeveGotHereIsAnErrorToCommunicate
     end
 
     def accept?(exception)
-      return false unless Parse.parseable? exception
-      einfo = Parse.exception(exception)
+      return false unless ExceptionInfo.parseable? exception
+      einfo = ExceptionInfo.parse(exception)
       !blacklist.call(einfo) && !!heuristics.find { |h| h.for? einfo }
     end
 
     def heuristic_for(exception)
       accept?(exception) ||
         raise(ArgumentError, "Asked for a heuristic on an object we don't accept: #{exception.inspect}")
-      einfo = Parse.exception(exception)
+      einfo = ExceptionInfo.parse(exception)
       heuristics.find { |heuristic| heuristic.for? einfo }.new(einfo)
     end
 

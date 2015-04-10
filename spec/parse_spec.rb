@@ -1,9 +1,8 @@
 require 'spec_helper'
-require 'error_to_communicate/parse'
 
 RSpec.describe 'parsing', parse: true do
   def parse(exception)
-    WhatWeveGotHereIsAnErrorToCommunicate::Parse.exception(exception)
+    WhatWeveGotHereIsAnErrorToCommunicate::ExceptionInfo.parse(exception)
   end
 
   it 'records the class name, message, and backtrace' do
@@ -79,7 +78,7 @@ RSpec.describe 'parsing', parse: true do
     # it 'records the relative filepath if it cannot fild the file'
 
     def assert_parses_line(line, assertions)
-      parsed = WhatWeveGotHereIsAnErrorToCommunicate::Parse.backtrace_line(line)
+      parsed = WhatWeveGotHereIsAnErrorToCommunicate::ExceptionInfo::Location.parse(line)
       assertions.each do |method_name, expected|
         actual = parsed.__send__ method_name
         expect(actual).to eq expected
