@@ -4,6 +4,9 @@ require 'error_to_communicate/format'
 
 module WhatWeveGotHereIsAnErrorToCommunicate
   class Config
+    # Extract into a config_default.rb?
+    # this would allow you to load the config code without loading all of the lib,
+    # which could get expensive as more heuristics are created.
     require 'error_to_communicate/heuristics/exception'
     require 'error_to_communicate/heuristics/no_method_error'
     require 'error_to_communicate/heuristics/wrong_number_of_arguments'
