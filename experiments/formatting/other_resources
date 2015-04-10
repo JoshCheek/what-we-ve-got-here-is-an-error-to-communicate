@@ -1,0 +1,7 @@
+This lib is for working with colours
+  https://github.com/plashchynski/rgb
+
+  if it's well written, could maybe use it to allow you to write css,
+  and then translate the colours to console rgb values (eg the way I
+  printed pictures on the console at
+  https://github.com/JoshCheek/print-png/blob/c73fe7e8e29f44fb420240b4c3d3e134625ede3d/screenshot-rainbow.png)
