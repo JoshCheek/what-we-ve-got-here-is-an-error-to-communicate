@@ -15,30 +15,23 @@ module WhatWeveGotHereIsAnErrorToCommunicate
       Heuristics::WrongNumberOfArguments,
       Heuristics::NoMethodError,
       Heuristics::Exception,
-    ]
+    ].freeze # dup it, don't modify the real one
 
     DEFAULT_BLACKLIST = lambda do |einfo|
       einfo.classname == 'SystemExit'
     end
 
-    def self.new_default
-      new heuristics:  DEFAULT_HEURISTICS,
-          blacklist:   DEFAULT_BLACKLIST,
-          format_with: Format,
-          theme:       Theme.new # this is still really fkn rough
-    end
-
     def self.default
-      @default ||= new_default
+      @default ||= new
     end
 
-    attr_accessor :heuristics, :blacklist, :theme, :format_with
+    attr_accessor :heuristics, :blacklist, :theme, :format_with, :catchall_heuristic
 
-    def initialize(attributes)
-      self.heuristics  = attributes.fetch :heuristics
-      self.blacklist   = attributes.fetch :blacklist
-      self.theme       = attributes.fetch :theme
-      self.format_with = attributes.fetch :format_with
+    def initialize(options={})
+      self.heuristics  = options.fetch(:heuristics)  { DEFAULT_HEURISTICS }
+      self.blacklist   = options.fetch(:blacklist)   { DEFAULT_BLACKLIST }
+      self.theme       = options.fetch(:theme)       { Theme.new } # this is still really fkn rough
+      self.format_with = options.fetch(:format_with) { Format }
     end
 
     def accept?(exception)
@@ -48,8 +41,7 @@ module WhatWeveGotHereIsAnErrorToCommunicate
     end
 
     def heuristic_for(exception)
-      accept?(exception) ||
-        raise(ArgumentError, "Asked for a heuristic on an object we don't accept: #{exception.inspect}")
+      accept?(exception) || raise(ArgumentError, "Asked for a heuristic on an object we don't accept: #{exception.inspect}")
       einfo = ExceptionInfo.parse(exception)
       heuristics.find { |heuristic| heuristic.for? einfo }.new(einfo)
     end

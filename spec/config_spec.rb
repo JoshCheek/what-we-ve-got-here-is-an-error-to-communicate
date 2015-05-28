@@ -11,11 +11,7 @@ RSpec.describe 'configuration', config: true do
   let(:config_class) { WhatWeveGotHereIsAnErrorToCommunicate::Config }
 
   def config_for(attrs)
-    defaults = {
-      theme:       WhatWeveGotHereIsAnErrorToCommunicate::Theme.new,
-      format_with: WhatWeveGotHereIsAnErrorToCommunicate::Format,
-    }
-    config_class.new defaults.merge(attrs)
+    config_class.new attrs
   end
 
   # named blacklists
@@ -43,7 +39,7 @@ RSpec.describe 'configuration', config: true do
   end
 
   describe 'accepting an exception' do
-    it 'doesn\'t accept non-exception-looking things' do
+    it 'doesn\'t accept non-exception-looking things -- if it can\'t parse it, then we should let the default process take place (eg exception on another system)' do
       config = config_for blacklist:  allow_all, heuristics: [match_all]
       expect(config.accept? nil).to eq false
       expect(config.accept? "omg").to eq false
@@ -82,7 +78,7 @@ RSpec.describe 'configuration', config: true do
   end
 
   describe 'The default configuration' do
-    let(:default_config) { config_class.new_default }
+    let(:default_config) { config_class.new }
 
     describe 'blacklist' do
       it 'doesn\'t accept a SystemExit' do
