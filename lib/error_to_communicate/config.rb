@@ -43,10 +43,13 @@ module ErrorToCommunicate
     end
 
     def format(heuristic, cwd)
+      require 'error_to_communicate/format_terminal/presenter'
+      presenter = FormatTerminal::Presenter.new theme
       format_with.call cwd:                 cwd,
                        theme:               theme,
                        einfo:               heuristic.exception_info,
-                       heuristic_formatter: heuristic.format_for_terminal(theme, cwd)
+                       heuristic_formatter: heuristic.format_for_terminal(theme, cwd, presenter),
+                       presenter:           presenter
     end
   end
 end

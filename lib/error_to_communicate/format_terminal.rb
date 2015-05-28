@@ -1,5 +1,4 @@
 require 'pathname'
-require 'error_to_communicate/format_terminal/helpers'
 
 module ErrorToCommunicate
   class FormatTerminal
@@ -8,14 +7,14 @@ module ErrorToCommunicate
       new(attributes).call
     end
 
-    attr_accessor :info, :cwd, :theme, :heuristic_presenter
+    attr_accessor :info, :cwd, :theme, :heuristic_presenter, :presenter
 
     def initialize(attributes)
-      extend ErrorToCommunicate::FormatTerminal::Helpers
       self.theme               = attributes.fetch :theme
       self.cwd                 = attributes.fetch :cwd
       self.info                = attributes.fetch :einfo
       self.heuristic_presenter = attributes.fetch :heuristic_formatter
+      self.presenter           = attributes.fetch :presenter
     end
 
     def call
@@ -27,11 +26,12 @@ module ErrorToCommunicate
 
         theme.separator_line,
         *info.backtrace.map { |location|
-          display_location location:   location,
-                           highlight:  (location.pred && location.pred.label),
-                           context:    0..0,
-                           emphasisis: :path,
-                           cwd:        cwd
+          presenter.display_location \
+            location:   location,
+            highlight:  (location.pred && location.pred.label),
+            context:    0..0,
+            emphasisis: :path,
+            cwd:        cwd
         }
       ].join("")
     end

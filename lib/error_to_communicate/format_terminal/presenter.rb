@@ -2,7 +2,13 @@ require 'rouge'
 
 module ErrorToCommunicate
   class FormatTerminal
-    module Helpers
+    class Presenter
+      attr_accessor :theme
+
+      def initialize(theme)
+        self.theme = theme
+      end
+
       def display_location(attributes)
         location       = attributes.fetch :location
         cwd            = Pathname.new attributes.fetch(:cwd)

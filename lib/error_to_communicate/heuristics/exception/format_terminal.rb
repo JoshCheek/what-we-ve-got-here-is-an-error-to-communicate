@@ -1,15 +1,12 @@
-require 'error_to_communicate/format_terminal/helpers'
-
 class ErrorToCommunicate::Heuristics::Exception::FormatTerminal
-  include ErrorToCommunicate::FormatTerminal::Helpers
-
-  attr_accessor :info, :cwd, :heuristic, :theme
+  attr_accessor :info, :cwd, :heuristic, :theme, :presenter
 
   def initialize(attributes)
     self.heuristic = attributes.fetch :heuristic
     self.theme     = attributes.fetch :theme
     self.info      = attributes.fetch :exception_info
     self.cwd       = attributes.fetch :cwd
+    self.presenter = attributes.fetch :presenter
   end
 
   def header
@@ -20,11 +17,11 @@ class ErrorToCommunicate::Heuristics::Exception::FormatTerminal
   end
 
   def helpful_info
-    [display_location(location:   info.backtrace[0],
-                      highlight:  info.backtrace[0].label,
-                      context:    -5..5,
-                      emphasisis: :code,
-                      cwd:        cwd)
+    [presenter.display_location(location:   info.backtrace[0],
+                                highlight:  info.backtrace[0].label,
+                                context:    -5..5,
+                                emphasisis: :code,
+                                cwd:        cwd)
     ]
   end
 end

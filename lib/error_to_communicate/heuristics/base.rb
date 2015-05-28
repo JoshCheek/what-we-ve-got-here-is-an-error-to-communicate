@@ -11,11 +11,14 @@ module ErrorToCommunicate
         self.exception_info = exception_info
       end
 
-      def format_for_terminal(theme, cwd)
-        self.class::FormatTerminal.new cwd:            cwd,
-                                       theme:          theme,
-                                       heuristic:      self,
-                                       exception_info: exception_info
+      # TODO: Push this somewhere higher
+      def format_for_terminal(theme, cwd, presenter)
+        self.class::FormatTerminal.new \
+          cwd:            cwd,
+          theme:          theme,
+          heuristic:      self,
+          exception_info: exception_info,
+          presenter:      presenter
       end
     end
   end
