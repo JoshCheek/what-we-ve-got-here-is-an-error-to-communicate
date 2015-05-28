@@ -1,6 +1,24 @@
 require 'error_to_communicate/config'
 
 RSpec.describe 'configuration', config: true do
+  # Subclassing to make it a easier to refer to, and to get a new instance
+  # (config_class.default will not be affected by changes to Config.default)
+  let(:config_class) { Class.new WhatWeveGotHereIsAnErrorToCommunicate::Config }
+
+  # named blacklists
+  let(:allow_all)  { lambda { |e| false } }
+  let(:allow_none) { lambda { |e| true  } }
+
+  # named heuristics
+  let :match_all do
+    WhatWeveGotHereIsAnErrorToCommunicate::Heuristics::Exception
+  end
+
+  let :match_no_method_error do
+    WhatWeveGotHereIsAnErrorToCommunicate::Heuristics::NoMethodError
+  end
+
+  # helper methods
   def capture
     yield
     raise 'NO EXCEPTION WAS RAISED!'
@@ -8,22 +26,16 @@ RSpec.describe 'configuration', config: true do
     return $!
   end
 
-  let(:config_class) { WhatWeveGotHereIsAnErrorToCommunicate::Config }
+  def yes_accept!(config, ex)
+    expect(config.accept? ex).to eq true
+  end
+
+  def no_accept!(config, ex)
+    expect(config.accept? ex).to eq false
+  end
 
   def config_for(attrs)
     config_class.new attrs
-  end
-
-  # named blacklists
-  let(:allow_all)  { lambda { |e| false } }
-  let(:allow_none) { lambda { |e| true } }
-
-  # named heuristics
-  let :match_all do
-    WhatWeveGotHereIsAnErrorToCommunicate::Heuristics::Exception
-  end
-  let :match_no_method_error do
-    WhatWeveGotHereIsAnErrorToCommunicate::Heuristics::NoMethodError
   end
 
   describe '.default' do
@@ -31,8 +43,11 @@ RSpec.describe 'configuration', config: true do
       expect(config_class.default).to equal config_class.default
     end
 
-    it 'is an instance of a default parser' do
-      expect(config_class.default           ).to be_a_kind_of config_class
+    it 'is an instance of Config' do
+      expect(config_class.default).to be_a_kind_of config_class
+    end
+
+    it 'uses the default heuristics and blacklist (behaviour described below)' do
       expect(config_class.default.heuristics).to equal config_class::DEFAULT_HEURISTICS
       expect(config_class.default.blacklist ).to equal config_class::DEFAULT_BLACKLIST
     end
@@ -41,23 +56,25 @@ RSpec.describe 'configuration', config: true do
   describe 'accepting an exception' do
     it 'doesn\'t accept non-exception-looking things -- if it can\'t parse it, then we should let the default process take place (eg exception on another system)' do
       config = config_for blacklist:  allow_all, heuristics: [match_all]
-      expect(config.accept? nil).to eq false
-      expect(config.accept? "omg").to eq false
-      expect(config.accept? Struct.new(:message).new('')).to eq false
-      expect(config.accept? Struct.new(:backtrace).new([])).to eq false
-      expect(config.accept? Struct.new(:message, :backtrace).new('', [])).to eq true
-      expect(config.accept? capture { raise }).to eq true
+
+      no_accept! config, nil
+      no_accept! config, "omg"
+      no_accept! config, Struct.new(:message).new('')
+      no_accept! config, Struct.new(:backtrace).new([])
+
+      yes_accept! config, Struct.new(:message, :backtrace).new('', [])
+      yes_accept! config, capture { raise }
     end
 
     it 'does not accept anything from its blacklist' do
       config = config_for blacklist: allow_none, heuristics: [match_all]
-      expect(config.accept? capture { raise }).to eq false
+      no_accept! config, capture { raise }
     end
 
     it 'accepts anything not blacklisted, that it has a heuristic for' do
       config = config_for blacklist:  allow_all, heuristics: [match_no_method_error]
-      expect(config.accept? capture { jjj() }).to eq true
-      expect(config.accept? capture { raise }).to eq false
+      yes_accept! config, capture { jjj() }
+      no_accept!  config, capture { raise }
     end
   end
 
@@ -90,7 +107,7 @@ RSpec.describe 'configuration', config: true do
       end
     end
 
-    describe 'heuristics (these are unit-tested in spec/heuristics, and correct selection is tested in spec/acceptance)' do
+    describe 'heuristics (correct selection is tested in spec/acceptance)' do
       it 'has heuristics for WrongNumberOfArguments' do
         expect(default_config.heuristics).to include \
           WhatWeveGotHereIsAnErrorToCommunicate::Heuristics::WrongNumberOfArguments
