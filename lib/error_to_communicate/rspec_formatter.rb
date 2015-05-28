@@ -1,5 +1,4 @@
 require 'error_to_communicate'
-require 'error_to_communicate/format'
 require 'rspec/core/formatters/documentation_formatter'
 
 module WhatWeveGotHereIsAnErrorToCommunicate

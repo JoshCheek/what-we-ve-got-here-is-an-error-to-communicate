@@ -1,10 +1,10 @@
 require 'pathname'
-require 'error_to_communicate/format/heuristic_presenter'
-require 'error_to_communicate/format/terminal_helpers'
+require 'error_to_communicate/format_terminal/heuristic_presenter'
+require 'error_to_communicate/format_terminal/helpers'
 
 module WhatWeveGotHereIsAnErrorToCommunicate
-  class Format
-    include Format::TerminalHelpers
+  class FormatTerminal
+    include FormatTerminal::Helpers
 
     def self.call(attributes)
       new(attributes).call

@@ -1,5 +1,5 @@
 require 'error_to_communicate/version'
-require 'error_to_communicate/format'
+require 'error_to_communicate/format_terminal' # TODO: switch this to autoload
 require 'error_to_communicate/exception_info'
 require 'error_to_communicate/theme'
 
@@ -31,7 +31,7 @@ module WhatWeveGotHereIsAnErrorToCommunicate
       self.heuristics  = options.fetch(:heuristics)  { DEFAULT_HEURISTICS }
       self.blacklist   = options.fetch(:blacklist)   { DEFAULT_BLACKLIST }
       self.theme       = options.fetch(:theme)       { Theme.new } # this is still really fkn rough
-      self.format_with = options.fetch(:format_with) { Format }
+      self.format_with = options.fetch(:format_with) { FormatTerminal }
     end
 
     def accept?(exception)

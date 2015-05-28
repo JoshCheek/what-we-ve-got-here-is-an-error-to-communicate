@@ -1,12 +1,12 @@
-require 'error_to_communicate/format/terminal_helpers'
+require 'error_to_communicate/format_terminal/helpers'
 
 # Temporary extraction so I can see what's going on and do some refactorings.
 module WhatWeveGotHereIsAnErrorToCommunicate
-  class Format
+  class FormatTerminal
     module HeuristicPresenter
 
       class WrongNumberOfArguments
-        include Format::TerminalHelpers
+        include FormatTerminal::Helpers
 
         attr_accessor :info, :cwd, :heuristic, :theme
 
@@ -46,7 +46,7 @@ module WhatWeveGotHereIsAnErrorToCommunicate
 
 
       class NoMethodError
-        include Format::TerminalHelpers
+        include FormatTerminal::Helpers
 
         attr_accessor :info, :cwd, :heuristic, :theme
 
@@ -77,7 +77,7 @@ module WhatWeveGotHereIsAnErrorToCommunicate
 
 
       class Exception
-        include Format::TerminalHelpers
+        include FormatTerminal::Helpers
 
         attr_accessor :info, :cwd, :heuristic, :theme
 

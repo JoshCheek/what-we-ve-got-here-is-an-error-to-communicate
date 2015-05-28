@@ -1,8 +1,8 @@
 require 'rouge'
 
 module WhatWeveGotHereIsAnErrorToCommunicate
-  class Format
-    module TerminalHelpers
+  class FormatTerminal
+    module Helpers
       def display_location(attributes)
         location       = attributes.fetch :location
         cwd            = Pathname.new attributes.fetch(:cwd)
