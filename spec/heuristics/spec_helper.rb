@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'error_to_communicate/heuristics'
 
 module HeuristicSpecHelpers
   extend self

@@ -1,3 +1,4 @@
+require 'error_to_communicate/heuristics'
 require 'error_to_communicate/version'
 require 'error_to_communicate/exception_info'
 require 'error_to_communicate/theme'
@@ -6,12 +7,6 @@ module ErrorToCommunicate
   autoload :FormatTerminal, 'error_to_communicate/format_terminal'
 
   class Config
-    # Extract into a config_default.rb?
-    # this would allow you to load the config code without loading all of the lib,
-    # which could get expensive as more heuristics are created.
-    require 'error_to_communicate/heuristics/exception'
-    require 'error_to_communicate/heuristics/no_method_error'
-    require 'error_to_communicate/heuristics/wrong_number_of_arguments'
     DEFAULT_HEURISTICS = [
       Heuristics::WrongNumberOfArguments,
       Heuristics::NoMethodError,

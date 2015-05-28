@@ -1,5 +1,4 @@
 require 'heuristics/spec_helper'
-require 'error_to_communicate/heuristics/no_method_error'
 
 RSpec.describe 'Heuristic for a NoMethodError', heuristic: true do
   def heuristic_class
