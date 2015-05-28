@@ -65,7 +65,8 @@ RSpec.describe 'parsing', parse: true do
     def assert_parses_line(line, assertions)
       parsed = ErrorToCommunicate::ExceptionInfo::Location.parse(line)
       assertions.each do |method_name, expected|
-        actual = parsed.__send__ method_name
+        expected = Pathname.new expected if method_name == :path
+        actual   = parsed.__send__ method_name
         expect(actual).to eq expected
       end
     end

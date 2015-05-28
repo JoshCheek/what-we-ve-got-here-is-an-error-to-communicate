@@ -1,3 +1,5 @@
+require 'pathname'
+
 module ErrorToCommunicate
   # Wraps an exception in our internal data structures
   # So we can normalize the different things that come in,
@@ -58,10 +60,11 @@ module ErrorToCommunicate
     end
   end
 
+
   class ExceptionInfo::Location
     attr_accessor :path, :linenum, :label, :pred, :succ
     def initialize(attributes)
-      self.path    = attributes.fetch :path
+      self.path    = Pathname.new attributes.fetch(:path)
       self.linenum = attributes.fetch :linenum
       self.label   = attributes.fetch :label
       self.pred    = attributes.fetch :pred, nil
