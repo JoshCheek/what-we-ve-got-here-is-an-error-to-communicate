@@ -44,12 +44,7 @@ module ErrorToCommunicate
     end
 
     def format(heuristic, cwd)
-      require 'error_to_communicate/format_terminal/code'
-      format_code = FormatTerminal::Code.new theme: theme, cwd: Pathname.new(cwd)
-      format_with.call theme:            theme,
-                       einfo:            heuristic.exception_info,
-                       format_heuristic: heuristic.format_for_terminal(theme, format_code),
-                       format_code:      format_code
+      format_with.call theme: theme, heuristic: heuristic, cwd: Pathname.new(cwd)
     end
   end
 end
