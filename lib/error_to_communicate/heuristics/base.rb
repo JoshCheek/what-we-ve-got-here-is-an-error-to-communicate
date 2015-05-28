@@ -12,12 +12,12 @@ module ErrorToCommunicate
       end
 
       # TODO: Push this somewhere higher
-      def format_for_terminal(theme, presenter)
+      def format_for_terminal(theme, format_code)
         self.class::FormatTerminal.new \
           theme:          theme,
           heuristic:      self,
-          exception_info: exception_info,
-          presenter:      presenter
+          einfo:          exception_info,
+          format_code:    format_code
       end
     end
   end

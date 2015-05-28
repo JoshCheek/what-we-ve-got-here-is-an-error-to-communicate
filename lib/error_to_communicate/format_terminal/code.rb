@@ -1,8 +1,9 @@
 require 'rouge'
+require 'pathname' # can we push this up, so that these things get turned into a path as high as possible?
 
 module ErrorToCommunicate
   class FormatTerminal
-    class Presenter
+    class Code
       attr_accessor :theme, :cwd
 
       def initialize(attributes)
@@ -10,7 +11,7 @@ module ErrorToCommunicate
         self.cwd   = Pathname.new attributes.fetch(:cwd)
       end
 
-      def display_location(attributes)
+      def call(attributes)
         location       = attributes.fetch :location
         path           = Pathname.new location.path
         line_index     = location.linenum - 1

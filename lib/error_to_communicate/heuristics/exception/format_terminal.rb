@@ -1,25 +1,25 @@
 class ErrorToCommunicate::Heuristics::Exception::FormatTerminal
-  attr_accessor :info, :heuristic, :theme, :presenter
+  attr_accessor :einfo, :heuristic, :theme, :format_code
 
   def initialize(attributes)
-    self.heuristic = attributes.fetch :heuristic
-    self.theme     = attributes.fetch :theme
-    self.info      = attributes.fetch :exception_info
-    self.presenter = attributes.fetch :presenter
+    self.heuristic   = attributes.fetch :heuristic
+    self.theme       = attributes.fetch :theme
+    self.einfo       = attributes.fetch :einfo
+    self.format_code = attributes.fetch :format_code
   end
 
   def header
-    [ "#{theme.white}#{info.classname} | "\
+    [ "#{theme.white}#{einfo.classname} | "\
       "#{theme.bri_red}#{heuristic.explanation} "\
       "#{theme.none}\n"
     ]
   end
 
   def helpful_info
-    [presenter.display_location(location:   info.backtrace[0],
-                                highlight:  info.backtrace[0].label,
-                                context:    -5..5,
-                                emphasisis: :code)
+    [ format_code.call(location:   einfo.backtrace[0],
+                       highlight:  einfo.backtrace[0].label,
+                       context:    -5..5,
+                       emphasisis: :code)
     ]
   end
 end
