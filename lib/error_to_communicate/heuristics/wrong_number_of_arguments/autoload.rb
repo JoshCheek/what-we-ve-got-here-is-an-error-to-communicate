@@ -2,7 +2,7 @@ require 'error_to_communicate/heuristics/base'
 
 module ErrorToCommunicate::Heuristics
   class WrongNumberOfArguments < Base
-    autoload :FormatTerminal, File.expand_path('format_terminal', __dir__)
+    autoload :TerminalFormatter, File.expand_path('terminal_formatter', __dir__)
 
     def self.for?(einfo)
       extract_from einfo

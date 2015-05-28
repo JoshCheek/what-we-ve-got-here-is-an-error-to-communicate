@@ -3,20 +3,20 @@ require 'rouge'
 module ErrorToCommunicate
   class FormatTerminal
     def self.call(attributes)
-      cwd              = attributes.fetch :cwd
-      theme            = attributes.fetch :theme
-      heuristic        = attributes.fetch :heuristic
-      format_code      = FormatTerminal::Code.new theme: theme, cwd: cwd
-      format_heuristic = heuristic.class::FormatTerminal.new \
+      cwd                 = attributes.fetch :cwd
+      theme               = attributes.fetch :theme
+      heuristic           = attributes.fetch :heuristic
+      format_code         = FormatTerminal::Code.new theme: theme, cwd: cwd
+      heuristic_formatter = heuristic.class::TerminalFormatter.new \
                            heuristic:      heuristic,
                            theme:          theme,
                            format_code:    format_code
 
       [ theme.separator_line,
-        *format_heuristic.header,
+        *heuristic_formatter.header,
 
         theme.separator_line,
-        *format_heuristic.helpful_info,
+        *heuristic_formatter.helpful_info,
 
         theme.separator_line,
         *heuristic.backtrace.map { |location| # TODO: backtrace formatter?

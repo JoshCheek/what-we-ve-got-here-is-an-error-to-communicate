@@ -1,4 +1,4 @@
-class ErrorToCommunicate::Heuristics::WrongNumberOfArguments::FormatTerminal
+class ErrorToCommunicate::Heuristics::WrongNumberOfArguments::TerminalFormatter
   attr_accessor :heuristic, :theme, :format_code
 
   def initialize(attributes)

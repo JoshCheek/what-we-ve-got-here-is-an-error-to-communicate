@@ -1,4 +1,4 @@
-class ErrorToCommunicate::Heuristics::NoMethodError::FormatTerminal
+class ErrorToCommunicate::Heuristics::NoMethodError::TerminalFormatter
   attr_accessor :heuristic, :theme, :format_code
 
   def initialize(attributes)
