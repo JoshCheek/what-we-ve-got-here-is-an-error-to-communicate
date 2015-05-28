@@ -22,21 +22,23 @@ module WhatWeveGotHereIsAnErrorToCommunicate
     end
 
     def self.new_default
-      new heuristics: DEFAULT_HEURISTICS,
-          blacklist:  DEFAULT_BLACKLIST,
-          theme:      Theme.new # this is still really fkn rough
+      new heuristics:  DEFAULT_HEURISTICS,
+          blacklist:   DEFAULT_BLACKLIST,
+          format_with: Format,
+          theme:       Theme.new # this is still really fkn rough
     end
 
     def self.default
       @default ||= new_default
     end
 
-    attr_accessor :heuristics, :blacklist, :theme
+    attr_accessor :heuristics, :blacklist, :theme, :format_with
 
     def initialize(attributes)
-      self.heuristics = attributes.fetch :heuristics
-      self.blacklist  = attributes.fetch :blacklist
-      self.theme      = attributes.fetch :theme, Theme.new
+      self.heuristics  = attributes.fetch :heuristics
+      self.blacklist   = attributes.fetch :blacklist
+      self.theme       = attributes.fetch :theme
+      self.format_with = attributes.fetch :format_with
     end
 
     def accept?(exception)
@@ -53,7 +55,7 @@ module WhatWeveGotHereIsAnErrorToCommunicate
     end
 
     def format(heuristic, cwd)
-      Format.new(heuristic, theme, cwd).call
+      format_with.call heuristic: heuristic, theme: theme, cwd: cwd
     end
   end
 end

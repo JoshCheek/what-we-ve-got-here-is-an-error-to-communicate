@@ -11,7 +11,11 @@ RSpec.describe 'configuration', config: true do
   let(:config_class) { WhatWeveGotHereIsAnErrorToCommunicate::Config }
 
   def config_for(attrs)
-    config_class.new attrs
+    defaults = {
+      theme:       WhatWeveGotHereIsAnErrorToCommunicate::Theme.new,
+      format_with: WhatWeveGotHereIsAnErrorToCommunicate::Format,
+    }
+    config_class.new defaults.merge(attrs)
   end
 
   # named blacklists
