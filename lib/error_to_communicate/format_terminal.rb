@@ -7,7 +7,11 @@ module ErrorToCommunicate
       theme            = attributes.fetch :theme
       heuristic        = attributes.fetch :heuristic
       format_code      = FormatTerminal::Code.new theme: theme, cwd: cwd
-      format_heuristic = heuristic.format_for_terminal theme, format_code # TODO: rename to formatter_for_terminal
+      format_heuristic = heuristic.class::FormatTerminal.new \
+                           heuristic:      heuristic,
+                           theme:          theme,
+                           einfo:          heuristic.einfo,
+                           format_code:    format_code
 
       [ theme.separator_line,
         *format_heuristic.header,

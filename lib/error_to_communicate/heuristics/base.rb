@@ -14,15 +14,6 @@ module ErrorToCommunicate
       def backtrace
         einfo.backtrace
       end
-
-      # TODO: Push this somewhere higher
-      def format_for_terminal(theme, format_code)
-        self.class::FormatTerminal.new \
-          theme:          theme,
-          heuristic:      self,
-          einfo:          einfo,
-          format_code:    format_code
-      end
     end
   end
 end
