@@ -7,11 +7,10 @@ module ErrorToCommunicate
       new(attributes).call
     end
 
-    attr_accessor :info, :cwd, :theme, :heuristic_presenter, :presenter
+    attr_accessor :info, :theme, :heuristic_presenter, :presenter
 
     def initialize(attributes)
       self.theme               = attributes.fetch :theme
-      self.cwd                 = attributes.fetch :cwd
       self.info                = attributes.fetch :einfo
       self.heuristic_presenter = attributes.fetch :heuristic_formatter
       self.presenter           = attributes.fetch :presenter
@@ -30,8 +29,7 @@ module ErrorToCommunicate
             location:   location,
             highlight:  (location.pred && location.pred.label),
             context:    0..0,
-            emphasisis: :path,
-            cwd:        cwd
+            emphasisis: :path
         }
       ].join("")
     end

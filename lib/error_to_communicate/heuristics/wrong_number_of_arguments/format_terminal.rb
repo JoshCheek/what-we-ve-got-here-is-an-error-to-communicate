@@ -1,11 +1,10 @@
 class ErrorToCommunicate::Heuristics::WrongNumberOfArguments::FormatTerminal
-  attr_accessor :info, :cwd, :heuristic, :theme, :presenter
+  attr_accessor :info, :heuristic, :theme, :presenter
 
   def initialize(attributes)
     self.heuristic = attributes.fetch :heuristic
     self.theme     = attributes.fetch :theme
     self.info      = attributes.fetch :exception_info
-    self.cwd       = attributes.fetch :cwd
     self.presenter = attributes.fetch :presenter
   end
 
@@ -26,14 +25,12 @@ class ErrorToCommunicate::Heuristics::WrongNumberOfArguments::FormatTerminal
                                  highlight:  info.backtrace[0].label,
                                  context:    0..5,
                                  message:    "EXPECTED #{heuristic.num_expected}",
-                                 emphasisis: :code,
-                                 cwd:        cwd),
+                                 emphasisis: :code),
       presenter.display_location(location:   info.backtrace[1],
                                  highlight:  info.backtrace[0].label,
                                  context:    -5..5,
                                  message:    "SENT #{heuristic.num_received}",
-                                 emphasisis: :code,
-                                 cwd:        cwd)
+                                 emphasisis: :code)
     ]
   end
 end

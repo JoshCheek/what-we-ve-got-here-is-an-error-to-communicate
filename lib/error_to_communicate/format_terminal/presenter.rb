@@ -3,15 +3,15 @@ require 'rouge'
 module ErrorToCommunicate
   class FormatTerminal
     class Presenter
-      attr_accessor :theme
+      attr_accessor :theme, :cwd
 
-      def initialize(theme)
-        self.theme = theme
+      def initialize(attributes)
+        self.theme = attributes.fetch :theme
+        self.cwd   = Pathname.new attributes.fetch(:cwd)
       end
 
       def display_location(attributes)
         location       = attributes.fetch :location
-        cwd            = Pathname.new attributes.fetch(:cwd)
         path           = Pathname.new location.path
         line_index     = location.linenum - 1
         highlight      = attributes.fetch :highlight, location.label

@@ -12,9 +12,8 @@ module ErrorToCommunicate
       end
 
       # TODO: Push this somewhere higher
-      def format_for_terminal(theme, cwd, presenter)
+      def format_for_terminal(theme, presenter)
         self.class::FormatTerminal.new \
-          cwd:            cwd,
           theme:          theme,
           heuristic:      self,
           exception_info: exception_info,

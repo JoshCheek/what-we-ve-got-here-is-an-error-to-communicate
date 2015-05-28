@@ -1,7 +1,7 @@
-require 'error_to_communicate/heuristics'
 require 'error_to_communicate/version'
-require 'error_to_communicate/exception_info'
 require 'error_to_communicate/theme'
+require 'error_to_communicate/heuristics'
+require 'error_to_communicate/exception_info'
 
 module ErrorToCommunicate
   autoload :FormatTerminal, 'error_to_communicate/format_terminal'
@@ -44,11 +44,10 @@ module ErrorToCommunicate
 
     def format(heuristic, cwd)
       require 'error_to_communicate/format_terminal/presenter'
-      presenter = FormatTerminal::Presenter.new theme
-      format_with.call cwd:                 cwd,
-                       theme:               theme,
+      presenter = FormatTerminal::Presenter.new theme: theme, cwd: cwd
+      format_with.call theme:               theme,
                        einfo:               heuristic.exception_info,
-                       heuristic_formatter: heuristic.format_for_terminal(theme, cwd, presenter),
+                       heuristic_formatter: heuristic.format_for_terminal(theme, presenter),
                        presenter:           presenter
     end
   end
