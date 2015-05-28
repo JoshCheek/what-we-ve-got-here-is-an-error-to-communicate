@@ -10,15 +10,12 @@ module ErrorToCommunicate
 
     attr_accessor :info, :cwd, :theme, :heuristic_presenter
 
-    # TODO: remove dep on heuristic, only need the presenter and info
-    # Maybe it all moves into the presenter?
     def initialize(attributes)
       extend ErrorToCommunicate::FormatTerminal::Helpers
-      heuristic                = attributes.fetch :heuristic
       self.theme               = attributes.fetch :theme
       self.cwd                 = attributes.fetch :cwd
-      self.info                = heuristic.exception_info
-      self.heuristic_presenter = heuristic.format_for_terminal(theme, cwd)
+      self.info                = attributes.fetch :einfo
+      self.heuristic_presenter = attributes.fetch :heuristic_formatter
     end
 
     def call

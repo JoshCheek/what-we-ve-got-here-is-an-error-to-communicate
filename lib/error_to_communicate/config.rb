@@ -43,7 +43,10 @@ module ErrorToCommunicate
     end
 
     def format(heuristic, cwd)
-      format_with.call heuristic: heuristic, theme: theme, cwd: cwd
+      format_with.call cwd:                 cwd,
+                       theme:               theme,
+                       einfo:               heuristic.exception_info,
+                       heuristic_formatter: heuristic.format_for_terminal(theme, cwd)
     end
   end
 end
