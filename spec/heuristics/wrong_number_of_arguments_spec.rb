@@ -3,7 +3,7 @@ require 'error_to_communicate/heuristics/wrong_number_of_arguments'
 
 RSpec.describe 'heuristics for the wrong number of arguments', heuristic: true do
   def heuristic_class
-    WhatWeveGotHereIsAnErrorToCommunicate::Heuristics::WrongNumberOfArguments
+    ErrorToCommunicate::Heuristics::WrongNumberOfArguments
   end
 
   describe '.for?' do

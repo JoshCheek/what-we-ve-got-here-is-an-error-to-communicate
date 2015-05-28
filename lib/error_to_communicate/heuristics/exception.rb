@@ -1,4 +1,4 @@
-module WhatWeveGotHereIsAnErrorToCommunicate
+module ErrorToCommunicate
   module Heuristics
     class Exception
       def self.for?(einfo)

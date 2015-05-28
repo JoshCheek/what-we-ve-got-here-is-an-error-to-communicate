@@ -1,6 +1,6 @@
 require 'rouge'
 
-module WhatWeveGotHereIsAnErrorToCommunicate
+module ErrorToCommunicate
   class FormatTerminal
     module Helpers
       def display_location(attributes)

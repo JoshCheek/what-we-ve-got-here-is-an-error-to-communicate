@@ -3,7 +3,7 @@ require 'error_to_communicate/heuristics/no_method_error'
 
 RSpec.describe 'Heuristic for a NoMethodError', heuristic: true do
   def heuristic_class
-    WhatWeveGotHereIsAnErrorToCommunicate::Heuristics::Exception
+    ErrorToCommunicate::Heuristics::Exception
   end
 
   it 'is for every type of exception (via inheritance)' do

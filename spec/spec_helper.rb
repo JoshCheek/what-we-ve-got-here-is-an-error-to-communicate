@@ -13,7 +13,7 @@ end
 
 module SpecHelpers
   def einfo_for(exception)
-    WhatWeveGotHereIsAnErrorToCommunicate::ExceptionInfo.parse exception
+    ErrorToCommunicate::ExceptionInfo.parse exception
   end
 
   def trap_warnings

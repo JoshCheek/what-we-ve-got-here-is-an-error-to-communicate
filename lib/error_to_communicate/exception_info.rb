@@ -1,4 +1,4 @@
-module WhatWeveGotHereIsAnErrorToCommunicate
+module ErrorToCommunicate
   # Wraps an exception in our internal data structures
   # So we can normalize the different things that come in,
   # and you can use code that needs this info without

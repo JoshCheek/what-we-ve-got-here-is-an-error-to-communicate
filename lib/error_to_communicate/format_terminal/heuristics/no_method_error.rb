@@ -1,7 +1,7 @@
 require 'error_to_communicate/format_terminal/helpers'
 
 # Temporary extraction so I can see what's going on and do some refactorings.
-module WhatWeveGotHereIsAnErrorToCommunicate
+module ErrorToCommunicate
   class FormatTerminal
     module Heuristics
       class NoMethodError

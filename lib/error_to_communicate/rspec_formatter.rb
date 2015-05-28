@@ -1,7 +1,7 @@
 require 'error_to_communicate'
 require 'rspec/core/formatters/documentation_formatter'
 
-module WhatWeveGotHereIsAnErrorToCommunicate
+module ErrorToCommunicate
   class RSpecFormatter < RSpec::Core::Formatters::DocumentationFormatter
     # Register for notifications from our parent classes
     #   http://rspec.info/documentation/3.2/rspec-core/RSpec/Core/Formatters.html
@@ -12,7 +12,7 @@ module WhatWeveGotHereIsAnErrorToCommunicate
     #     }
     RSpec::Core::Formatters.register self
 
-    # Use WhatWeveGotHereIsAnErrorToCommunicate to print error info
+    # Use ErrorToCommunicate to print error info
     # rather than default DocumentationFormatter.
     #
     # How did we figure out how to implement it?

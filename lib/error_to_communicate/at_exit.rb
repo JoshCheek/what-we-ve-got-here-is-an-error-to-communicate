@@ -3,7 +3,7 @@ require 'error_to_communicate'
 # Deal with global deps and console knowledge here
 at_exit do
   exception = $!
-  config    = WhatWeveGotHereIsAnErrorToCommunicate::Config.default
+  config    = ErrorToCommunicate::Config.default
 
   next unless config.accept? exception
 

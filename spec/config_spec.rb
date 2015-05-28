@@ -3,7 +3,7 @@ require 'error_to_communicate/config'
 RSpec.describe 'configuration', config: true do
   # Subclassing to make it a easier to refer to, and to get a new instance
   # (config_class.default will not be affected by changes to Config.default)
-  let(:config_class) { Class.new WhatWeveGotHereIsAnErrorToCommunicate::Config }
+  let(:config_class) { Class.new ErrorToCommunicate::Config }
 
   # named blacklists
   let(:allow_all)  { lambda { |e| false } }
@@ -11,11 +11,11 @@ RSpec.describe 'configuration', config: true do
 
   # named heuristics
   let :match_all do
-    WhatWeveGotHereIsAnErrorToCommunicate::Heuristics::Exception
+    ErrorToCommunicate::Heuristics::Exception
   end
 
   let :match_no_method_error do
-    WhatWeveGotHereIsAnErrorToCommunicate::Heuristics::NoMethodError
+    ErrorToCommunicate::Heuristics::NoMethodError
   end
 
   # helper methods
@@ -110,17 +110,17 @@ RSpec.describe 'configuration', config: true do
     describe 'heuristics (correct selection is tested in spec/acceptance)' do
       it 'has heuristics for WrongNumberOfArguments' do
         expect(default_config.heuristics).to include \
-          WhatWeveGotHereIsAnErrorToCommunicate::Heuristics::WrongNumberOfArguments
+          ErrorToCommunicate::Heuristics::WrongNumberOfArguments
       end
 
       it 'has heuristics for NoMethodError' do
         expect(default_config.heuristics).to include \
-          WhatWeveGotHereIsAnErrorToCommunicate::Heuristics::NoMethodError
+          ErrorToCommunicate::Heuristics::NoMethodError
       end
 
       it 'has heuristics for Exception' do
         expect(default_config.heuristics).to include \
-          WhatWeveGotHereIsAnErrorToCommunicate::Heuristics::Exception
+          ErrorToCommunicate::Heuristics::Exception
       end
     end
   end

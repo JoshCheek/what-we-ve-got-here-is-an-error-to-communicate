@@ -63,7 +63,7 @@ RSpec.describe 'parsing', parse: true do
     # it 'records the relative filepath if it cannot fild the file'
 
     def assert_parses_line(line, assertions)
-      parsed = WhatWeveGotHereIsAnErrorToCommunicate::ExceptionInfo::Location.parse(line)
+      parsed = ErrorToCommunicate::ExceptionInfo::Location.parse(line)
       assertions.each do |method_name, expected|
         actual = parsed.__send__ method_name
         expect(actual).to eq expected

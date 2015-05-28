@@ -1,4 +1,4 @@
-module WhatWeveGotHereIsAnErrorToCommunicate
+module ErrorToCommunicate
   class Theme
     def separator_line
       ("="*70) << "\n"

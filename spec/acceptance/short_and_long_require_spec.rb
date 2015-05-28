@@ -5,7 +5,7 @@ RSpec.context 'Short and long require statements', acceptance: true do
     write_file 'require_shorthand.rb', <<-BODY
       require 'error_to_communicate/at_exit'
       ErrorToCommunicate
-      WhatWeveGotHereIsAnErrorToCommunicate
+      ErrorToCommunicate
     BODY
 
     invocation = ruby 'load_shorthand.rb'
@@ -18,7 +18,7 @@ RSpec.context 'Short and long require statements', acceptance: true do
     write_file 'require_longhand.rb', <<-BODY
       require 'what_weve_got_here_is_an_error_to_communicate'
       ErrorToCommunicate
-      WhatWeveGotHereIsAnErrorToCommunicate
+      ErrorToCommunicate
     BODY
 
     invocation = ruby 'load_longhand.rb'

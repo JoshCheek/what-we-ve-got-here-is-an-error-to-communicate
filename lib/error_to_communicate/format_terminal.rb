@@ -4,7 +4,7 @@ require 'error_to_communicate/format_terminal/heuristics/no_method_error.rb'
 require 'error_to_communicate/format_terminal/heuristics/wrong_number_of_arguments.rb'
 require 'error_to_communicate/format_terminal/helpers'
 
-module WhatWeveGotHereIsAnErrorToCommunicate
+module ErrorToCommunicate
   class FormatTerminal
     include FormatTerminal::Helpers
 
@@ -21,9 +21,9 @@ module WhatWeveGotHereIsAnErrorToCommunicate
       self.info  = heuristic.exception_info
       self.heuristic_presenter = # for now
         case heuristic
-        when WhatWeveGotHereIsAnErrorToCommunicate::Heuristics::WrongNumberOfArguments
+        when ErrorToCommunicate::Heuristics::WrongNumberOfArguments
           Heuristics::WrongNumberOfArguments.new(heuristic, info, theme, cwd)
-        when WhatWeveGotHereIsAnErrorToCommunicate::Heuristics::NoMethodError
+        when ErrorToCommunicate::Heuristics::NoMethodError
           Heuristics::NoMethodError.new(heuristic, info, theme, cwd)
         else
           Heuristics::Exception.new(heuristic, info, theme, cwd)

@@ -1,6 +1,6 @@
 require 'error_to_communicate/format_terminal/helpers'
 
-module WhatWeveGotHereIsAnErrorToCommunicate
+module ErrorToCommunicate
   class FormatTerminal
     module Heuristics
       class Exception

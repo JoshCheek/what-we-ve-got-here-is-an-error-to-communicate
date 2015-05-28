@@ -2,7 +2,7 @@ require 'error_to_communicate/version'
 require 'error_to_communicate/exception_info'
 require 'error_to_communicate/theme'
 
-module WhatWeveGotHereIsAnErrorToCommunicate
+module ErrorToCommunicate
   autoload :FormatTerminal, 'error_to_communicate/format_terminal'
 
   class Config
