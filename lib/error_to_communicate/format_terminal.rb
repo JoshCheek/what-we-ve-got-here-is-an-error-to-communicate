@@ -1,25 +1,16 @@
 module ErrorToCommunicate
   class FormatTerminal
-
     def self.call(attributes)
-      new(attributes).call
-    end
+      theme            = attributes.fetch :theme
+      info             = attributes.fetch :einfo
+      format_heuristic = attributes.fetch :format_heuristic
+      format_code      = attributes.fetch :format_code
 
-    attr_accessor :info, :theme, :heuristic_presenter, :format_code
-
-    def initialize(attributes)
-      self.theme               = attributes.fetch :theme
-      self.info                = attributes.fetch :einfo
-      self.heuristic_presenter = attributes.fetch :heuristic_formatter
-      self.format_code         = attributes.fetch :format_code
-    end
-
-    def call
       [ theme.separator_line,
-        *heuristic_presenter.header,
+        *format_heuristic.header,
 
         theme.separator_line,
-        *heuristic_presenter.helpful_info,
+        *format_heuristic.helpful_info,
 
         theme.separator_line,
         *info.backtrace.map { |location|
