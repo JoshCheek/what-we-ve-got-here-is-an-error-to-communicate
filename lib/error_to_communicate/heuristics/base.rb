@@ -1,9 +1,6 @@
 module ErrorToCommunicate
   module Heuristics
     class Base
-      # This should be in charge of autoloading formatters and things
-      # ALSO: It's possible I'm doing too much work without the definite need, at the moment :/
-
       def self.for?(einfo)
         raise NotImplementedError, "#{self} needs to implement .for? (subclass responsibility)"
       end
@@ -12,6 +9,10 @@ module ErrorToCommunicate
 
       def initialize(exception_info)
         self.exception_info = exception_info
+      end
+
+      def format_for_terminal(theme, cwd)
+        self.class::FormatTerminal.new(self, exception_info, theme, cwd)
       end
     end
   end

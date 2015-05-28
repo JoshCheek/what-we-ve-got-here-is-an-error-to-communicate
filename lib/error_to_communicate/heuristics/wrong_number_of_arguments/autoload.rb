@@ -2,6 +2,7 @@ require 'error_to_communicate/heuristics/base'
 
 module ErrorToCommunicate::Heuristics
   class WrongNumberOfArguments < Base
+
     def self.for?(einfo)
       extract_from einfo
     end
@@ -26,3 +27,5 @@ module ErrorToCommunicate::Heuristics
     end
   end
 end
+
+require 'error_to_communicate/heuristics/wrong_number_of_arguments/format_terminal'
