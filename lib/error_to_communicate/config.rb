@@ -1,6 +1,7 @@
 require 'error_to_communicate/version'
 require 'error_to_communicate/format'
 require 'error_to_communicate/exception_info'
+require 'error_to_communicate/theme'
 
 module WhatWeveGotHereIsAnErrorToCommunicate
   class Config
@@ -22,18 +23,20 @@ module WhatWeveGotHereIsAnErrorToCommunicate
 
     def self.new_default
       new heuristics: DEFAULT_HEURISTICS,
-          blacklist:  DEFAULT_BLACKLIST
+          blacklist:  DEFAULT_BLACKLIST,
+          theme:      Theme.new # this is still really fkn rough
     end
 
     def self.default
       @default ||= new_default
     end
 
-    attr_accessor :heuristics, :blacklist
+    attr_accessor :heuristics, :blacklist, :theme
 
     def initialize(attributes)
       self.heuristics = attributes.fetch :heuristics
       self.blacklist  = attributes.fetch :blacklist
+      self.theme      = attributes.fetch :theme, Theme.new
     end
 
     def accept?(exception)
@@ -50,7 +53,7 @@ module WhatWeveGotHereIsAnErrorToCommunicate
     end
 
     def format(heuristic, cwd)
-      Format.new(heuristic, cwd).call
+      Format.new(heuristic, theme, cwd).call
     end
   end
 end

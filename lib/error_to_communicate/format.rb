@@ -6,31 +6,32 @@ module WhatWeveGotHereIsAnErrorToCommunicate
   class Format
     include Format::TerminalHelpers
 
-    attr_accessor :info, :cwd, :heuristic_presenter
+    attr_accessor :info, :cwd, :theme, :heuristic_presenter
 
-    def initialize(heuristic, cwd)
-      self.info      = heuristic.exception_info
-      self.cwd       = cwd
+    def initialize(heuristic, theme, cwd)
+      self.theme = theme
+      self.info  = heuristic.exception_info
+      self.cwd   = cwd
       self.heuristic_presenter = # for now
         case heuristic
         when Heuristics::WrongNumberOfArguments
-          HeuristicPresenter::WrongNumberOfArguments.new(heuristic, info, cwd)
+          HeuristicPresenter::WrongNumberOfArguments.new(heuristic, info, theme, cwd)
         when Heuristics::NoMethodError
-          HeuristicPresenter::NoMethodError.new(heuristic, info, cwd)
+          HeuristicPresenter::NoMethodError.new(heuristic, info, theme, cwd)
         else
-          HeuristicPresenter::Exception.new(heuristic, info, cwd)
+          HeuristicPresenter::Exception.new(heuristic, info, theme, cwd)
         end
     end
 
     def call
       display ||= begin
-        [ separator_line,
+        [ theme.separator_line,
           *heuristic_presenter.header,
 
-          separator_line,
+          theme.separator_line,
           *heuristic_presenter.helpful_info,
 
-          separator_line,
+          theme.separator_line,
           *info.backtrace.map { |location|
             display_location location:   location,
                              highlight:  (location.pred && location.pred.label),

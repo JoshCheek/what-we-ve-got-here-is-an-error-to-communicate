@@ -16,69 +16,41 @@ module WhatWeveGotHereIsAnErrorToCommunicate
 
         # first line gives the path
         path_line = [
-          color_path("#{path_to_dir cwd, path}/"),
-          color_filename(path.basename),
+          theme.color_path("#{path_to_dir cwd, path}/"),
+          theme.color_filename(path.basename),
           ":",
-          color_linenum(location.linenum),
+          theme.color_linenum(location.linenum),
         ].join("")
 
         # then display the code
         if path.exist?
           code = File.read(path).lines[start_index..end_index].join("")
-          code = remove_indentation code
-          code = syntax_highlight   code
-          code = prefix_linenos_to  code, start_index.next
-          code = indent             code, "  "
-          code = add_message_to     code, message_offset, screaming_red(message)
-          code = highlight_text     code, message_offset, highlight
+          code = remove_indentation       code
+          code = theme.syntax_highlight   code
+          code = prefix_linenos_to        code, start_index.next
+          code = theme.indent             code, "  "
+          code = add_message_to           code, message_offset, theme.screaming_red(message)
+          code = theme.highlight_text           code, message_offset, highlight
         else
           code = "Can't find code\n"
         end
 
         # adjust for emphasization
         if attributes.fetch(:emphasisis) == :path
-          path_line = underline path_line
-          code = indent         code, "      "
-          code = desaturate     code
-          code = highlight_text code, message_offset, highlight # b/c desaturate really strips color
+          path_line = theme.underline      path_line
+          code      = theme.indent         code, "      "
+          code      = theme.desaturate     code
+          code      = theme.highlight_text code, message_offset, highlight # b/c desaturate really strips color
         end
 
         # all together
         path_line << "\n" << code
       end
 
-      def separator_line
-        ("="*70) << "\n"
-      end
-
-      def color_path(str)
-        "\e[38;5;36m#{str}\e[39m" # fg r:0, g:3, b:2 (out of 0..5)
-      end
-
-      def color_linenum(linenum)
-        "\e[34m#{linenum}\e[39m"
-      end
-
       def path_to_dir(from, to)
         to.relative_path_from(from).dirname
       rescue ArgumentError
         return to # eg rbx's core code
-      end
-
-      def white
-        "\e[38;5;255m"
-      end
-
-      def bri_red
-        "\e[38;5;196m"
-      end
-
-      def dim_red
-        "\e[38;5;124m"
-      end
-
-      def none
-        "\e[39m"
       end
 
       def bound_num(attributes)
@@ -99,7 +71,7 @@ module WhatWeveGotHereIsAnErrorToCommunicate
         lines.zip(start_linenum..max_linenum)
              .map { |line, num|
                formatted_num = "#{num}:".ljust(linenum_width)
-               color_linenum(formatted_num) << " " << line
+               theme.color_linenum(formatted_num) << " " << line
              }.join("")
       end
 
@@ -107,53 +79,6 @@ module WhatWeveGotHereIsAnErrorToCommunicate
         lines = code.lines
         lines[offset].chomp! << " " << message << "\n"
         lines.join("")
-      end
-
-      def highlight_text(code, index, text)
-        lines = code.lines
-        return code unless text && lines[index]
-        lines[index].gsub!(text, "\e[7m#{text}\e[27m") # invert
-        lines.join("")
-      end
-
-      def indent(str, indentation_str)
-        str.gsub /^/, indentation_str
-      end
-
-      def screaming_red(text)
-        return "" if text.empty?
-        "\e[38;5;255;48;5;88m #{text} \e[39;49m" # bright white on medium red
-      end
-
-      def underline(str)
-        "\e[4m#{str}\e[24m"
-      end
-
-      def color_filename(str)
-        "\e[38;5;49;1m#{str}\e[39m" # fg r:0, g:5, b:3 (out of 0..5)
-      end
-
-      def desaturate(str)
-        nocolor = str.gsub(/\e\[[\d;]+?m/, "")
-        allgray = nocolor.gsub(/^(.*?)\n?$/, "\e[38;5;240m\\1\e[39m\n")
-        allgray
-      end
-
-      # For a list of themes:
-      # https://github.com/JoshCheek/what-we-ve-got-here-is-an-error-to-communicate/issues/36#issuecomment-91200262
-      def syntax_highlight(raw_code)
-        formatter = Rouge::Formatters::Terminal256.new theme: 'github'
-        lexer     = Rouge::Lexers::Ruby.new
-        tokens    = lexer.lex raw_code
-        formatted = formatter.format(tokens)
-        formatted << "\n" unless formatted.end_with? "\n"
-        remove_ansi_codes_after_last_newline(formatted)
-      end
-
-      def remove_ansi_codes_after_last_newline(text)
-        *neck, ass = text.lines # ... kinda like head/tail :P
-        return text unless neck.any? && ass[/^(\e\[(\d+;?)*m)*$/]
-        neck.join("").chomp << ass
       end
     end
   end

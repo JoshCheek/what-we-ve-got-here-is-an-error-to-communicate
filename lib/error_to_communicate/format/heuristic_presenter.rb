@@ -8,20 +8,22 @@ module WhatWeveGotHereIsAnErrorToCommunicate
       class WrongNumberOfArguments
         include Format::TerminalHelpers
 
-        attr_accessor :info, :cwd, :heuristic
+        attr_accessor :info, :cwd, :heuristic, :theme
 
-        def initialize(heuristic, exception_info, cwd)
-          self.info, self.cwd = exception_info, cwd
+        def initialize(heuristic, exception_info, theme, cwd)
           self.heuristic = heuristic
+          self.theme     = theme
+          self.info      = exception_info
+          self.cwd       = cwd
         end
 
         def header
-          [ "#{white}#{info.classname} | "\
-            "#{bri_red}#{heuristic.explanation} "\
-            "#{dim_red}(expected #{white}#{heuristic.num_expected},"\
-            "#{dim_red} sent #{white}#{heuristic.num_received}"\
-            "#{dim_red})"\
-            "#{none}\n"
+          [ "#{theme.white}#{info.classname} | "\
+            "#{theme.bri_red}#{heuristic.explanation} "\
+            "#{theme.dim_red}(expected #{theme.white}#{heuristic.num_expected},"\
+            "#{theme.dim_red} sent #{theme.white}#{heuristic.num_received}"\
+            "#{theme.dim_red})"\
+            "#{theme.none}\n"
           ]
         end
 
@@ -46,17 +48,19 @@ module WhatWeveGotHereIsAnErrorToCommunicate
       class NoMethodError
         include Format::TerminalHelpers
 
-        attr_accessor :info, :cwd, :heuristic
+        attr_accessor :info, :cwd, :heuristic, :theme
 
-        def initialize(heuristic, exception_info, cwd)
-          self.info, self.cwd = exception_info, cwd
+        def initialize(heuristic, exception_info, theme, cwd)
           self.heuristic = heuristic
+          self.theme     = theme
+          self.info      = exception_info
+          self.cwd       = cwd
         end
 
         def header
-          [ "#{white}#{info.classname} | "\
-            "#{bri_red}#{heuristic.explanation} "\
-            "#{none}\n"
+          [ "#{theme.white}#{info.classname} | "\
+            "#{theme.bri_red}#{heuristic.explanation} "\
+            "#{theme.none}\n"
           ]
         end
 
@@ -75,17 +79,19 @@ module WhatWeveGotHereIsAnErrorToCommunicate
       class Exception
         include Format::TerminalHelpers
 
-        attr_accessor :info, :cwd, :heuristic
+        attr_accessor :info, :cwd, :heuristic, :theme
 
-        def initialize(heuristic, exception_info, cwd)
-          self.info, self.cwd = exception_info, cwd
+        def initialize(heuristic, exception_info, theme, cwd)
           self.heuristic = heuristic
+          self.theme     = theme
+          self.info      = exception_info
+          self.cwd       = cwd
         end
 
         def header
-          [ "#{white}#{info.classname} | "\
-            "#{bri_red}#{heuristic.explanation} "\
-            "#{none}\n"
+          [ "#{theme.white}#{info.classname} | "\
+            "#{theme.bri_red}#{heuristic.explanation} "\
+            "#{theme.none}\n"
           ]
         end
 
