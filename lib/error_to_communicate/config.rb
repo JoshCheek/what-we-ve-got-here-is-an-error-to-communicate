@@ -1,9 +1,10 @@
 require 'error_to_communicate/version'
-require 'error_to_communicate/format_terminal' # TODO: switch this to autoload
 require 'error_to_communicate/exception_info'
 require 'error_to_communicate/theme'
 
 module WhatWeveGotHereIsAnErrorToCommunicate
+  autoload :FormatTerminal, 'error_to_communicate/format_terminal'
+
   class Config
     # Extract into a config_default.rb?
     # this would allow you to load the config code without loading all of the lib,
