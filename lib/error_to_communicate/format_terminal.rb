@@ -1,5 +1,7 @@
 require 'pathname'
-require 'error_to_communicate/format_terminal/heuristic_presenter'
+require 'error_to_communicate/format_terminal/heuristics/exception.rb'
+require 'error_to_communicate/format_terminal/heuristics/no_method_error.rb'
+require 'error_to_communicate/format_terminal/heuristics/wrong_number_of_arguments.rb'
 require 'error_to_communicate/format_terminal/helpers'
 
 module WhatWeveGotHereIsAnErrorToCommunicate
@@ -19,12 +21,12 @@ module WhatWeveGotHereIsAnErrorToCommunicate
       self.info  = heuristic.exception_info
       self.heuristic_presenter = # for now
         case heuristic
-        when Heuristics::WrongNumberOfArguments
-          HeuristicPresenter::WrongNumberOfArguments.new(heuristic, info, theme, cwd)
-        when Heuristics::NoMethodError
-          HeuristicPresenter::NoMethodError.new(heuristic, info, theme, cwd)
+        when WhatWeveGotHereIsAnErrorToCommunicate::Heuristics::WrongNumberOfArguments
+          Heuristics::WrongNumberOfArguments.new(heuristic, info, theme, cwd)
+        when WhatWeveGotHereIsAnErrorToCommunicate::Heuristics::NoMethodError
+          Heuristics::NoMethodError.new(heuristic, info, theme, cwd)
         else
-          HeuristicPresenter::Exception.new(heuristic, info, theme, cwd)
+          Heuristics::Exception.new(heuristic, info, theme, cwd)
         end
     end
 
