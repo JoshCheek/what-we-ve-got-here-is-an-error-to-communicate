@@ -48,7 +48,7 @@ module WhatWeveGotHereIsAnErrorToCommunicate
       end
 
       def path_to_dir(from, to)
-        to.relative_path_from(from).dirname
+        to.expand_path.relative_path_from(from).dirname
       rescue ArgumentError
         return to # eg rbx's core code
       end
