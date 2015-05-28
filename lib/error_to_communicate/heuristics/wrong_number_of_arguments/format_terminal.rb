@@ -5,11 +5,11 @@ class ErrorToCommunicate::Heuristics::WrongNumberOfArguments::FormatTerminal
 
   attr_accessor :info, :cwd, :heuristic, :theme
 
-  def initialize(heuristic, exception_info, theme, cwd)
-    self.heuristic = heuristic
-    self.theme     = theme
-    self.info      = exception_info
-    self.cwd       = cwd
+  def initialize(attributes)
+    self.heuristic = attributes.fetch :heuristic
+    self.theme     = attributes.fetch :theme
+    self.info      = attributes.fetch :exception_info
+    self.cwd       = attributes.fetch :cwd
   end
 
   def header

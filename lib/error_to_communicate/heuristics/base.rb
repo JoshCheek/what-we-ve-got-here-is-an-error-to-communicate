@@ -12,7 +12,10 @@ module ErrorToCommunicate
       end
 
       def format_for_terminal(theme, cwd)
-        self.class::FormatTerminal.new(self, exception_info, theme, cwd)
+        self.class::FormatTerminal.new cwd:            cwd,
+                                       theme:          theme,
+                                       heuristic:      self,
+                                       exception_info: exception_info
       end
     end
   end
