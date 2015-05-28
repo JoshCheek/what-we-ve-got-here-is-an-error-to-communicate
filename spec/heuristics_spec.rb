@@ -36,4 +36,11 @@ RSpec.describe 'heuristic management' do
       expect { ErrorToCommunicate::Heuristics::ZoMg }.to raise_error NameError, %r(error_to_communicate/heuristics/zo_mg/autoload)
     end
   end
+
+  describe 'Base' do
+    it 'expects the subclass to implement .for?' do
+      klass = Class.new(ErrorToCommunicate::Heuristics::Base)
+      expect { klass.for? nil }.to raise_error NotImplementedError, /subclass/
+    end
+  end
 end

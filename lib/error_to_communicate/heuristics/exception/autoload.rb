@@ -1,19 +1,13 @@
-module ErrorToCommunicate
-  module Heuristics
-    class Exception
-      def self.for?(einfo)
-        true
-      end
+require 'error_to_communicate/heuristics/base'
 
-      attr_accessor :exception_info
+module ErrorToCommunicate::Heuristics
+  class Exception < Base
+    def self.for?(einfo)
+      true
+    end
 
-      def initialize(exception_info)
-        self.exception_info = exception_info
-      end
-
-      def explanation
-        exception_info.message
-      end
+    def explanation
+      exception_info.message
     end
   end
 end

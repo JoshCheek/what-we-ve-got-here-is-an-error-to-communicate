@@ -1,3 +1,5 @@
+require 'error_to_communicate/heuristics/base'
+
 module ErrorToCommunicate
   module Heuristics
     def self.filename_for(const_name)

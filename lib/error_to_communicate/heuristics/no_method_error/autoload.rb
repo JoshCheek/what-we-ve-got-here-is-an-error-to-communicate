@@ -1,24 +1,18 @@
-module ErrorToCommunicate
-  module Heuristics
-    class NoMethodError
-      def self.for?(einfo)
-        einfo.classname == 'NoMethodError'
-      end
+require 'error_to_communicate/heuristics/base'
 
-      attr_accessor :exception_info
+module ErrorToCommunicate::Heuristics
+  class NoMethodError < Base
+    def self.for?(einfo)
+      einfo.classname == 'NoMethodError'
+    end
 
-      def initialize(exception_info)
-        self.exception_info = exception_info
-      end
+    def explanation
+      exception_info.message[/^[^\(]*/].strip
+    end
 
-      def explanation
-        exception_info.message[/^[^\(]*/].strip
-      end
-
-      def undefined_method_name
-        words = exception_info.message.split(/\s+/)
-        words[2][1...-1]
-      end
+    def undefined_method_name
+      words = exception_info.message.split(/\s+/)
+      words[2][1...-1]
     end
   end
 end
