@@ -11,6 +11,10 @@ module ErrorToCommunicate
         self.einfo = einfo
       end
 
+      def classname
+        einfo.classname
+      end
+
       def backtrace
         einfo.backtrace
       end

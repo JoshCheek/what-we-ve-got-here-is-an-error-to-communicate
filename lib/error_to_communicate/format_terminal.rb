@@ -10,7 +10,6 @@ module ErrorToCommunicate
       format_heuristic = heuristic.class::FormatTerminal.new \
                            heuristic:      heuristic,
                            theme:          theme,
-                           einfo:          heuristic.einfo,
                            format_code:    format_code
 
       [ theme.separator_line,
