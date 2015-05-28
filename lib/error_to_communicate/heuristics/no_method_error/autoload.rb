@@ -9,11 +9,11 @@ module ErrorToCommunicate::Heuristics
     end
 
     def explanation
-      exception_info.message[/^[^\(]*/].strip
+      einfo.message[/^[^\(]*/].strip
     end
 
     def undefined_method_name
-      words = exception_info.message.split(/\s+/)
+      words = einfo.message.split(/\s+/)
       words[2][1...-1]
     end
   end

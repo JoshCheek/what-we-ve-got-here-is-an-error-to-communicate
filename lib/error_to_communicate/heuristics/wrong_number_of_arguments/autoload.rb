@@ -11,7 +11,7 @@ module ErrorToCommunicate::Heuristics
 
     def initialize(*)
       super
-      self.num_received, self.num_expected = self.class.extract_from(exception_info)
+      self.num_received, self.num_expected = self.class.extract_from(einfo)
       self.explanation = 'Wrong number of arguments'
     end
 

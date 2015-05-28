@@ -5,10 +5,14 @@ module ErrorToCommunicate
         raise NotImplementedError, "#{self} needs to implement .for? (subclass responsibility)"
       end
 
-      attr_accessor :exception_info
+      attr_accessor :einfo
 
-      def initialize(exception_info)
-        self.exception_info = exception_info
+      def initialize(einfo)
+        self.einfo = einfo
+      end
+
+      def backtrace
+        einfo.backtrace
       end
 
       # TODO: Push this somewhere higher
@@ -16,7 +20,7 @@ module ErrorToCommunicate
         self.class::FormatTerminal.new \
           theme:          theme,
           heuristic:      self,
-          einfo:          exception_info,
+          einfo:          einfo,
           format_code:    format_code
       end
     end

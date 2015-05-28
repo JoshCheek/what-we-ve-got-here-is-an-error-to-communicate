@@ -8,7 +8,7 @@ module ErrorToCommunicate::Heuristics
     end
 
     def explanation
-      exception_info.message
+      einfo.message
     end
   end
 end
