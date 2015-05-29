@@ -4,12 +4,13 @@ module ErrorToCommunicate
   class Heuristic
     class NoMethodError < Heuristic
       def self.for?(einfo)
-        einfo.classname == 'NoMethodError'
+        ( einfo.classname == 'NoMethodError' ||
+          einfo.classname == 'NameError'
+        ) && parse_undefined_name(einfo)
       end
 
       def undefined_method_name
-        words = einfo.message.split(/\s+/)
-        words[2][1...-1]
+        self.class.parse_undefined_name einfo
       end
 
       def semantic_info
@@ -22,6 +23,12 @@ module ErrorToCommunicate
             emphasis:  :code,
           }]
         ]
+      end
+
+      private
+
+      def self.parse_undefined_name(einfo)
+        einfo.message[/`(.*)'/, 1]
       end
     end
   end
