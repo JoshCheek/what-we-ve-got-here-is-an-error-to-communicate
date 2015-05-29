@@ -8,7 +8,7 @@ RSpec.describe 'Heuristic', heuristic: true do
                    ]
                  }
   let(:subclass) { Class.new ErrorToCommunicate::Heuristic }
-  let(:instance) { subclass.new einfo: einfo, project: default_project }
+  let(:instance) { subclass.new einfo: einfo, project: build_default_project }
 
   it 'expects the subclass to implement .for?' do
     expect { subclass.for? nil }.to raise_error NotImplementedError, /subclass/
@@ -55,7 +55,7 @@ RSpec.describe 'Heuristic', heuristic: true do
         err  = RuntimeError.new('the message')
         err.set_backtrace ["file1:12:in `a'", "file2:100:in `b'", "file3:94:in `c'"]
         einfo        = einfo_for err
-        instance     = subclass.new einfo: einfo, project: default_project
+        instance     = subclass.new einfo: einfo, project: build_default_project
         code_samples = instance.semantic_backtrace.last
         metas        = code_samples.map do |name, metadata, *rest|
           expect(name).to eq :code

@@ -5,14 +5,6 @@ RSpec.describe 'Heuristic for a LoadError', heuristic: true do
     ErrorToCommunicate::Heuristic::LoadError
   end
 
-  # Available helpers:
-  #
-  # def heuristic_for(attributes={})
-  #   heuristic_class.new einfo_for FakeException.new attributes
-  # def is_for!(exception)
-  # def is_not_for!(exception)
-  # def einfo_for(exception)
-
   it 'is for LoadErrors with a message that includes " -- " to separate the message from the path' do
     is_for! LoadError.new 'cannot load such file -- a/b/c'
     is_for! LoadError.new "no such file to load -- /a/b/c\ndef\tghi\ejkl"
@@ -71,12 +63,74 @@ RSpec.describe 'Heuristic for a LoadError', heuristic: true do
   end
 
   describe 'identification of the relevant locations from the backtrace' do
-    it 'identifies the first line that is outside of rubygems'
-    it 'identifies the line within the lib dir'
-    specify 'when they are different, it displays them both'
-    specify 'when they are the same, it only displays them once'
-    specify 'when either is missing, it displays the other'
-    specify 'when both are missing, it displays a message stating this'
+    it 'identifies the first line that is outside of rubygems' do
+      heuristic = heuristic_for backtrace: [
+        "/a/b:1:in `a'", "/a/c:2:in `c'", "/d:3:in `d'", "/e:4:in `e'"
+      ], rubygems_dir: '/a'
+      expect(heuristic.first_nongem_line.path.to_s).to eq '/d'
+
+      heuristic = heuristic_for backtrace: [
+        "/b:2:in `b'", "/c:3:in `c'"
+      ], rubygems_dir: '/a'
+      expect(heuristic.first_nongem_line.path.to_s).to eq '/b'
+
+      heuristic = heuristic_for backtrace: [
+        "/a/b:1:in `a'", "/c:2:in `c'", "/d:3:in `d'"
+      ], rubygems_dir: '/a/b'
+      expect(heuristic.first_nongem_line.path.to_s).to eq '/c'
+
+      heuristic = heuristic_for backtrace: [
+        "/a/b:1:in `a'", "/c:2:in `c'", "/d:3:in `d'"
+      ], rubygems_dir: '/'
+      expect(heuristic.first_nongem_line).to eq nil
+    end
+
+    it 'identifies the line within the project root' do
+      heuristic = heuristic_for backtrace: [
+        "/a/b:1:in `a'", "/c:2:in `c'", "/d:3:in `d'"
+      ], root: '/a'
+      expect(heuristic.first_line_within_lib.path.to_s).to eq '/a/b'
+
+      heuristic = heuristic_for backtrace: [
+        "/a/b:1:in `a'", "/c/d:2:in `c'", "/e:3:in `e'"
+      ], root: '/c'
+      expect(heuristic.first_line_within_lib.path.to_s).to eq '/c/d'
+
+      heuristic = heuristic_for backtrace: [
+        "/a/b:1:in `a'", "/c/d:2:in `c'", "/e:3:in `e'"
+      ], root: '/x'
+      expect(heuristic.first_line_within_lib).to eq nil
+    end
+
+    specify 'when they are different, it displays them both' do
+      heuristic = heuristic_for backtrace: [
+        "/a/b:1:in `a'", "/c/d:2:in `c'", "/e:3:in `e'"
+      ], root: '/c'
+      expect(heuristic.relevant_locations.map(&:path).map(&:to_s)).to eq ['/a/b', '/c/d']
+    end
+
+    specify 'when they are the same, it only displays them once' do
+      heuristic = heuristic_for backtrace: [
+        "/a/b:1:in `a'", "/c/d:2:in `c'", "/e:3:in `e'"
+      ], root: '/a'
+      expect(heuristic.relevant_locations.map(&:path).map(&:to_s)).to eq ['/a/b']
+    end
+
+    specify 'when either is missing, it displays the other' do
+      heuristic = heuristic_for backtrace: ["/a/b:1:in `a'"], root: '/b'
+      expect(heuristic.relevant_locations.map(&:path).map(&:to_s)).to eq ['/a/b']
+    end
+
+    specify 'when both are missing, it displays a message stating this' do
+      heuristic = heuristic_for backtrace: ["/a/b:1:in `a'"],
+                                root: '/b',
+                                rubygems_dir: '/a'
+      expect(heuristic.relevant_locations).to eq []
+      name, (context, message) = heuristic.semantic_info
+      expect(name).to eq :heuristic
+      expect(context).to eq :context
+      expect(message).to be_a_kind_of String
+    end
   end
 
   describe 'displaying relevant code' do

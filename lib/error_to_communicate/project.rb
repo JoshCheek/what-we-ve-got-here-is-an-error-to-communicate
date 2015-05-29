@@ -7,7 +7,7 @@ module ErrorToCommunicate
 
     attr_accessor :root
 
-    def initialize(attributes)
+    def initialize(attributes={})
       attributes.each { |name, value| __send__ :"#{name}=", value }
     end
 

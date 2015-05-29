@@ -14,7 +14,7 @@ module ErrorToCommunicate
       end
 
       def semantic_info
-        [:heuristic,
+        heuristic = if relevant_locations.any?
           relevant_locations.map { |location|
             [:code, {
               location:  location,
@@ -24,11 +24,15 @@ module ErrorToCommunicate
               emphasis:  :code,
             }]
           }
-        ]
+        else
+          [:context, 'Couldn\'t find anything interesting ¯\_(ツ)_/¯']
+        end
+
+        [:heuristic, heuristic]
       end
 
       def relevant_locations
-        @relevant_locations ||= [first_nongem_line, first_line_within_lib].compact
+        @relevant_locations ||= [first_nongem_line, first_line_within_lib].compact.uniq
       end
 
       def first_nongem_line

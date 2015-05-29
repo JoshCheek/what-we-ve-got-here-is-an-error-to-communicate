@@ -9,12 +9,14 @@ module HeuristicSpecHelpers
   end
 
   def heuristic_for(attributes={})
-    heuristic_class.new einfo:   einfo_for(FakeException.new attributes),
-                        project: default_project
+    heuristic_class.new project: build_default_project(attributes),
+                        einfo:   einfo_for(FakeException.new attributes)
   end
 
-  def default_project
-    ErrorToCommunicate::Config.default.project # iffy, but this is volatile right now, so waiting to fuck with it
+  def build_default_project(attributes={})
+    ErrorToCommunicate::Project.new \
+      rubygems_dir: attributes.delete(:rubygems_dir),
+      root:         attributes.delete(:root)
   end
 
   def is_for!(exception)
