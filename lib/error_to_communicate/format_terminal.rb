@@ -15,8 +15,8 @@ module ErrorToCommunicate
       [ theme.separator_line,
         *SemanticFormatter.new(theme).call(
           [ :columns,
-            [:classname, heuristic.classname],
-            [:message,   heuristic.semantic_message]
+            [:classname,   heuristic.classname],
+            [:explanation, heuristic.semantic_explanation]
           ]
         ),
 

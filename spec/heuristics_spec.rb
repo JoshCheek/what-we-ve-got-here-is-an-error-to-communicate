@@ -45,21 +45,25 @@ RSpec.describe 'heuristic management' do
       expect { subclass.for? nil }.to raise_error NotImplementedError, /subclass/
     end
 
-    it 'expects the subclass to implement #semantic_message' do
-      instance = subclass.new einfo
-      expect { instance.semantic_message }.to raise_error NotImplementedError, /subclass/
-    end
-
     it 'records the exception info as einfo' do
       instance = subclass.new einfo
       expect(instance.einfo).to equal einfo
     end
 
-    it 'delegates classname, backtrace, and message to einfo' do
+    it 'delegates classname, and backtrace to einfo' do
       instance = subclass.new einfo
       expect(instance.classname).to eq 'the classname'
       expect(instance.backtrace).to eq ['file:12']
-      expect(instance.message  ).to eq 'the message'
+    end
+
+    it 'defaults the explanation to einfo\'s message' do
+      instance = subclass.new einfo
+      expect(instance.explanation).to eq 'the message'
+    end
+
+    it 'defines the semantic explanation to the message' do
+      instance = subclass.new einfo
+      expect(instance.semantic_explanation).to eq [:message, 'the message']
     end
   end
 end

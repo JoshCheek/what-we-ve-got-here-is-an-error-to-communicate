@@ -7,13 +7,5 @@ module ErrorToCommunicate::Heuristics
     def self.for?(einfo)
       true
     end
-
-    def explanation
-      einfo.message
-    end
-
-    def semantic_message
-      [:message, [:explanation, explanation]]
-    end
   end
 end

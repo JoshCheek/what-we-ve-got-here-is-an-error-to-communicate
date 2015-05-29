@@ -19,12 +19,12 @@ module ErrorToCommunicate
         einfo.backtrace
       end
 
-      def message
+      def explanation
         einfo.message
       end
 
-      def semantic_message
-        raise NotImplementedError, "#{self} needs to implement #semantic_message (subclass responsibility)"
+      def semantic_explanation
+        [:message, einfo.message]
       end
     end
   end
