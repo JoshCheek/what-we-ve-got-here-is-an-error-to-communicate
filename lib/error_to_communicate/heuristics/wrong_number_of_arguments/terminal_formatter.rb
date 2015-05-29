@@ -7,17 +7,6 @@ class ErrorToCommunicate::Heuristics::WrongNumberOfArguments::TerminalFormatter
     self.format_code = attributes.fetch :format_code
   end
 
-  # TODO: give these semantic names
-  def header
-    [ "#{theme.white}#{heuristic.classname} | "\
-      "#{theme.bri_red}#{heuristic.explanation} "\
-      "#{theme.dim_red}(expected #{theme.white}#{heuristic.num_expected},"\
-      "#{theme.dim_red} sent #{theme.white}#{heuristic.num_received}"\
-      "#{theme.dim_red})"\
-      "#{theme.none}\n"
-    ]
-  end
-
   # Really, it seems like the heuristics job to know this, not the formatter's
   def helpful_info
     [ format_code.call(location:   heuristic.backtrace[0],

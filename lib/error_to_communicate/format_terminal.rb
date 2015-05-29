@@ -13,7 +13,12 @@ module ErrorToCommunicate
                            format_code:    format_code
 
       [ theme.separator_line,
-        *heuristic_formatter.header,
+        *SemanticFormatter.new(theme).call(
+          [ :columns,
+            [:classname, heuristic.classname],
+            [:message,   heuristic.semantic_message]
+          ]
+        ),
 
         theme.separator_line,
         *heuristic_formatter.helpful_info,
@@ -27,6 +32,39 @@ module ErrorToCommunicate
             emphasisis: :path
         }
       ].join("")
+    end
+
+
+    # TODO: not good enough, but too tired right now to know where it goes.
+    # these need to be able to take things like:
+    # [:message, ["a", [:explanation, "b"], "c"]]
+    # where "a", and "c", get coloured with the semantics of :message
+    class SemanticFormatter
+      attr_accessor :theme
+
+      def initialize(theme)
+        self.theme = theme
+      end
+
+      def to_proc
+        lambda { |semantic_content| call semantic_content }
+      end
+
+      def call(semantic_content)
+        return semantic_content unless semantic_content.kind_of? Array
+
+        meaning, content, *rest = semantic_content
+        case meaning
+        when Array        then semantic_content.map(&self).join
+        when :columns     then theme.columns     [content, *rest].map(&self)
+        when :classname   then theme.classname   call content
+        when :message     then theme.message     call content
+        when :explanation then theme.explanation call content
+        when :context     then theme.context     call content
+        when :details     then theme.details     call content
+        else raise "Wat is #{meaning.inspect}?"
+        end
+      end
     end
 
 

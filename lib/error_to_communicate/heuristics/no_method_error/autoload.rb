@@ -16,5 +16,9 @@ module ErrorToCommunicate::Heuristics
       words = einfo.message.split(/\s+/)
       words[2][1...-1]
     end
+
+    def semantic_message
+      [:message, [:explanation, explanation]]
+    end
   end
 end

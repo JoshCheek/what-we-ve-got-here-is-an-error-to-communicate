@@ -16,6 +16,18 @@ module ErrorToCommunicate::Heuristics
       self.explanation = 'Wrong number of arguments'
     end
 
+    def semantic_message
+      [ :message,
+        [ [:explanation, explanation],
+          [:context, '(expected '],
+          [:details, num_expected],
+          [:context, ', sent '],
+          [:details, num_received],
+          [:context, ')'],
+        ]
+      ]
+    end
+
     private
 
     def self.extract_from(einfo)

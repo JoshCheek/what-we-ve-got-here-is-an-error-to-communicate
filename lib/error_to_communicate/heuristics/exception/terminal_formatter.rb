@@ -7,13 +7,6 @@ class ErrorToCommunicate::Heuristics::Exception::TerminalFormatter
     self.format_code = attributes.fetch :format_code
   end
 
-  def header
-    [ "#{theme.white}#{heuristic.classname} | "\
-      "#{theme.bri_red}#{heuristic.explanation} "\
-      "#{theme.none}\n"
-    ]
-  end
-
   def helpful_info
     [ format_code.call(location:   heuristic.backtrace[0],
                        highlight:  heuristic.backtrace[0].label,

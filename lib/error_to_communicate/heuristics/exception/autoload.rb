@@ -11,5 +11,9 @@ module ErrorToCommunicate::Heuristics
     def explanation
       einfo.message
     end
+
+    def semantic_message
+      [:message, [:explanation, explanation]]
+    end
   end
 end

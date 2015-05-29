@@ -1,5 +1,34 @@
 module ErrorToCommunicate
   class Theme
+    # -----  Semantic  -----
+    # TODO: Not good enough, see note on FormatTerminal::SemanticFormatter
+
+    def columns(*content)
+      content.join(' | ') + "\n"
+    end
+
+    def classname(classname)
+      "#{white}#{classname}#{none}"
+    end
+
+    def message(message)
+      "#{bri_red}#{message}#{none}"
+    end
+
+    def explanation(explanation)
+      "#{bri_red}#{explanation}#{none}"
+    end
+
+    def context(context)
+      "#{dim_red}#{context}#{none}"
+    end
+
+    def details(details)
+      "#{white}#{details}#{none}"
+    end
+
+    # --------------------------------
+
     def separator_line
       ("="*70) << "\n"
     end
