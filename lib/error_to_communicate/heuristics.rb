@@ -14,24 +14,14 @@ module ErrorToCommunicate
       File.join 'error_to_communicate', 'heuristics', filename_for(subclass_or_name), *path
     end
 
-    # TODO: refactor
     def self.const_missing(name)
       path = filepath_for name, 'autoload'
-      required = false
-      begin
-        require path
-        required = true
-      rescue LoadError => err
-        raise err unless err.message.include? path # the file we're loading can also raise load errors
-      end
-
-      required || super
-
-      if constants.include?(name)
-        const_get name
-      else
-        raise NameError, "Expected #{path.inspect} to define #{self}::#{name}, but it did not."
-      end
+      require path
+      return const_get(name) if constants.include?(name)
+      raise NameError, "Expected #{path.inspect} to define #{self}::#{name}, but it did not."
+    rescue LoadError => err
+      super name if err.message.include?(path) # don't swallow load errors raised within the file we're loading
+      raise err
     end
   end
 end
