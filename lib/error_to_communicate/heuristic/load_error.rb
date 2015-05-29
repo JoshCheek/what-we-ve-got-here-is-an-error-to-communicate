@@ -28,18 +28,23 @@ module ErrorToCommunicate
       end
 
       def relevant_locations
-        rubygems_dir = $LOADED_FEATURES.grep(/\/rubygems\/specification.rb/).first
-        rubygems_dir &&= File.dirname rubygems_dir
-        project_root = File.expand_path Dir.pwd # iffy
-        relevant_backtrace = if rubygems_dir
-          backtrace.drop_while { |loc| loc.path.to_s.start_with? rubygems_dir }
-        else
-          0
-        end
+        @relevant_locations ||= [first_nongem_line, first_line_within_lib].compact
+      end
 
-        first_nongem_line = relevant_backtrace.first
-        first_line_within_lib = relevant_backtrace.find { |loc| loc.path.to_s.start_with? project_root }
-        [first_nongem_line, first_line_within_lib].compact
+      def first_nongem_line
+        relevant_backtrace.first
+      end
+
+      def first_line_within_lib
+        @first_line_within_lib ||= relevant_backtrace.find { |loc| loc.path.to_s.start_with? project.root }
+      end
+
+      private
+
+      def relevant_backtrace
+        @relevant_backtrace ||= relevant_backtrace = project.rubygems? ?
+          backtrace :
+          backtrace.drop_while { |loc| loc.path.to_s.start_with? project.rubygems_dir }
       end
     end
   end

@@ -4,10 +4,11 @@ module ErrorToCommunicate
       raise NotImplementedError, "#{self} needs to implement .for? (subclass responsibility)"
     end
 
-    attr_accessor :einfo
+    attr_accessor :einfo, :project
 
     def initialize(einfo)
-      self.einfo = einfo
+      self.einfo   = einfo
+      self.project = Project.new loaded_features: $LOADED_FEATURES, project_root:   File.expand_path(Dir.pwd)
     end
 
     def classname

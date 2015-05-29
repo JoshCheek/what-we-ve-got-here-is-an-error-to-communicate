@@ -1,6 +1,7 @@
 require 'pathname'
 require 'error_to_communicate/version'
 require 'error_to_communicate/theme'
+require 'error_to_communicate/project'
 require 'error_to_communicate/exception_info'
 
 module ErrorToCommunicate
