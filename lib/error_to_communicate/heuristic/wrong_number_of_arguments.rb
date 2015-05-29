@@ -3,8 +3,6 @@ require 'error_to_communicate/heuristic'
 module ErrorToCommunicate
   class Heuristic
     class WrongNumberOfArguments < Heuristic
-      autoload :TerminalFormatter, File.expand_path('terminal_formatter', __dir__)
-
       def self.for?(einfo)
         extract_from einfo
       end

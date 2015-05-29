@@ -3,8 +3,6 @@ require 'error_to_communicate/heuristic'
 module ErrorToCommunicate
   class Heuristic
     class Exception < Heuristic
-      autoload :TerminalFormatter, File.expand_path('terminal_formatter', __dir__)
-
       def self.for?(einfo)
         true
       end
