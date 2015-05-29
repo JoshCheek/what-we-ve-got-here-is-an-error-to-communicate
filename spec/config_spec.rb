@@ -11,11 +11,11 @@ RSpec.describe 'configuration', config: true do
 
   # named heuristics
   let :match_all do
-    ErrorToCommunicate::Heuristics::Exception
+    ErrorToCommunicate::Heuristic::Exception
   end
 
   let :match_no_method_error do
-    ErrorToCommunicate::Heuristics::NoMethodError
+    ErrorToCommunicate::Heuristic::NoMethodError
   end
 
   # helper methods
@@ -110,17 +110,17 @@ RSpec.describe 'configuration', config: true do
     describe 'heuristics (correct selection is tested in spec/acceptance)' do
       it 'has heuristics for WrongNumberOfArguments' do
         expect(default_config.heuristics).to include \
-          ErrorToCommunicate::Heuristics::WrongNumberOfArguments
+          ErrorToCommunicate::Heuristic::WrongNumberOfArguments
       end
 
       it 'has heuristics for NoMethodError' do
         expect(default_config.heuristics).to include \
-          ErrorToCommunicate::Heuristics::NoMethodError
+          ErrorToCommunicate::Heuristic::NoMethodError
       end
 
       it 'has heuristics for Exception' do
         expect(default_config.heuristics).to include \
-          ErrorToCommunicate::Heuristics::Exception
+          ErrorToCommunicate::Heuristic::Exception
       end
     end
   end

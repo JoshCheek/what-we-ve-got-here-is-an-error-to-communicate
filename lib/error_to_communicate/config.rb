@@ -1,17 +1,19 @@
 require 'pathname'
 require 'error_to_communicate/version'
 require 'error_to_communicate/theme'
-require 'error_to_communicate/heuristics'
 require 'error_to_communicate/exception_info'
 
 module ErrorToCommunicate
   autoload :FormatTerminal, 'error_to_communicate/format_terminal'
 
   class Config
+    require 'error_to_communicate/heuristic/exception'
+    require 'error_to_communicate/heuristic/no_method_error'
+    require 'error_to_communicate/heuristic/wrong_number_of_arguments'
     DEFAULT_HEURISTICS = [
-      Heuristics::WrongNumberOfArguments,
-      Heuristics::NoMethodError,
-      Heuristics::Exception,
+      Heuristic::WrongNumberOfArguments,
+      Heuristic::NoMethodError,
+      Heuristic::Exception,
     ].freeze # dup it, don't modify the real one
 
     DEFAULT_BLACKLIST = lambda do |einfo|

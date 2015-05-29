@@ -1,8 +1,8 @@
-require 'heuristics/spec_helper'
+require 'heuristic/spec_helper'
 
-RSpec.describe 'heuristics for the wrong number of arguments', heuristic: true do
+RSpec.describe 'heuristics for the WrongNumberOfArguments', heuristic: true do
   def heuristic_class
-    ErrorToCommunicate::Heuristics::WrongNumberOfArguments
+    ErrorToCommunicate::Heuristic::WrongNumberOfArguments
   end
 
   describe '.for?' do
