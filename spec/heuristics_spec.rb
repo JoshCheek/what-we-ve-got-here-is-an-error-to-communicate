@@ -38,9 +38,28 @@ RSpec.describe 'heuristic management' do
   end
 
   describe 'Base' do
+    let(:subclass) { Class.new ErrorToCommunicate::Heuristics::Base }
+    let(:einfo)    { ErrorToCommunicate::ExceptionInfo.new classname: 'the classname', message: 'the message', backtrace: ['file:12'] }
+
     it 'expects the subclass to implement .for?' do
-      klass = Class.new(ErrorToCommunicate::Heuristics::Base)
-      expect { klass.for? nil }.to raise_error NotImplementedError, /subclass/
+      expect { subclass.for? nil }.to raise_error NotImplementedError, /subclass/
+    end
+
+    it 'expects the subclass to implement #semantic_message' do
+      instance = subclass.new einfo
+      expect { instance.semantic_message }.to raise_error NotImplementedError, /subclass/
+    end
+
+    it 'records the exception info as einfo' do
+      instance = subclass.new einfo
+      expect(instance.einfo).to equal einfo
+    end
+
+    it 'delegates classname, backtrace, and message to einfo' do
+      instance = subclass.new einfo
+      expect(instance.classname).to eq 'the classname'
+      expect(instance.backtrace).to eq ['file:12']
+      expect(instance.message  ).to eq 'the message'
     end
   end
 end

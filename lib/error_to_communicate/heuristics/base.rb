@@ -19,8 +19,11 @@ module ErrorToCommunicate
         einfo.backtrace
       end
 
+      def message
+        einfo.message
+      end
+
       def semantic_message
-        # TODO: UNTESTED
         raise NotImplementedError, "#{self} needs to implement #semantic_message (subclass responsibility)"
       end
     end
