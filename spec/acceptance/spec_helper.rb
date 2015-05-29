@@ -17,10 +17,11 @@ module AcceptanceSpecHelpers
     File.join root_dir, 'proving_grounds'
   end
 
-  def ruby(filename)
+  def ruby(*args)
     # workaround for JRuby bug (capture3 calls open3 with invalid args, needs to splat an array, but doesn't)
     in_proving_grounds do
-      Haiti::CommandLineHelpers::Invocation.new *Open3.capture3(ENV, 'ruby', '-I', lib_dir, filename)
+      out, err, status = Open3.capture3 ENV, 'ruby', '-I', lib_dir, *args
+      Haiti::CommandLineHelpers::Invocation.new out, err, status
     end
   end
 

@@ -13,11 +13,13 @@ module ErrorToCommunicate
     require 'error_to_communicate/heuristic/wrong_number_of_arguments'
     require 'error_to_communicate/heuristic/no_method_error'
     require 'error_to_communicate/heuristic/load_error'
+    require 'error_to_communicate/heuristic/syntax_error'
     require 'error_to_communicate/heuristic/exception'
     DEFAULT_HEURISTICS = [
       Heuristic::WrongNumberOfArguments,
       Heuristic::NoMethodError,
       Heuristic::LoadError,
+      Heuristic::SyntaxError,
       Heuristic::Exception,
     ].freeze
 
