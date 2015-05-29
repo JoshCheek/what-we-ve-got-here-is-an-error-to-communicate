@@ -28,7 +28,8 @@ module ErrorToCommunicate
       end
 
       def semantic_info
-        [ [:code, {
+        [:heuristic, [
+          [:code, {
             location:  backtrace[0],
             highlight: backtrace[0].label,
             context:   0..5,
@@ -43,7 +44,7 @@ module ErrorToCommunicate
             message:   "SENT #{num_received}",
             emphasis:  :code,
           }],
-        ]
+        ]]
       end
 
       private

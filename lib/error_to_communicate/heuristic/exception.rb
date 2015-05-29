@@ -8,12 +8,14 @@ module ErrorToCommunicate
       end
 
       def semantic_info
-        [:code, {
-          location:  backtrace[0],
-          highlight: backtrace[0].label,
-          context:   -5..5,
-          emphasis:  :code,
-        }]
+        [:heuristic,
+          [:code, {
+            location:  backtrace[0],
+            highlight: backtrace[0].label,
+            context:   -5..5,
+            emphasis:  :code,
+          }]
+        ]
       end
     end
   end
