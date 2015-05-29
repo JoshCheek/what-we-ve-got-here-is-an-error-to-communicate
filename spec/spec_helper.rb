@@ -26,6 +26,13 @@ module SpecHelpers
     warnings = mock_stderr.string
     return warnings unless $! # don't swallow exceptions
   end
+
+  def capture
+    yield
+    raise 'NO EXCEPTION WAS RAISED!'
+  rescue Exception
+    return $!
+  end
 end
 
 

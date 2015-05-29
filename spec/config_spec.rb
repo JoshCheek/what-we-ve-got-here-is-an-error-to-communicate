@@ -19,13 +19,6 @@ RSpec.describe 'configuration', config: true do
   end
 
   # helper methods
-  def capture
-    yield
-    raise 'NO EXCEPTION WAS RAISED!'
-  rescue Exception
-    return $!
-  end
-
   def yes_accept!(config, ex)
     expect(config.accept? ex).to eq true
   end
