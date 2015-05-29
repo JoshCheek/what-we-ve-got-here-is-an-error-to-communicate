@@ -10,12 +10,13 @@ module ErrorToCommunicate
         .downcase
     end
 
-    def self.filepath_for(subclass_or_name)
-      "error_to_communicate/heuristics/#{filename_for subclass_or_name}"
+    def self.filepath_for(subclass_or_name, *path)
+      File.join 'error_to_communicate', 'heuristics', filename_for(subclass_or_name), *path
     end
 
+    # TODO: refactor
     def self.const_missing(name)
-      path = filepath_for(name) + '/autoload'
+      path = filepath_for name, 'autoload'
       required = false
       begin
         require path
