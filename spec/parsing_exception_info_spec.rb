@@ -129,4 +129,75 @@ RSpec.describe 'Parsing exceptions to ExceptionInfo', einfo: true do
     end
   end
 
+  describe 'ExceptionInfo::Location', t:true do
+    def location_for(attrs)
+      ErrorToCommunicate::ExceptionInfo::Location.new attrs
+    end
+
+    it 'hashes take into account its path, linenum, and label' do
+      loc_base         = location_for(path: 'p', linenum: 123, label: 'l')
+      loc_eq1          = location_for(path: 'p', linenum: 123, label: 'l')
+      loc_eq2          = location_for(path: 'p', linenum: 123, label: 'l', succ: loc_base, pred: loc_base)
+      loc_diff_path    = location_for(path: 'P', linenum: 123, label: 'l')
+      loc_diff_linenum = location_for(path: 'p', linenum: 999, label: 'l')
+      loc_diff_label   = location_for(path: 'p', linenum: 123, label: 'L')
+
+      expect(loc_base.hash).to eq loc_eq1.hash # same values gets same hash
+      expect(loc_base.hash).to eq loc_eq2.hash # succ/pred are excluded from hash
+      expect(loc_base.hash).to_not eq loc_diff_path.hash
+      expect(loc_base.hash).to_not eq loc_diff_linenum.hash
+      expect(loc_base.hash).to_not eq loc_diff_label.hash
+
+      # use this, just to show it works
+      h = {loc_base => :found}
+      expect( h[loc_eq1          ] ).to eq :found
+      expect( h[loc_eq2          ] ).to eq :found
+      expect( h[loc_diff_path    ] ).to eq nil
+      expect( h[loc_diff_linenum ] ).to eq nil
+      expect( h[loc_diff_label   ] ).to eq nil
+    end
+
+
+    # Can't directly check associations for equality or we'll end up in an infinite loop
+    # This was maybe a waste of time, to specify it this precisely, all I want to be able to do is compare two paths -.^
+    it 'is == and eql? to another location, if their paths, linenums, and labels are ==' do
+      # the rest are compared against this
+      loc1            = location_for path: 'p1', linenum: 1, label: 'l1'
+
+      # equivalent
+      loc1_same       = location_for path: 'p1', linenum: 1, label: 'l1'
+      expect(loc1).to eq  loc1_same
+      expect(loc1).to eql loc1_same
+
+      # different path
+      loc1_diff_path  = location_for path: 'p2', linenum: 1, label: 'l1'
+      expect(loc1).to_not eq  loc1_diff_path
+      expect(loc1).to_not eql loc1_diff_path
+
+      # different line
+      loc1_diff_line  = location_for path: 'p1', linenum: 2, label: 'l1'
+      expect(loc1).to_not eq  loc1_diff_line
+      expect(loc1).to_not eql loc1_diff_line
+
+      # different label
+      loc1_diff_label = location_for path: 'p1', linenum: 1, label: 'l2'
+      expect(loc1).to_not eq  loc1_diff_label
+      expect(loc1).to_not eql loc1_diff_label
+
+      # are == when different before
+      loc2_before     = location_for path: 'p2', linenum: 2, label: 'l2'
+      loc2            = location_for path: 'p1', linenum: 1, label: 'l1'
+      loc2.succ, loc2_before.pred = loc2_before, loc2
+      expect(loc1).to eq  loc2
+      expect(loc1).to eql loc2
+
+      # are == when different after
+      loc3            = location_for path: 'p1', linenum:  1, label: 'l1'
+      loc3_after      = location_for path: 'p2', linenum:  2, label: 'l2'
+      loc3.succ, loc3_after.pred = loc3_after, loc3
+      expect(loc1).to eq  loc3
+      expect(loc1).to eql loc3
+    end
+  end
+
 end

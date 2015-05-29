@@ -27,6 +27,20 @@ class ErrorToCommunicate::ExceptionInfo::Location
       label:   $3,
     )
   end
+
+  # is there an upper bound I need to stay within? Guessing 30 or 31 bits,
+  # but maybe it doesn't really matter?
+  def hash
+    path.hash + linenum.hash + label.hash
+  end
+
+  def ==(location)
+    path    == location.path    &&
+    linenum == location.linenum &&
+    label   == location.label
+  end
+
+  alias eql? ==
 end
 
 # Wraps an exception in our internal data structures
