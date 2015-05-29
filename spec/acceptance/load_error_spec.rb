@@ -18,6 +18,6 @@ RSpec.context 'LoadError', acceptance: true do
     expect(stderr).to match %r(LoadError.*?load.*?not/a/real/dir)
 
     # heuristic displays the line the exception was raised at, and some context
-    expect(stderr).to match %r(2:.*?require "not/a/real/dir".*?Couldn't find file)
+    expect(stderr).to match %r(2:.*?require "not/a/real/dir".*?Couldn't find "not/a/real/dir")
   end
 end

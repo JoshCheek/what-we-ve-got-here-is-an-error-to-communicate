@@ -134,16 +134,35 @@ RSpec.describe 'Heuristic for a LoadError', heuristic: true do
   end
 
   describe 'displaying relevant code' do
+    let :semantic_code do
+      _heuristic, ((_code, code_attrs), *) =
+        heuristic_for(root:      '/a',
+                      backtrace: ["/a/b:1:in `a'"],
+                      message:   'cannot load such file -- zomg'
+                     ).semantic_info
+      expect(code_attrs[:location].path.to_s).to eq '/a/b'
+      code_attrs
+    end
+
     # TODO: Should 5 be configurable?
-    it 'includes 5 lines of context before/after'
-    it 'emphasizes the code'
+    it 'includes 5 lines of context before/after' do
+      expect(semantic_code[:context]).to eq (-5..5)
+    end
+
+    it 'emphasizes the code' do
+      expect(semantic_code[:emphasis]).to eq :code
+    end
 
     context 'when the line includes the path' do
-      it 'has the message "Couldn\'t find file"'
+      it 'has the message "Couldn\'t find file"' do
+        skip 'Waiting b/c it\'s inconvenient right now to get the code in the heuristic'
+      end
     end
 
     context 'when the line does not include the path' do
-      it 'has the message "Couldn\'t find \"<FILE>\""'
+      it 'has the message "Couldn\'t find \"<FILE>\""' do
+        expect(semantic_code[:message]).to eq 'Couldn\'t find "zomg"'
+      end
     end
   end
 

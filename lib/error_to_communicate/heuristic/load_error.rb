@@ -20,12 +20,14 @@ module ErrorToCommunicate
               location:  location,
               highlight: location.label,
               context:   -5..5,
-              message:   "Couldn't find file",
+              message:   "Couldn't find #{path.to_s.inspect}",
               emphasis:  :code,
             }]
           }
         else
-          [:context, 'Couldn\'t find anything interesting ¯\_(ツ)_/¯']
+          # The newline here implies the semantic analysis needs to get better,
+          # it only does this b/c it should be a block-element, but isn't being sectioned like that, correctly
+          [:context, "Couldn\'t find anything interesting ¯\_(ツ)_/¯\n"]
         end
 
         [:heuristic, heuristic]
