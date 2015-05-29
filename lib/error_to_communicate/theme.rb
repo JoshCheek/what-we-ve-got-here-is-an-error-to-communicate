@@ -1,7 +1,7 @@
 module ErrorToCommunicate
   class Theme
     # -----  Semantic  -----
-    # TODO: Not good enough, see note on FormatTerminal::SemanticFormatter
+    # TODO: Not good enough, see note on FormatTerminal#format
 
     def columns(*content)
       content.join(' | ') + "\n"

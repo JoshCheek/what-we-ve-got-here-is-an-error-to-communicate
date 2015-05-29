@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe 'parsing', parse: true do
+RSpec.describe 'Parsing exceptions to ExceptionInfo', einfo: true do
   it 'records the class name, message, and backtrace' do
     exception = FakeException.new message:   'Some message',
                                   backtrace: ["/Users/someone/a/b/c.rb:123:in `some_method_name'"]
