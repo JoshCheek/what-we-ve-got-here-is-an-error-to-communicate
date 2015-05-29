@@ -29,4 +29,9 @@ RSpec.describe 'Heuristic' do
     instance = subclass.new einfo
     expect(instance.semantic_explanation).to eq [:message, 'the message']
   end
+
+  it 'defines the semantic_info to be null by default' do
+    instance = subclass.new einfo
+    expect(instance.semantic_info).to eq [:null]
+  end
 end

@@ -26,8 +26,7 @@ module ErrorToCommunicate
       [:message, einfo.message]
     end
 
-    # TODO: rename to semantic_info
-    def helpful_info
+    def semantic_info
       [:null]
     end
   end

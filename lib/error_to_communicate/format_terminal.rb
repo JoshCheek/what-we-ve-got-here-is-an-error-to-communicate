@@ -28,7 +28,7 @@ module ErrorToCommunicate
         ],
 
         [:separator],
-        *heuristic.helpful_info, # ehh
+        *heuristic.semantic_info,
 
         [:separator],
         *heuristic.backtrace.map { |location| # backtrace formatter?

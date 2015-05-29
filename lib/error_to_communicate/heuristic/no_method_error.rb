@@ -18,7 +18,7 @@ module ErrorToCommunicate
         words[2][1...-1]
       end
 
-      def helpful_info
+      def semantic_info
         [ [:code, {
             location:   backtrace[0],
             highlight:  backtrace[0].label,
