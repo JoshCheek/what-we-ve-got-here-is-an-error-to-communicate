@@ -27,6 +27,10 @@ module ErrorToCommunicate
       "#{white}#{details}#{none}"
     end
 
+    def mark_linenum(linenum)
+      "#{bri_red}#{linenum}#{none}"
+    end
+
     # --------------------------------
 
     def separator_line

@@ -86,7 +86,7 @@ module ErrorToCommunicate
           code = File.read(path).lines[start_index..end_index].join("")
           code = remove_indentation       code
           code = theme.syntax_highlight   code
-          code = prefix_linenos_to        code, start_index.next
+          code = prefix_linenos_to        code, start_index.next, mark: location.linenum
           code = theme.indent             code, "  "
           code = add_message_to           code, message_offset, theme.screaming_red(message)
           code = theme.highlight_text           code, message_offset, highlight
@@ -123,13 +123,15 @@ module ErrorToCommunicate
         code.gsub(/^#{indentation}/, "")
       end
 
-      def prefix_linenos_to(code, start_linenum)
+      def prefix_linenos_to(code, start_linenum, options)
+        line_to_mark  = options.fetch :mark, -1
         lines         = code.lines
         max_linenum   = lines.count + start_linenum - 1 # 1 to translate to indexes
         linenum_width = max_linenum.to_s.length + 1     # 1 for the colon
         lines.zip(start_linenum..max_linenum)
              .map { |line, num|
                formatted_num = "#{num}:".ljust(linenum_width)
+               formatted_num = theme.mark_linenum formatted_num if line_to_mark == num
                theme.color_linenum(formatted_num) << " " << line
              }.join("")
       end
