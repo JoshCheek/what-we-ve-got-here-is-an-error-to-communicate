@@ -20,21 +20,9 @@ module ErrorToCommunicate
     # But I can't quite see it yet, so going to wait until there are more requirements on this.
     def call
       format [
-        [:summary, [:columns,
-                     [:classname,   heuristic.classname],
-                     [:explanation, heuristic.semantic_explanation]]],
-
-        [:heuristic, heuristic.semantic_info],
-
-        [:backtrace, heuristic.backtrace.map { |location|
-                       [:code, {
-                         location:   location,
-                         highlight:  (location.pred && location.pred.label),
-                         context:    0..0,
-                         emphasisis: :path,
-                       }]
-                     }
-        ],
+        heuristic.semantic_summary,
+        heuristic.semantic_info,
+        heuristic.semantic_backtrace,
       ]
     end
 
@@ -105,7 +93,7 @@ module ErrorToCommunicate
         end
 
         # adjust for emphasization
-        if attributes.fetch(:emphasisis) == :path
+        if attributes.fetch(:emphasis) == :path
           path_line = theme.underline      path_line
           code      = theme.indent         code, "      "
           code      = theme.desaturate     code

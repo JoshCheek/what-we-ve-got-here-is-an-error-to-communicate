@@ -31,19 +31,19 @@ module ErrorToCommunicate
 
       def semantic_info
         [ [:code, {
-            location:   backtrace[0],
-            highlight:  backtrace[0].label,
-            context:    0..5,
-            message:    "EXPECTED #{num_expected}",
-            emphasisis: :code,
+            location:  backtrace[0],
+            highlight: backtrace[0].label,
+            context:   0..5,
+            message:   "EXPECTED #{num_expected}",
+            emphasis:  :code,
           }],
 
           [:code, {
-            location:   backtrace[1],
-            highlight:  backtrace[0].label,
-            context:    -5..5,
-            message:    "SENT #{num_received}",
-            emphasisis: :code,
+            location:  backtrace[1],
+            highlight: backtrace[0].label,
+            context:   -5..5,
+            message:   "SENT #{num_received}",
+            emphasis:  :code,
           }],
         ]
       end

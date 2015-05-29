@@ -11,10 +11,10 @@ module ErrorToCommunicate
 
       def semantic_info
         [:code, {
-          location:   backtrace[0],
-          highlight:  backtrace[0].label,
-          context:    -5..5,
-          emphasisis: :code,
+          location:  backtrace[0],
+          highlight: backtrace[0].label,
+          context:   -5..5,
+          emphasis:  :code,
         }]
       end
     end

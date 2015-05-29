@@ -1,6 +1,6 @@
 require 'heuristic/spec_helper'
 
-RSpec.describe 'Heuristic for a NoMethodError', heuristic: true do
+RSpec.describe 'Heuristic for a Exception', heuristic: true do
   def heuristic_class
     ErrorToCommunicate::Heuristic::Exception
   end

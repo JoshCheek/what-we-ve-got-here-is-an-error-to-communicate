@@ -23,11 +23,31 @@ module ErrorToCommunicate
     end
 
     def semantic_explanation
-      [:message, einfo.message]
+      explanation
+    end
+
+    def semantic_summary
+      [:summary, [
+        [:columns,
+          [:classname,   classname],
+          [:explanation, semantic_explanation]]]]
     end
 
     def semantic_info
       [:null]
+    end
+
+    def semantic_backtrace
+      [:backtrace,
+        backtrace.map do |location|
+          [:code, {
+            location:  location,
+            highlight: (location.pred && location.pred.label),
+            context:   0..0,
+            emphasis:  :path,
+          }]
+        end
+      ]
     end
   end
 end
