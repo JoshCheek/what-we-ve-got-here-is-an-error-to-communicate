@@ -19,14 +19,13 @@ module ErrorToCommunicate
       end
 
       def semantic_info
-        [ [:code, {
-            location:   backtrace[0],
-            highlight:  backtrace[0].label,
-            context:    -5..5,
-            message:    "#{undefined_method_name} is undefined",
-            emphasisis: :code,
-          }],
-        ]
+        [:code, {
+          location:   backtrace[0],
+          highlight:  backtrace[0].label,
+          context:    -5..5,
+          message:    "#{undefined_method_name} is undefined",
+          emphasisis: :code,
+        }]
       end
     end
   end

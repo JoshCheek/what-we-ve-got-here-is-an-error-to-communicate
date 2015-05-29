@@ -11,33 +11,30 @@ module ErrorToCommunicate
       self.cwd         = attributes.fetch :cwd
       self.theme       = attributes.fetch :theme
       self.heuristic   = attributes.fetch :heuristic
-      self.format_code = FormatTerminal::Code.new theme: theme, cwd: cwd
-
-      # self.heuristic_formatter = heuristic.class::TerminalFormatter.new \
-      #                              heuristic:      heuristic,
-      #                              theme:          theme,
-      #                              format_code:    format_code
+      self.format_code = FormatTerminal::Code.new theme: theme, cwd: cwd # defined below
     end
 
+    # Really, it seems like #format should be #call,
+    # which implies that there are two objects in here.
+    # One that does the semantic formatting, and one that translates that to text.
+    # But I can't quite see it yet, so going to wait until there are more requirements on this.
     def call
       format [
-        [:separator],
-        [:columns,
-          [:classname,   heuristic.classname],
-          [:explanation, heuristic.semantic_explanation]
+        [:summary, [:columns,
+                     [:classname,   heuristic.classname],
+                     [:explanation, heuristic.semantic_explanation]]],
+
+        [:heuristic, heuristic.semantic_info],
+
+        [:backtrace, heuristic.backtrace.map { |location|
+                       [:code, {
+                         location:   location,
+                         highlight:  (location.pred && location.pred.label),
+                         context:    0..0,
+                         emphasisis: :path,
+                       }]
+                     }
         ],
-
-        [:separator],
-        *heuristic.semantic_info,
-
-        [:separator],
-        *heuristic.backtrace.map { |location| # backtrace formatter?
-          format_code.call \
-            location:   location,
-            highlight:  (location.pred && location.pred.label),
-            context:    0..0,
-            emphasisis: :path
-        }
       ]
     end
 
@@ -51,6 +48,9 @@ module ErrorToCommunicate
       meaning, content, *rest = semantic_content
       case meaning
       when Array        then semantic_content.map { |c| format c }.join
+      when :summary     then format([:separator]) + format(content)
+      when :heuristic   then format([:separator]) + format(content)
+      when :backtrace   then format([:separator]) + format(content)
       when :separator   then theme.separator_line
       when :columns     then theme.columns     [content, *rest].map { |c| format c }
       when :classname   then theme.classname   format content
