@@ -16,5 +16,16 @@ module ErrorToCommunicate::Heuristics
       words = einfo.message.split(/\s+/)
       words[2][1...-1]
     end
+
+    def helpful_info
+      [ [:code, {
+          location:   backtrace[0],
+          highlight:  backtrace[0].label,
+          context:    -5..5,
+          message:    "#{undefined_method_name} is undefined",
+          emphasisis: :code,
+        }],
+      ]
+    end
   end
 end

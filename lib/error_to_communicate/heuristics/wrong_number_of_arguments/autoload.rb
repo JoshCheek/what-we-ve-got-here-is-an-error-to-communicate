@@ -28,6 +28,25 @@ module ErrorToCommunicate::Heuristics
       ]
     end
 
+    def helpful_info
+      [ [:code, {
+          location:   backtrace[0],
+          highlight:  backtrace[0].label,
+          context:    0..5,
+          message:    "EXPECTED #{num_expected}",
+          emphasisis: :code,
+        }],
+
+        [:code, {
+          location:   backtrace[1],
+          highlight:  backtrace[0].label,
+          context:    -5..5,
+          message:    "SENT #{num_received}",
+          emphasisis: :code,
+        }],
+      ]
+    end
+
     private
 
     def self.extract_from(einfo)

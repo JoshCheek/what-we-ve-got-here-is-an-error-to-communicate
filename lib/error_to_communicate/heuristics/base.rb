@@ -26,6 +26,10 @@ module ErrorToCommunicate
       def semantic_explanation
         [:message, einfo.message]
       end
+
+      def helpful_info
+        [:null]
+      end
     end
   end
 end

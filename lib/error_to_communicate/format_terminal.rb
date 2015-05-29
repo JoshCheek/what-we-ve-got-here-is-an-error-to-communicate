@@ -8,14 +8,15 @@ module ErrorToCommunicate
 
     attr_accessor :cwd, :theme, :heuristic, :format_code, :heuristic_formatter
     def initialize(attributes)
-      self.cwd                 = attributes.fetch :cwd
-      self.theme               = attributes.fetch :theme
-      self.heuristic           = attributes.fetch :heuristic
-      self.format_code         = FormatTerminal::Code.new theme: theme, cwd: cwd
-      self.heuristic_formatter = heuristic.class::TerminalFormatter.new \
-                                   heuristic:      heuristic,
-                                   theme:          theme,
-                                   format_code:    format_code
+      self.cwd         = attributes.fetch :cwd
+      self.theme       = attributes.fetch :theme
+      self.heuristic   = attributes.fetch :heuristic
+      self.format_code = FormatTerminal::Code.new theme: theme, cwd: cwd
+
+      # self.heuristic_formatter = heuristic.class::TerminalFormatter.new \
+      #                              heuristic:      heuristic,
+      #                              theme:          theme,
+      #                              format_code:    format_code
     end
 
     def call
@@ -27,7 +28,7 @@ module ErrorToCommunicate
         ],
 
         [:separator],
-        *heuristic_formatter.helpful_info, # ehh
+        *heuristic.helpful_info, # ehh
 
         [:separator],
         *heuristic.backtrace.map { |location| # backtrace formatter?
@@ -57,6 +58,8 @@ module ErrorToCommunicate
       when :explanation then theme.explanation format content
       when :context     then theme.context     format content
       when :details     then theme.details     format content
+      when :code        then format_code.call  content
+      when :null        then ''
       else raise "Wat is #{meaning.inspect}?"
       end
     end
