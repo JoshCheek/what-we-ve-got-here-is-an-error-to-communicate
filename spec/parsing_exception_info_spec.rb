@@ -129,7 +129,7 @@ RSpec.describe 'Parsing exceptions to ExceptionInfo', einfo: true do
     end
   end
 
-  describe 'ExceptionInfo::Location', t:true do
+  describe 'ExceptionInfo::Location' do
     def location_for(attrs)
       ErrorToCommunicate::ExceptionInfo::Location.new attrs
     end
@@ -197,6 +197,15 @@ RSpec.describe 'Parsing exceptions to ExceptionInfo', einfo: true do
       loc3.succ, loc3_after.pred = loc3_after, loc3
       expect(loc1).to eq  loc3
       expect(loc1).to eql loc3
+    end
+
+    it 'inspects to something that isn\'t obnoxious to look at' do
+      linked_loc = location_for path: 'somepath', linenum:  123, label: 'somelabel'
+      linked_loc.succ, linked_loc.pred = linked_loc, linked_loc
+      expect(linked_loc.inspect).to eq '#<ExInfo::Loc somepath:123:in `somelabel\' pred:true succ:true>'
+
+      unlinked_loc = location_for path: 'anotherpath', linenum: 12, label: 'anotherlabel'
+      expect(unlinked_loc.inspect).to eq '#<ExInfo::Loc anotherpath:12:in `anotherlabel\' pred:false succ:false>'
     end
   end
 

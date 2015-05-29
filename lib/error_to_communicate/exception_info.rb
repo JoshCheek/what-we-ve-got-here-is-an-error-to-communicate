@@ -41,6 +41,10 @@ class ErrorToCommunicate::ExceptionInfo::Location
   end
 
   alias eql? ==
+
+  def inspect
+    "#<ExInfo::Loc #{path}:#{linenum}:in `#{label}' pred:#{!!pred} succ:#{!!succ}>"
+  end
 end
 
 # Wraps an exception in our internal data structures
