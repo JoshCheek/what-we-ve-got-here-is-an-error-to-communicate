@@ -1,30 +1,37 @@
 module ErrorToCommunicate
   class Project
-    attr_reader :root, :rubygems_dir, :loaded_features
+    def self.find_rubygems_dir(loaded_features)
+      dir = loaded_features.grep(/\/rubygems\/specification.rb/).first
+      dir && File.dirname(dir)
+    end
+
+    attr_accessor :root
 
     def initialize(attributes)
-      attributes = attributes.dup
-      self.root            = extract attributes, :project_root
-      self.loaded_features = extract attributes, :loaded_features
-      self.rubygems_dir    = extract attributes, :rubygems_dir, :find_rubygems_dir
-      raise "Unexpected attributes: #{attributes.keys}" if attributes.any?
+      attributes.each { |name, value| __send__ :"#{name}=", value }
     end
 
     def rubygems?
       !rubygems_dir
     end
 
-    private
+    def loaded_features
+      @loaded_features ||= []
+    end
 
-    attr_writer :root, :rubygems_dir, :loaded_features
+    def loaded_features=(loaded_features)
+      @loaded_features = loaded_features
+    end
+
+    attr_writer :rubygems_dir
+    def rubygems_dir
+      @rubygems_dir ||= self.class.find_rubygems_dir(loaded_features)
+    end
+
+    private
 
     def extract(attributes, key, set_default=nil)
       attributes.delete(key) || __send__(set_default)
-    end
-
-    def find_rubygems_dir
-      rubygems_dir = loaded_features.grep(/\/rubygems\/specification.rb/).first
-      rubygems_dir && File.dirname(rubygems_dir)
     end
   end
 end

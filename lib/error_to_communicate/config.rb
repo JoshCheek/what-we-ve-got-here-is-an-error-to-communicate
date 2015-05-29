@@ -34,12 +34,13 @@ module ErrorToCommunicate
     attr_accessor :heuristics, :blacklist, :theme, :format_with, :catchall_heuristic, :project
 
     def initialize(options={})
-      self.heuristics  = options.fetch(:heuristics)  { DEFAULT_HEURISTICS }
-      self.blacklist   = options.fetch(:blacklist)   { DEFAULT_BLACKLIST }
-      self.theme       = options.fetch(:theme)       { Theme.new } # this is still really fkn rough
-      self.format_with = options.fetch(:format_with) { FormatTerminal }
-      self.project     = Project.new loaded_features: $LOADED_FEATURES,
-                                     project_root:    File.expand_path(Dir.pwd)
+      self.heuristics  = options.fetch(:heuristics)      { DEFAULT_HEURISTICS }
+      self.blacklist   = options.fetch(:blacklist)       { DEFAULT_BLACKLIST }
+      self.theme       = options.fetch(:theme)           { Theme.new } # this is still really fkn rough
+      self.format_with = options.fetch(:format_with)     { FormatTerminal }
+      loaded_features  = options.fetch(:loaded_features) { $LOADED_FEATURES }
+      root             = options.fetch(:root)            { File.expand_path Dir.pwd }
+      self.project     = Project.new root: root, loaded_features: loaded_features
     end
 
     def accept?(exception)
