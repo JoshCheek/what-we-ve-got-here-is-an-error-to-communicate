@@ -3,27 +3,33 @@ require 'rouge'
 module ErrorToCommunicate
   class FormatTerminal
     def self.call(attributes)
-      cwd                 = attributes.fetch :cwd
-      theme               = attributes.fetch :theme
-      heuristic           = attributes.fetch :heuristic
-      format_code         = FormatTerminal::Code.new theme: theme, cwd: cwd
-      heuristic_formatter = heuristic.class::TerminalFormatter.new \
-                           heuristic:      heuristic,
-                           theme:          theme,
-                           format_code:    format_code
+      new(attributes).call
+    end
 
-      [ theme.separator_line,
-        *SemanticFormatter.new(theme).call(
-          [ :columns,
-            [:classname,   heuristic.classname],
-            [:explanation, heuristic.semantic_explanation]
-          ]
-        ),
+    attr_accessor :cwd, :theme, :heuristic, :format_code, :heuristic_formatter
+    def initialize(attributes)
+      self.cwd                 = attributes.fetch :cwd
+      self.theme               = attributes.fetch :theme
+      self.heuristic           = attributes.fetch :heuristic
+      self.format_code         = FormatTerminal::Code.new theme: theme, cwd: cwd
+      self.heuristic_formatter = heuristic.class::TerminalFormatter.new \
+                                   heuristic:      heuristic,
+                                   theme:          theme,
+                                   format_code:    format_code
+    end
 
-        theme.separator_line,
-        *heuristic_formatter.helpful_info,
+    def call
+      format [
+        [:separator],
+        [:columns,
+          [:classname,   heuristic.classname],
+          [:explanation, heuristic.semantic_explanation]
+        ],
 
-        theme.separator_line,
+        [:separator],
+        *heuristic_formatter.helpful_info, # ehh
+
+        [:separator],
         *heuristic.backtrace.map { |location| # backtrace formatter?
           format_code.call \
             location:   location,
@@ -31,39 +37,27 @@ module ErrorToCommunicate
             context:    0..0,
             emphasisis: :path
         }
-      ].join("")
+      ]
     end
 
-
-    # TODO: not good enough, but too tired right now to know where it goes.
-    # these need to be able to take things like:
+    # TODO: not good enough,
+    # These need to be able to take things like:
     # [:message, ["a", [:explanation, "b"], "c"]]
     # where "a", and "c", get coloured with the semantics of :message
-    class SemanticFormatter
-      attr_accessor :theme
+    def format(semantic_content)
+      return semantic_content unless semantic_content.kind_of? Array
 
-      def initialize(theme)
-        self.theme = theme
-      end
-
-      def to_proc
-        lambda { |semantic_content| call semantic_content }
-      end
-
-      def call(semantic_content)
-        return semantic_content unless semantic_content.kind_of? Array
-
-        meaning, content, *rest = semantic_content
-        case meaning
-        when Array        then semantic_content.map(&self).join
-        when :columns     then theme.columns     [content, *rest].map(&self)
-        when :classname   then theme.classname   call content
-        when :message     then theme.message     call content
-        when :explanation then theme.explanation call content
-        when :context     then theme.context     call content
-        when :details     then theme.details     call content
-        else raise "Wat is #{meaning.inspect}?"
-        end
+      meaning, content, *rest = semantic_content
+      case meaning
+      when Array        then semantic_content.map { |c| format c }.join
+      when :separator   then theme.separator_line
+      when :columns     then theme.columns     [content, *rest].map { |c| format c }
+      when :classname   then theme.classname   format content
+      when :message     then theme.message     format content
+      when :explanation then theme.explanation format content
+      when :context     then theme.context     format content
+      when :details     then theme.details     format content
+      else raise "Wat is #{meaning.inspect}?"
       end
     end
 
