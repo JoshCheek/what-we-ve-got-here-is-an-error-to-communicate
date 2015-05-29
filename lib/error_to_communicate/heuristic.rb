@@ -6,9 +6,9 @@ module ErrorToCommunicate
 
     attr_accessor :einfo, :project
 
-    def initialize(einfo)
-      self.einfo   = einfo
-      self.project = Project.new loaded_features: $LOADED_FEATURES, project_root:   File.expand_path(Dir.pwd)
+    def initialize(attributes)
+      self.einfo   = attributes.fetch :einfo
+      self.project = attributes.fetch :project
     end
 
     def classname

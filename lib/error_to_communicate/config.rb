@@ -31,13 +31,15 @@ module ErrorToCommunicate
       @default ||= new
     end
 
-    attr_accessor :heuristics, :blacklist, :theme, :format_with, :catchall_heuristic
+    attr_accessor :heuristics, :blacklist, :theme, :format_with, :catchall_heuristic, :project
 
     def initialize(options={})
       self.heuristics  = options.fetch(:heuristics)  { DEFAULT_HEURISTICS }
       self.blacklist   = options.fetch(:blacklist)   { DEFAULT_BLACKLIST }
       self.theme       = options.fetch(:theme)       { Theme.new } # this is still really fkn rough
       self.format_with = options.fetch(:format_with) { FormatTerminal }
+      self.project     = Project.new loaded_features: $LOADED_FEATURES,
+                                     project_root:    File.expand_path(Dir.pwd)
     end
 
     def accept?(exception)
@@ -49,7 +51,8 @@ module ErrorToCommunicate
     def heuristic_for(exception)
       accept?(exception) || raise(ArgumentError, "Asked for a heuristic on an object we don't accept: #{exception.inspect}")
       einfo = ExceptionInfo.parse(exception)
-      heuristics.find { |heuristic| heuristic.for? einfo }.new(einfo)
+      heuristics.find { |heuristic| heuristic.for? einfo }
+                .new(einfo: einfo, project: project)
     end
 
     def format(heuristic, cwd)

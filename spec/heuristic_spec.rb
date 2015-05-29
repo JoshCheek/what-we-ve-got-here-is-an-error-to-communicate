@@ -1,36 +1,33 @@
 require 'spec_helper'
 require 'error_to_communicate/heuristic'
+require 'heuristic/spec_helper'
 
-RSpec.describe 'Heuristic' do
-  let(:subclass) { Class.new ErrorToCommunicate::Heuristic }
+RSpec.describe 'Heuristic', heuristic: true do
   let(:einfo)    { ErrorToCommunicate::ExceptionInfo.new classname: 'the classname', message: 'the message', backtrace: [
                      ErrorToCommunicate::ExceptionInfo::Location.new(path: 'file', linenum: 12, label: 'a')
                    ]
                  }
+  let(:subclass) { Class.new ErrorToCommunicate::Heuristic }
+  let(:instance) { subclass.new einfo: einfo, project: default_project }
 
   it 'expects the subclass to implement .for?' do
     expect { subclass.for? nil }.to raise_error NotImplementedError, /subclass/
   end
 
   it 'records the exception info as einfo' do
-    instance = subclass.new einfo
     expect(instance.einfo).to equal einfo
   end
 
   it 'delegates classname, and backtrace to einfo' do
-    instance = subclass.new einfo
     expect(instance.classname).to eq 'the classname'
     expect(instance.backtrace.map { |loc| [loc.linenum] }).to eq [[12]]
   end
 
   it 'defaults the explanation to einfo\'s message' do
-    instance = subclass.new einfo
     expect(instance.explanation).to eq 'the message'
   end
 
   describe 'semantic methods' do
-    let(:instance) { subclass.new einfo }
-
     specify 'semantic_explanation defaults to the explanation' do
       def instance.explanation; "!#{einfo.message}!"; end
       expect(instance.semantic_explanation).to eq "!the message!"
@@ -58,7 +55,7 @@ RSpec.describe 'Heuristic' do
         err  = RuntimeError.new('the message')
         err.set_backtrace ["file1:12:in `a'", "file2:100:in `b'", "file3:94:in `c'"]
         einfo        = einfo_for err
-        instance     = subclass.new einfo
+        instance     = subclass.new einfo: einfo, project: default_project
         code_samples = instance.semantic_backtrace.last
         metas        = code_samples.map do |name, metadata, *rest|
           expect(name).to eq :code

@@ -9,7 +9,12 @@ module HeuristicSpecHelpers
   end
 
   def heuristic_for(attributes={})
-    heuristic_class.new einfo_for FakeException.new attributes
+    heuristic_class.new einfo:   einfo_for(FakeException.new attributes),
+                        project: default_project
+  end
+
+  def default_project
+    ErrorToCommunicate::Config.default.project # iffy, but this is volatile right now, so waiting to fuck with it
   end
 
   def is_for!(exception)
