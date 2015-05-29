@@ -28,23 +28,34 @@ module ErrorToCommunicate
       end
 
       def semantic_info
-        [:heuristic, [
-          [:code, {
+        if backtrace.length == 0
+          [:context, "Couldn\'t find anything interesting ¯\_(ツ)_/¯\n"]
+        elsif backtrace.length == 1
+          [:heuristic, [:code, {
             location:  backtrace[0],
             highlight: backtrace[0].label,
-            context:   0..5,
-            message:   "EXPECTED #{num_expected}",
+            context:   (-5..5),
             emphasis:  :code,
-          }],
+          }]]
+        else
+          [:heuristic, [
+            [:code, {
+              location:  backtrace[0],
+              highlight: backtrace[0].label,
+              context:   0..5,
+              message:   "EXPECTED #{num_expected}",
+              emphasis:  :code,
+            }],
 
-          [:code, {
-            location:  backtrace[1],
-            highlight: backtrace[0].label,
-            context:   -5..5,
-            message:   "SENT #{num_received}",
-            emphasis:  :code,
-          }],
-        ]]
+            [:code, {
+              location:  backtrace[1],
+              highlight: backtrace[0].label,
+              context:   -5..5,
+              message:   "SENT #{num_received}",
+              emphasis:  :code,
+            }],
+          ]]
+        end
       end
 
       private
