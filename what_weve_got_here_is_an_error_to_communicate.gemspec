@@ -1,7 +1,7 @@
 require_relative 'lib/error_to_communicate/version'
 Gem::Specification.new do |s|
   s.name        = 'what_weve_got_here_is_an_error_to_communicate'
-  s.version     = WhatWeveGotHereIsAnErrorToCommunicate::VERSION
+  s.version     = ErrorToCommunicate::VERSION
   s.licenses    = ['MIT']
   s.summary     = "Readable, helpful error messages"
   s.description = "Hooks into program lifecycle to display error messages to you in a helpufl way, with inlined code, colour, and helpful heuristics about what might be the cause."

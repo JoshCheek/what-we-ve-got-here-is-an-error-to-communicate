@@ -19,7 +19,7 @@ module ErrorToCommunicate
         *heuristic_formatter.helpful_info,
 
         theme.separator_line,
-        *heuristic.backtrace.map { |location| # TODO: backtrace formatter?
+        *heuristic.backtrace.map { |location| # backtrace formatter?
           format_code.call \
             location:   location,
             highlight:  (location.pred && location.pred.label),
