@@ -8,8 +8,13 @@ module ErrorToCommunicate
   autoload :FormatTerminal, 'error_to_communicate/format_terminal'
 
   class Config
-    # Freezing this to encourage duping it rather than modifying the global default.
+    # If you wind up needing to modify this global list, let me know!
+    # I figure there should be a way to add/remove heuristics on the Config instance,
+    # but I can't quite tell what will be needed or what it should look like.
     # This implies we should provide a way to add/remove heuristics on the config itself.
+    # So I'm intentionally leaving this array unfrozen, to allow modification,
+    # so that anyone wanting to hack in their own heuristic isn't prevented,
+    # but if that happens, tell me so I can figure out how to add that functionality correctly!
     require 'error_to_communicate/heuristic/wrong_number_of_arguments'
     require 'error_to_communicate/heuristic/no_method_error'
     require 'error_to_communicate/heuristic/load_error'
@@ -21,7 +26,7 @@ module ErrorToCommunicate
       Heuristic::LoadError,
       Heuristic::SyntaxError,
       Heuristic::Exception,
-    ].freeze
+    ]
 
     # Should maybe also be an array, b/c there's no great way to add a proc to the blacklist,
     # right now, it would have to check it's thing and then call the next one
