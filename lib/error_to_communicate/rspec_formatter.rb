@@ -3,21 +3,18 @@ require 'rspec/core/formatters/documentation_formatter'
 
 module ErrorToCommunicate
   class Heuristic::RSpecFailure < Heuristic
-    attr_accessor :failure, :failure_number
+    attr_accessor :failure, :failure_number, :config
     attr_accessor :semantic_summary, :semantic_info
 
     def initialize(attributes)
       self.failure_number = attributes.fetch :failure_number
       self.failure        = attributes.fetch :failure
+      self.config         = attributes.fetch :config
 
       # initialize the heuristic
       ExceptionInfo.parse(failure.exception).tap do |einfo|
-        backtrace_formatter = attributes.fetch :backtrace_formatter
-        einfo.backtrace = ExceptionInfo.parse_backtrace(
-                            backtrace_formatter.format_backtrace(
-                              failure.exception.backtrace,
-                              failure.example.metadata))
-        super attributes.merge einfo: einfo
+        einfo.backtrace = ExceptionInfo.parse_backtrace failure.formatted_backtrace
+        super einfo: einfo, project: config.project
       end
 
       # format it with our lib
@@ -28,25 +25,27 @@ module ErrorToCommunicate
               [:classname, failure_number],        # TODO: not classname
               [:classname, failure.description]]]] # TODO: not classname
 
+         codeblocks = []
+         backtrace[0] and codeblocks << [:code, {
+                                          location:  backtrace[0],
+                                          context:   (-5..5),
+                                          emphasis:  :code,
+                                        }]
         self.semantic_info =
           [:heuristic, [ # ":heuristic" is dumb, it's not a heuristic, it's an error message, Maybe we need a :section or something?
             [:message, message],
-            [:code, {
-              location:  backtrace[0],
-              context:   (-5..5),
-              emphasis:  :code,
-            }]
+            *codeblocks,
           ]]
       else
         # wrap the heuristic that would otherwise be chosen
-        heuristic = Config.default.heuristic_for einfo
+        heuristic = config.heuristic_for einfo
 
         # num | description | classname | error message (content of heuristic.semantic_summary... this is not guaranteed to always work, but it currently works with all of our classes)
         self.semantic_summary =
           [:summary, [
             [:columns,
-              [:classname,   failure_number],      # TODO: not classname
-              [:classname,   failure.description], # TODO: not classname
+              [:classname,   failure_number],              # TODO: not classname
+              [:classname,   failure.description],         # TODO: not classname
               [:classname,   heuristic.classname], # TODO: not classname
               [:explanation, heuristic.semantic_explanation]]]]
 
@@ -55,7 +54,7 @@ module ErrorToCommunicate
     end
 
     def assertion?
-      classname =~ /RSpec/ # TODO: document why these are assertions
+      classname =~ /RSpec/ # explanation at https://github.com/JoshCheek/mrspec/blob/2761ba2180eb5f71a9262f6d59ce20d7cc8a47c3/lib/mrspec/minitest_assertion_for_rspec.rb
     end
   end
 
@@ -83,10 +82,9 @@ module ErrorToCommunicate
       output.puts "\nFailures:\n"
       notification.failure_notifications.each.with_index(1) do |failure, failure_number|
         heuristic = Heuristic::RSpecFailure.new \
-          project:             Config.default.project,
-          failure:             failure,
-          failure_number:      failure_number,
-          backtrace_formatter: RSpec.configuration.backtrace_formatter
+          config:         Config.default,
+          failure:        failure,
+          failure_number: failure_number
         formatted = Config.default.format heuristic, Dir.pwd
         output.puts formatted.chomp.gsub(/^/, '  ')
       end

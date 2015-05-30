@@ -74,18 +74,10 @@ RSpec.describe ErrorToCommunicate::RSpecFormatter, rspec_formatter: true do
     formatter = new_formatter
     run_specs_against formatter, 'GroupName' do
       example('hello') { fail }
-      example('world') { fail }
+      example('world') { expect(1).to eq 2 }
     end
     expect(get_printed formatter).to match /1\s*\|\s*GroupName\s*hello/
     expect(get_printed formatter).to match /2\s*\|\s*GroupName\s*world/
-  end
-
-  it 'respects the backtrace formatter (ie the --backtrace flag)' do
-    # only need to check a failing example to show it uses RSpec's backtrace formatter
-    formatter = new_formatter
-    run_specs_against(formatter) { example { fail } }
-    expect(get_printed formatter)
-      .to_not include substring_that_would_only_be_in_full_backtrace
   end
 
   it 'respects colour enabling/disabling' do
@@ -93,5 +85,119 @@ RSpec.describe ErrorToCommunicate::RSpecFormatter, rspec_formatter: true do
     # allow(RSpec.configuration).to receive(:color_enabled?) { true }
     pending 'We don\'t yet have the ability to turn color printing on/off'
     fail
+  end
+
+
+  mock_failure_notification = Struct.new :exception, :formatted_backtrace, :description
+
+  define_method :failure_for do |attrs|
+    message   = attrs.fetch :message, "ZOMG!"
+    exception = attrs.fetch :exception do
+      case attrs.fetch :type, :assertion
+      when :assertion
+        RSpec::Expectations::ExpectationNotMetError.new message
+      when :argument_error
+        ArgumentError.new message
+      else raise "uhm: #{attrs.inspect}"
+      end
+    end
+
+    mock_failure_notification.new \
+      exception,
+      attrs.fetch(:formatted_backtrace) { ["/a:1:in `b'"] },
+      attrs.fetch(:description, "default-description")
+  end
+
+  context 'when the failure is an error' do
+    it 'prints the backtrace, respecting the backtrace formatter (ie the --backtrace flag)' do
+      # only need to check a failing example to show it uses RSpec's backtrace formatter
+      formatter = new_formatter
+      run_specs_against(formatter) { example { fail } }
+      expect(get_printed formatter)
+        .to_not include substring_that_would_only_be_in_full_backtrace
+    end
+
+    specify 'the summary is the failure number and description' do
+      config    = ErrorToCommunicate::Config.new
+      heuristic = ErrorToCommunicate::Heuristic::RSpecFailure.new \
+        config:         ErrorToCommunicate::Config.default,
+        failure:        failure_for(description: 'DESC', type: :assertion),
+        failure_number: 999
+      summaryname, ((columnsname, *columns)) = heuristic.semantic_summary
+      expect(summaryname).to eq :summary
+      expect(columnsname).to eq :columns
+      expect(columns.map &:last).to eq [999, 'DESC']
+    end
+
+    specify 'the info is the error message and first line from the backtrace with some context' do
+      config    = ErrorToCommunicate::Config.new
+      heuristic = ErrorToCommunicate::Heuristic::RSpecFailure.new \
+        config:   ErrorToCommunicate::Config.default,
+        failure: failure_for(type: :assertion, message: 'MESSAGE', formatted_backtrace: ["/file:123:in `method'"]),
+        failure_number: 999
+      heuristicname, ((messagename, message), (codename, codeattrs), *rest) = heuristic.semantic_info
+      expect(heuristicname).to eq :heuristic
+      expect(messagename  ).to eq :message
+      expect(message      ).to eq 'MESSAGE'
+      expect(codename     ).to eq :code
+      expect(codeattrs[:location].path.to_s).to eq '/file'
+      expect(codeattrs[:context]).to eq (-5..5)
+      expect(codeattrs[:emphasis]).to eq :code
+      expect(rest).to be_empty
+    end
+
+    specify 'it omits the backtrace line, if it DNE' do
+      config    = ErrorToCommunicate::Config.new
+      heuristic = ErrorToCommunicate::Heuristic::RSpecFailure.new \
+        config:         ErrorToCommunicate::Config.default,
+        failure_number: 999,
+        failure:        failure_for(type: :assertion, message: 'MESSAGE', formatted_backtrace: [])
+      heuristicname, ((messagename, message), *rest) = heuristic.semantic_info
+      expect(heuristicname).to eq :heuristic
+      expect(messagename  ).to eq :message
+      expect(message      ).to eq 'MESSAGE'
+      expect(rest).to be_empty
+    end
+  end
+
+
+  context 'when the failure is an assertion' do
+    it 'prints the backtrace, respecting the backtrace formatter (ie the --backtrace flag)' do
+      # only need to check a failing example to show it uses RSpec's backtrace formatter
+      formatter = new_formatter
+      run_specs_against(formatter) { example { expect(1).to eq 2 } }
+      expect(get_printed formatter)
+        .to_not include substring_that_would_only_be_in_full_backtrace
+    end
+
+
+    specify 'summary is the failure number, description, classname and semantic_explanation from the correct handler' do
+      expect_any_instance_of(ErrorToCommunicate::Heuristic::WrongNumberOfArguments)
+        .to receive(:semantic_explanation).and_return("SEMANTICEXPLANATION")
+
+      heuristic = ErrorToCommunicate::Heuristic::RSpecFailure.new \
+        config:  ErrorToCommunicate::Config.new,
+        failure: failure_for(message:     "wrong number of arguments (1 for 0)",
+                             description: 'DESC',
+                             type:        :argument_error),
+        failure_number: 999
+      summaryname, ((columnsname, *columns)) = heuristic.semantic_summary
+      expect(summaryname).to eq :summary
+      expect(columnsname).to eq :columns
+      expect(columns.map &:last).to eq [999, 'DESC', 'ArgumentError', 'SEMANTICEXPLANATION']
+    end
+
+
+    it 'delegates the heuristic to the correct handler' do
+      expect_any_instance_of(ErrorToCommunicate::Heuristic::WrongNumberOfArguments)
+        .to receive(:semantic_info).and_return("SEMANTICINFO")
+
+      heuristic = ErrorToCommunicate::Heuristic::RSpecFailure.new \
+        config:  ErrorToCommunicate::Config.new,
+        failure: failure_for(message: "wrong number of arguments (1 for 0)", type: :argument_error),
+        failure_number: 999
+
+      expect(heuristic.semantic_info).to eq "SEMANTICINFO"
+    end
   end
 end
