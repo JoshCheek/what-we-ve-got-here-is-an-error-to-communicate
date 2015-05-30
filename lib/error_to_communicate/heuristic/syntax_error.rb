@@ -15,7 +15,7 @@ module ErrorToCommunicate
         self.reported_file ,
         self.reported_line ,
         self.unexpected    ,
-        self.expected      = self.class.parse_message(einfo.message)
+        self.expected      = self.class.parse_message(message)
         self.invalid_loc   = ExceptionInfo::Location.new \
                                path:    reported_file,
                                linenum: reported_line,

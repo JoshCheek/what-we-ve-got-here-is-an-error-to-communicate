@@ -14,10 +14,6 @@ RSpec.describe 'Heuristic', heuristic: true do
     expect { subclass.for? nil }.to raise_error NotImplementedError, /subclass/
   end
 
-  it 'records the exception info as einfo' do
-    expect(instance.einfo).to equal einfo
-  end
-
   it 'delegates classname, and backtrace to einfo' do
     expect(instance.classname).to eq 'the classname'
     expect(instance.backtrace.map { |loc| [loc.linenum] }).to eq [[12]]
@@ -29,7 +25,7 @@ RSpec.describe 'Heuristic', heuristic: true do
 
   describe 'semantic methods' do
     specify 'semantic_explanation defaults to the explanation' do
-      def instance.explanation; "!#{einfo.message}!"; end
+      def instance.explanation; "!#{message}!"; end
       expect(instance.semantic_explanation).to eq "!the message!"
     end
 

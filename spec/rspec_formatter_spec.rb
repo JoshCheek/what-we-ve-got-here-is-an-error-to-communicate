@@ -76,8 +76,8 @@ RSpec.describe ErrorToCommunicate::RSpecFormatter, rspec_formatter: true do
       example('hello') { fail }
       example('world') { fail }
     end
-    expect(get_printed formatter).to match /1\)\s*GroupName\s*hello/
-    expect(get_printed formatter).to match /2\)\s*GroupName\s*world/
+    expect(get_printed formatter).to match /1\s*\|\s*GroupName\s*hello/
+    expect(get_printed formatter).to match /2\s*\|\s*GroupName\s*world/
   end
 
   it 'respects the backtrace formatter (ie the --backtrace flag)' do

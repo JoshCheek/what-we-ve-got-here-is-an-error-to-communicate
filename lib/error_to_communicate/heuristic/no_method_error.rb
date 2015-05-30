@@ -6,11 +6,11 @@ module ErrorToCommunicate
       def self.for?(einfo)
         ( einfo.classname == 'NoMethodError' ||
           einfo.classname == 'NameError'
-        ) && parse_undefined_name(einfo)
+        ) && parse_undefined_name(einfo.message)
       end
 
       def undefined_method_name
-        self.class.parse_undefined_name einfo
+        self.class.parse_undefined_name message
       end
 
       def semantic_info
@@ -27,8 +27,8 @@ module ErrorToCommunicate
 
       private
 
-      def self.parse_undefined_name(einfo)
-        einfo.message[/`(.*)'/, 1]
+      def self.parse_undefined_name(message)
+        message[/`(.*)'/, 1]
       end
     end
   end

@@ -4,14 +4,14 @@ module ErrorToCommunicate
   class Heuristic
     class WrongNumberOfArguments < Heuristic
       def self.for?(einfo)
-        extract_from einfo
+        extract_from einfo.message
       end
 
       attr_accessor :explanation, :num_expected, :num_received
 
       def initialize(*)
         super
-        self.num_received, self.num_expected = self.class.extract_from(einfo)
+        self.num_received, self.num_expected = self.class.extract_from(message)
         self.explanation = 'Wrong number of arguments'
       end
 
@@ -60,8 +60,8 @@ module ErrorToCommunicate
 
       private
 
-      def self.extract_from(einfo)
-        case einfo.message
+      def self.extract_from(message)
+        case message
         when /^wrong number of arguments.*?\((\d+) for (\d+)\)$/ # MRI / JRuby
           num_received, num_expected = $1.to_i, $2.to_i
         when /^method '.*?': given (\d+).*? expected (\d+)$/ # RBX

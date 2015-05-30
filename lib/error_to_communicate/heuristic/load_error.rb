@@ -10,7 +10,7 @@ module ErrorToCommunicate
       end
 
       def path
-        @path ||= Pathname.new einfo.message.split(' -- ', 2).last
+        @path ||= Pathname.new message.split(' -- ', 2).last
       end
 
       def semantic_info

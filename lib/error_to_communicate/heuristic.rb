@@ -4,25 +4,19 @@ module ErrorToCommunicate
       raise NotImplementedError, "#{self} needs to implement .for? (subclass responsibility)"
     end
 
-    # TODO: set einfo attrs on self rather than tracking it independently
-    attr_accessor :einfo, :project
+    attr_accessor :project
+    attr_accessor :classname, :backtrace, :message
 
     def initialize(attributes)
-      self.einfo   = attributes.fetch :einfo
-      self.project = attributes.fetch :project
-    end
-
-    def classname
-      einfo.classname
-    end
-
-    def backtrace
-      einfo.backtrace
+      self.project   = attributes.fetch(:project)
+      self.classname = attributes.fetch(:einfo).classname
+      self.backtrace = attributes.fetch(:einfo).backtrace
+      self.message   = attributes.fetch(:einfo).message
     end
 
     # Is this really a thing that should be in toplevel heuristic?
     def explanation
-      einfo.message
+      message
     end
 
     def semantic_explanation
