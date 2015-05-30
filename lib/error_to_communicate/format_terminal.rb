@@ -54,8 +54,6 @@ module ErrorToCommunicate
 
 
     class Code
-      # TODO: Should this highlight the location?
-
       attr_accessor :theme, :cwd
 
       def initialize(attributes)

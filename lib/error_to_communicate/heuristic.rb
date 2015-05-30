@@ -4,6 +4,7 @@ module ErrorToCommunicate
       raise NotImplementedError, "#{self} needs to implement .for? (subclass responsibility)"
     end
 
+    # TODO: set einfo attrs on self rather than tracking it independently
     attr_accessor :einfo, :project
 
     def initialize(attributes)
@@ -19,6 +20,7 @@ module ErrorToCommunicate
       einfo.backtrace
     end
 
+    # Is this really a thing that should be in toplevel heuristic?
     def explanation
       einfo.message
     end
@@ -27,6 +29,11 @@ module ErrorToCommunicate
       explanation
     end
 
+    # The responsibility of structuring should move to the heuristic
+    # Then, the classname and explanation can be separated from the
+    # summary and columns. Which allows us to compose heuristics
+    # by composing their columnal information, and placing it in our own
+    # structural format
     def semantic_summary
       [:summary, [
         [:columns,
