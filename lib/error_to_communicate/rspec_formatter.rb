@@ -17,44 +17,39 @@ module ErrorToCommunicate
         super einfo: einfo, project: config.project
       end
 
-      # format it with our lib
       if assertion?
+        # format it with our lib
+        self.semantic_info =
+          [:heuristic, [ # ":heuristic" is dumb, it's not a heuristic, it's an error message, Maybe we need a :section or something?
+            [:message, message.sub(/\A\n*/, "")],
+            *backtrace.take(1).map { |loc|
+              [:code, {location: loc, context: (-5..5), emphasis: :code}]
+            }
+          ]]
+
         self.semantic_summary =
           [:summary, [
             [:columns,
               [:classname, failure_number],        # TODO: not classname
               [:classname, failure.description]]]] # TODO: not classname
-
-         codeblocks = []
-         backtrace[0] and codeblocks << [:code, {
-                                          location:  backtrace[0],
-                                          context:   (-5..5),
-                                          emphasis:  :code,
-                                        }]
-        self.semantic_info =
-          [:heuristic, [ # ":heuristic" is dumb, it's not a heuristic, it's an error message, Maybe we need a :section or something?
-            [:message, message],
-            *codeblocks,
-          ]]
       else
         # wrap the heuristic that would otherwise be chosen
-        heuristic = config.heuristic_for einfo
-
-        # num | description | classname | error message (content of heuristic.semantic_summary... this is not guaranteed to always work, but it currently works with all of our classes)
+        heuristic             = config.heuristic_for einfo
+        self.semantic_info    = heuristic.semantic_info
         self.semantic_summary =
           [:summary, [
             [:columns,
-              [:classname,   failure_number],              # TODO: not classname
-              [:classname,   failure.description],         # TODO: not classname
+              [:classname,   failure_number],      # TODO: not classname
+              [:classname,   failure.description], # TODO: not classname
               [:classname,   heuristic.classname], # TODO: not classname
               [:explanation, heuristic.semantic_explanation]]]]
-
-        self.semantic_info = heuristic.semantic_info
       end
     end
 
     def assertion?
-      classname =~ /RSpec/ # explanation at https://github.com/JoshCheek/mrspec/blob/2761ba2180eb5f71a9262f6d59ce20d7cc8a47c3/lib/mrspec/minitest_assertion_for_rspec.rb
+      # RSpec differentiates failures from assertions by whether RSpec is in the name:
+      # https://github.com/JoshCheek/mrspec/blob/2761ba2180eb5f71a9262f6d59ce20d7cc8a47c3/lib/mrspec/minitest_assertion_for_rspec.rb
+      classname =~ /RSpec/
     end
   end
 
