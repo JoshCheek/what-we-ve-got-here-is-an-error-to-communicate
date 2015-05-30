@@ -72,6 +72,11 @@ module ErrorToCommunicate
         start_index    = bound_num min: 0, num: line_index+attributes.fetch(:context).begin
         message        = attributes.fetch :message, ''
         message_offset = line_index - start_index
+        if attributes.fetch(:mark, true)
+          mark_linenum = location.linenum
+        else
+          mark_linenum = -1
+        end
 
         # first line gives the path
         path_line = [
@@ -86,8 +91,7 @@ module ErrorToCommunicate
           code = File.read(path).lines[start_index..end_index].join("")
           code = remove_indentation       code
           code = theme.syntax_highlight   code
-          code = prefix_linenos_to        code, start_index.next, mark: location.linenum
-          code = theme.indent             code, "  "
+          code = prefix_linenos_to        code, start_index.next, mark: mark_linenum
           code = add_message_to           code, message_offset, theme.screaming_red(message)
           code = theme.highlight_text           code, message_offset, highlight
         else
@@ -124,14 +128,18 @@ module ErrorToCommunicate
       end
 
       def prefix_linenos_to(code, start_linenum, options)
-        line_to_mark  = options.fetch :mark, -1
+        line_to_mark  = options.fetch :mark
         lines         = code.lines
         max_linenum   = lines.count + start_linenum - 1 # 1 to translate to indexes
-        linenum_width = max_linenum.to_s.length + 1     # 1 for the colon
+        linenum_width = max_linenum.to_s.length + 4     # 1 for the colon, 3 for the arrow/space
         lines.zip(start_linenum..max_linenum)
              .map { |line, num|
-               formatted_num = "#{num}:".ljust(linenum_width)
-               formatted_num = theme.mark_linenum formatted_num if line_to_mark == num
+               if line_to_mark == num
+                 formatted_num = "-> #{num}:".ljust(linenum_width)
+                 formatted_num = theme.mark_linenum formatted_num
+               else
+                 formatted_num = "   #{num}:".ljust(linenum_width)
+               end
                theme.color_linenum(formatted_num) << " " << line
              }.join("")
       end

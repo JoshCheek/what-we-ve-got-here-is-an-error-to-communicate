@@ -46,6 +46,7 @@ module ErrorToCommunicate
             highlight: (location.pred && location.pred.label),
             context:   0..0,
             emphasis:  :path,
+            mark:      false,
           }]
         end
       ]
