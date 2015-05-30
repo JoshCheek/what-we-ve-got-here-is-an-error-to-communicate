@@ -3,19 +3,16 @@ task :default => :spec
 
 desc 'Run all tests'
 task(:spec) { sh 'rspec' }
+
 namespace :spec do
-  desc 'Test configuration'
-  task(:config)          { sh 'rspec --tag config' }
-
-  desc 'Test the heuristcs'
-  task(:heuristic)       { sh 'rspec --tag heuristic' }
-
-  desc 'Test exception info'
-  task(:einfo)           { sh 'rspec --tag einfo' }
-
-  desc 'Test the RSpec formatter'
-  task(:rspec_formatter) { sh 'rspec --tag rspec_formatter' }
-
-  desc 'Run acceptance tests (expensive)'
-  task(:acceptance)      { sh 'rspec --tag acceptance' }
+  def self.spec(name, tags, description)
+    desc description
+    task(name) { sh "rspec --tag #{tags}" }
+  end
+  spec :config,     'config',          'Test configuration'
+  spec :heuristic,  'heuristic',       'Test the heuristcs'
+  spec :einfo,      'einfo',           'Test exception info'
+  spec :formatters, 'rspec_formatter', 'Test the RSpec formatter'
+  spec :acceptance, 'acceptance',      'Run acceptance tests (expensive)'
+  spec :quick,      '~acceptance',     'Run all specs except the acceptance tests (b/c they\'re slow)'
 end
