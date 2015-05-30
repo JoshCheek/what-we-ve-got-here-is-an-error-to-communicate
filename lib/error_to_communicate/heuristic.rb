@@ -4,14 +4,23 @@ module ErrorToCommunicate
       raise NotImplementedError, "#{self} needs to implement .for? (subclass responsibility)"
     end
 
-    attr_accessor :project
-    attr_accessor :classname, :backtrace, :message
+    attr_accessor :project, :einfo
 
     def initialize(attributes)
-      self.project   = attributes.fetch(:project)
-      self.classname = attributes.fetch(:einfo).classname
-      self.backtrace = attributes.fetch(:einfo).backtrace
-      self.message   = attributes.fetch(:einfo).message
+      self.einfo   = attributes.fetch :einfo
+      self.project = attributes.fetch :project
+    end
+
+    def classname
+      einfo.classname
+    end
+
+    def backtrace
+      einfo.backtrace
+    end
+
+    def message
+      einfo.message
     end
 
     # Is this really a thing that should be in toplevel heuristic?

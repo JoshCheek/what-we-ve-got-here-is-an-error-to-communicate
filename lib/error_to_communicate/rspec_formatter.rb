@@ -3,35 +3,31 @@ require 'rspec/core/formatters/documentation_formatter'
 
 module ErrorToCommunicate
   class Heuristic::RSpecFailure < Heuristic
-    attr_accessor :failure, :backtrace_formatter, :backtrace, :failure_number
+    attr_accessor :failure, :failure_number
     attr_accessor :semantic_summary, :semantic_info
 
     def initialize(attributes)
-      self.backtrace_formatter = attributes.fetch :backtrace_formatter
-      self.failure_number      = attributes.fetch :failure_number
-      self.failure             = attributes.fetch :failure
+      self.failure_number = attributes.fetch :failure_number
+      self.failure        = attributes.fetch :failure
 
       # initialize the heuristic
-      super attributes.merge einfo: ExceptionInfo.parse(failure.exception)
-
-      # override the backtrace
-      self.backtrace =
-        ExceptionInfo.parse_backtrace \
-          backtrace_formatter.format_backtrace \
-            failure.exception.backtrace,
-            failure.example.metadata
+      ExceptionInfo.parse(failure.exception).tap do |einfo|
+        backtrace_formatter = attributes.fetch :backtrace_formatter
+        einfo.backtrace = ExceptionInfo.parse_backtrace(
+                            backtrace_formatter.format_backtrace(
+                              failure.exception.backtrace,
+                              failure.example.metadata))
+        super attributes.merge einfo: einfo
+      end
 
       # format it with our lib
       if assertion?
         self.semantic_summary =
           [:summary, [
             [:columns,
-              [:classname, failure_number],
-              [:classname, failure.description]]]]
+              [:classname, failure_number],        # TODO: not classname
+              [:classname, failure.description]]]] # TODO: not classname
 
-        # error message
-        # -------------
-        # first line from backtrace
         self.semantic_info =
           [:heuristic, [ # ":heuristic" is dumb, it's not a heuristic, it's an error message, Maybe we need a :section or something?
             [:message, message],
@@ -43,16 +39,15 @@ module ErrorToCommunicate
           ]]
       else
         # wrap the heuristic that would otherwise be chosen
-        heuristic = Config.default.heuristic_for failure.exception
-        heuristic.backtrace = backtrace
+        heuristic = Config.default.heuristic_for einfo
 
         # num | description | classname | error message (content of heuristic.semantic_summary... this is not guaranteed to always work, but it currently works with all of our classes)
         self.semantic_summary =
           [:summary, [
             [:columns,
-              [:classname,   failure_number],
-              [:classname,   failure.description],
-              [:classname,   heuristic.classname],
+              [:classname,   failure_number],      # TODO: not classname
+              [:classname,   failure.description], # TODO: not classname
+              [:classname,   heuristic.classname], # TODO: not classname
               [:explanation, heuristic.semantic_explanation]]]]
 
         self.semantic_info = heuristic.semantic_info
