@@ -83,14 +83,14 @@ class ErrorToCommunicate::ExceptionInfo
     new exception: exception,
         classname: exception.class.name,
         message:   exception.message,
-        backtrace: parse_backtrace(exception)
+        backtrace: parse_backtrace(exception.backtrace)
   end
 
-  def self.parse_backtrace(exception)
+  def self.parse_backtrace(backtrace)
     # Really, there are better methods, e.g. backtrace_locations,
     # but they're unevenly implemented across versions and implementations
-    (exception.backtrace||[])
-      .map { |line| Location.parse line }
-      .tap { |locs| locs.each_cons(2) { |crnt, pred| crnt.pred, pred.succ = pred, crnt } }
+    backtrace = (backtrace||[]).map { |line| Location.parse line }
+    backtrace.each_cons(2) { |crnt, pred| crnt.pred, pred.succ = pred, crnt }
+    backtrace
   end
 end
