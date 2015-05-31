@@ -9,10 +9,25 @@ A screenshot of the code rendering an `ArgumentError`.
 
 ![screenshot](https://s3.amazonaws.com/josh.cheek/images/scratch/better-reuby-commandline-errors.png)
 
+
 This is still early and Rough
 -----------------------------
 
 But I've been using it on its own test suite, and have to say it's compelling!
+
+
+Using this with RSpec or [MRspec](https://github.com/JoshCheek/mrspec)
+----------------------------------------------------------------------
+
+Place this in your .rspec file :)
+
+```
+--colour
+--require error_to_communicate/at_exit
+--require error_to_communicate/rspec_formatter
+--format WhatWeveGotHereIsAnErrorToCommunicate::RSpecFormatter
+```
+
 
 Inspirations:
 -------------
@@ -23,12 +38,14 @@ Inspirations:
   and then at Ruby Conf, she created [chatty_exceptions](https://github.com/kerrizor/chatty_exceptions)
   which is in this same domain.
 
+
 Related Projects:
 -----------------
 
 * Charlie Sommerville's [better_errors](https://rubygems.org/gems/better_errors)
   gem gives you a nice interface like this for Rails.
 * Koichi's [pretty_backtrace](https://github.com/ko1/pretty_backtrace)
+
 
 License
 --------
