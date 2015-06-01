@@ -22,9 +22,9 @@ class ErrorToCommunicate::ExceptionInfo::Location
   def self.parse(line)
     line =~ /^(.*?):(\d+):in `(.*?)'$/ # Are ^ and $ sufficient? Should be \A and (\Z or \z)?
     ErrorToCommunicate::ExceptionInfo::Location.new(
-      path:    $1,
-      linenum: $2.to_i,
-      label:   $3,
+      path:    ($1||""),
+      linenum: ($2||"-1").to_i,
+      label:   ($3||line),
     )
   end
 

@@ -83,6 +83,33 @@ RSpec.describe 'Parsing exceptions to ExceptionInfo', einfo: true do
       assert_parses_line line, label:   "method1"
     end
 
+    context 'fake backtraces (eg RSpec renders text in the `formatted_backtrace` to get it to print messages there)' do
+      it 'has an empty path, linenum of -1, the entire string is the label' do
+        a, b, c = parsed = ErrorToCommunicate::ExceptionInfo.parse_backtrace([
+          "/Users/josh/.gem/ruby/2.1.1/gems/rspec-core-3.2.3/lib/rspec/core/runner.rb:29:in `block in autorun'",
+          "",
+          "  Showing full backtrace because every line was filtered out.",
+        ])
+
+        expect(parsed.map(&:path).map(&:to_s)).to eq [
+          "/Users/josh/.gem/ruby/2.1.1/gems/rspec-core-3.2.3/lib/rspec/core/runner.rb",
+          "",
+          "",
+        ]
+
+        expect(parsed.map &:linenum).to eq [29, -1, -1]
+
+        expect(parsed.map &:label).to eq [
+          "block in autorun",
+          "",
+          "  Showing full backtrace because every line was filtered out.",
+        ]
+
+        expect(parsed.map &:pred).to eq [b, c, nil]
+        expect(parsed.map &:succ).to eq [nil, a, b]
+      end
+    end
+
     context 'random ass colons in the middle of like files and directories and shit' do
       # $ mkdir 'a:b'
       # $ echo 'begin; define_method("a:b") { |arg| }; send "a:b"; rescue Exception; p $!.backtrace; end' > 'a:b/c:d.rb'
