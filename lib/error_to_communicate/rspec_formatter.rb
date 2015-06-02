@@ -3,6 +3,13 @@ require 'rspec/core/formatters/documentation_formatter'
 
 module ErrorToCommunicate
   class Heuristic::RSpecFailure < Heuristic
+    def self.fix_whitespace(str)
+      str = str.dup
+      str.sub! /\A\n*/, "" # remove leading newlines
+      str.sub! /\n*\Z/, "" # remove trailing newlines
+      str << "\n"          # one newline on the end
+    end
+
     attr_accessor :failure, :failure_number, :config
     attr_accessor :semantic_summary, :semantic_info
 
@@ -21,7 +28,7 @@ module ErrorToCommunicate
         # format it with our lib
         self.semantic_info =
           [:heuristic, [ # ":heuristic" is dumb, it's not a heuristic, it's an error message, Maybe we need a :section or something?
-            [:message, message.sub(/\A\n*/, "")],
+            [:message, self.class.fix_whitespace(message)],
             *backtrace.take(1).map { |loc|
               [:code, {location: loc, context: (-5..5), emphasis: :code}]
             }

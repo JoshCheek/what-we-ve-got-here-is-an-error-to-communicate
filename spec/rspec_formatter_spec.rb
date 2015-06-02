@@ -129,7 +129,7 @@ RSpec.describe ErrorToCommunicate::RSpecFormatter, rspec_formatter: true do
       expect(columns.map &:last).to eq [999, 'DESC']
     end
 
-    specify 'the info is the error message and first line from the backtrace with some context' do
+    specify 'the info is the formatted error message and first line from the backtrace with some context' do
       config    = ErrorToCommunicate::Config.new
       heuristic = ErrorToCommunicate::Heuristic::RSpecFailure.new \
         config:   ErrorToCommunicate::Config.default,
@@ -138,7 +138,7 @@ RSpec.describe ErrorToCommunicate::RSpecFormatter, rspec_formatter: true do
       heuristicname, ((messagename, message), (codename, codeattrs), *rest) = heuristic.semantic_info
       expect(heuristicname).to eq :heuristic
       expect(messagename  ).to eq :message
-      expect(message      ).to eq 'MESSAGE'
+      expect(message      ).to eq "MESSAGE\n"
       expect(codename     ).to eq :code
       expect(codeattrs[:location].path.to_s).to eq '/file'
       expect(codeattrs[:context]).to eq (-5..5)
@@ -155,7 +155,7 @@ RSpec.describe ErrorToCommunicate::RSpecFormatter, rspec_formatter: true do
       heuristicname, ((messagename, message), *rest) = heuristic.semantic_info
       expect(heuristicname).to eq :heuristic
       expect(messagename  ).to eq :message
-      expect(message      ).to eq 'MESSAGE'
+      expect(message      ).to eq "MESSAGE\n"
       expect(rest).to be_empty
     end
   end
@@ -198,6 +198,39 @@ RSpec.describe ErrorToCommunicate::RSpecFormatter, rspec_formatter: true do
         failure_number: 999
 
       expect(heuristic.semantic_info).to eq "SEMANTICINFO"
+    end
+  end
+
+  context 'fixing the message\'s whitespace' do
+    def fix_whitespace(str)
+      ErrorToCommunicate::Heuristic::RSpecFailure.fix_whitespace str
+    end
+
+    it 'removes leading newlines' do
+      expect(fix_whitespace "\na").to start_with "a"
+      expect(fix_whitespace "\n\n\na").to start_with "a"
+    end
+
+    it 'removes all but one trailing newline' do
+      expect(fix_whitespace "a\n").to start_with "a\n"
+      expect(fix_whitespace "a\n\n").to start_with "a\n"
+      expect(fix_whitespace "a\n\n\n").to start_with "a\n"
+    end
+
+    it 'adds a trailing newline if its missing' do
+      expect(fix_whitespace "a").to start_with "a\n"
+    end
+
+    it 'doesn\'t modify the original string' do
+      a = "\na"
+      b = "a"
+      c = "a\n\n"
+      d = "a\n"
+      [a, b, c, d].each { |s| fix_whitespace s }
+      expect(a).to eq "\na"
+      expect(b).to eq "a"
+      expect(c).to eq "a\n\n"
+      expect(d).to eq "a\n"
     end
   end
 end
