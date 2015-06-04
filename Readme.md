@@ -7,7 +7,7 @@ Blog explaining the goal [here](http://blog.turing.io/2015/01/18/what-we-ve-got-
 
 A screenshot of the code rendering an `ArgumentError`.
 
-![screenshot](https://s3.amazonaws.com/josh.cheek/images/scratch/better-reuby-commandline-errors.png)
+![screenshot](https://s3.amazonaws.com/josh.cheek/images/scratch/error-to-communicate.png)
 
 
 This is still early and Rough
@@ -16,10 +16,11 @@ This is still early and Rough
 But I've been using it on its own test suite, and have to say it's compelling!
 
 
-Using this with RSpec or [MRspec](https://github.com/JoshCheek/mrspec)
-----------------------------------------------------------------------
+Using this with RSpec or Minitest
+---------------------------------
 
-Place this in your .rspec file :)
+Place this in your .rspec file to use with RSpec. Or just use [MRspec](https://github.com/JoshCheek/mrspec),
+which works with both RSpec and Minitest and requires no configuration :)
 
 ```
 --colour
