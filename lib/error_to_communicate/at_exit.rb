@@ -13,5 +13,6 @@ at_exit do
 
   # There has got to be a better way to clear an exception,
   # this could break other at_exit hooks -.^
-  exit! 1
+  read, write = IO.pipe
+  $stderr = write
 end
