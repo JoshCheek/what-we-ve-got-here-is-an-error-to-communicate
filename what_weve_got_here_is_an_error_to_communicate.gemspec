@@ -1,4 +1,4 @@
-require_relative 'lib/error_to_communicate/version'
+require File.expand_path('../lib/error_to_communicate/version', __FILE__)
 Gem::Specification.new do |s|
   s.name        = 'what_weve_got_here_is_an_error_to_communicate'
   s.version     = ErrorToCommunicate::VERSION
