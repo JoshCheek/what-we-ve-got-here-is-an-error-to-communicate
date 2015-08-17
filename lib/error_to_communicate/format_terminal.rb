@@ -91,7 +91,7 @@ module ErrorToCommunicate
           code = theme.syntax_highlight   code
           code = prefix_linenos_to        code, start_index.next, mark: mark_linenum
           code = add_message_to           code, message_offset, theme.screaming_red(message)
-          code = theme.highlight_text           code, message_offset, highlight
+          code = theme.highlight_text     code, message_offset, highlight
         else
           code = "Can't find code\n"
         end
@@ -121,7 +121,7 @@ module ErrorToCommunicate
       end
 
       def remove_indentation(code)
-        indentation = code.scan(/^\s*/).min_by(&:length)
+        indentation = code.scan(/^[ \r\t]*/).min_by(&:length)
         code.gsub(/^#{indentation}/, "")
       end
 
