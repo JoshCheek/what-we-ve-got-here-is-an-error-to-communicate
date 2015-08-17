@@ -86,7 +86,7 @@ module ErrorToCommunicate
 
         # then display the code
         if path.exist?
-          code = File.read(path).lines[start_index..end_index].join("")
+          code = File.read(path).lines.to_a[start_index..end_index].join("")
           code = remove_indentation       code
           code = theme.syntax_highlight   code
           code = prefix_linenos_to        code, start_index.next, mark: mark_linenum
@@ -127,8 +127,8 @@ module ErrorToCommunicate
 
       def prefix_linenos_to(code, start_linenum, options)
         line_to_mark  = options.fetch :mark
-        lines         = code.lines
-        max_linenum   = lines.count + start_linenum - 1 # 1 to translate to indexes
+        lines         = code.lines.to_a
+        max_linenum   = lines.length + start_linenum - 1 # 1 to translate to indexes
         linenum_width = max_linenum.to_s.length + 4     # 1 for the colon, 3 for the arrow/space
         lines.zip(start_linenum..max_linenum)
              .map { |line, num|
@@ -143,7 +143,7 @@ module ErrorToCommunicate
       end
 
       def add_message_to(code, offset, message)
-        lines = code.lines
+        lines = code.lines.to_a
         lines[offset].chomp! << " " << message << "\n"
         lines.join("")
       end

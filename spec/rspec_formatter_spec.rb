@@ -44,7 +44,7 @@ RSpec.describe ErrorToCommunicate::RSpecFormatter, rspec_formatter: true do
 
   def this_line_of_code
     file, line = caller[0].split(":").take(2)
-    File.read(file).lines[line.to_i].strip
+    File.read(file).lines.to_a[line.to_i].strip
   end
 
   def get_printed(formatter)

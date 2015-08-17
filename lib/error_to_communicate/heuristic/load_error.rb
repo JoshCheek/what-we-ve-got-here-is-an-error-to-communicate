@@ -1,3 +1,4 @@
+# encoding: utf-8
 require 'pathname'
 require 'error_to_communicate/heuristic'
 
@@ -27,7 +28,7 @@ module ErrorToCommunicate
         else
           # The newline here implies the semantic analysis needs to get better,
           # it only does this b/c it should be a block-element, but isn't being sectioned like that, correctly
-          [:context, "Couldn\'t find anything interesting ¯\_(ツ)_/¯\n"]
+          [:context, "Couldn\'t find anything interesting ¯\\_(ツ)_/¯\n"]
         end
 
         [:heuristic, heuristic]

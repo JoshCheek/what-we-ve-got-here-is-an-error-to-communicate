@@ -1,3 +1,4 @@
+# encoding: utf-8
 require 'heuristic/spec_helper'
 
 RSpec.describe 'heuristics for the WrongNumberOfArguments', heuristic: true do
@@ -83,7 +84,7 @@ RSpec.describe 'heuristics for the WrongNumberOfArguments', heuristic: true do
 
   it 'shrugs "sorry" when there are no lines in the backtrace' do
     heuristic = heuristic_for message: message_2_for_3, backtrace: []
-    expect(heuristic.semantic_info).to eq [:context, "Couldn\'t find anything interesting ¯\_(ツ)_/¯\n"]
+    expect(heuristic.semantic_info).to eq [:context, "Couldn\'t find anything interesting ¯\\_(ツ)_/¯\n"]
   end
 
   describe 'When there are at least two lines in the backtrace' do

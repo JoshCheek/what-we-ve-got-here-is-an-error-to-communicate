@@ -86,7 +86,7 @@ module ErrorToCommunicate
     end
 
     def highlight_text(code, index, text)
-      lines = code.lines
+      lines = code.lines.to_a
       return code unless text && lines[index]
       lines[index].gsub! text, invert(text)
       lines.join("")

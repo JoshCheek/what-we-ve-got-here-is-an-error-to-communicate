@@ -1,3 +1,4 @@
+# encoding: utf-8
 require 'error_to_communicate/heuristic'
 
 module ErrorToCommunicate
@@ -29,7 +30,7 @@ module ErrorToCommunicate
 
       def semantic_info
         if backtrace.length == 0
-          [:context, "Couldn\'t find anything interesting ¯\_(ツ)_/¯\n"]
+          [:context, "Couldn\'t find anything interesting ¯\\_(ツ)_/¯\n"]
         elsif backtrace.length == 1
           [:heuristic, [:code, {
             location:  backtrace[0],
