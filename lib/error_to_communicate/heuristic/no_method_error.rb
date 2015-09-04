@@ -63,7 +63,7 @@ module ErrorToCommunicate
       end
 
       def existing_ivars
-        error_binding.receiver.instance_variables
+        error_binding.eval('self').instance_variables
       end
 
       def misspelling?
