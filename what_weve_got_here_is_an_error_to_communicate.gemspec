@@ -11,6 +11,8 @@ Gem::Specification.new do |s|
   s.homepage    = 'https://github.com/JoshCheek/what-we-ve-got-here-is-an-error-to-communicate'
 
   s.add_runtime_dependency 'rouge', '~> 1.8', '!= 1.9.1'
+  s.add_runtime_dependency 'interception',      '~> 0.5'
+  s.add_runtime_dependency 'binding_of_caller', '~> 0.7.2'
 
   s.add_development_dependency 'rspec', '~> 3.2'
   s.add_development_dependency 'haiti', '< 0.3',  '>= 0.2.0'
