@@ -43,7 +43,7 @@ module ErrorToCommunicate
       def name_of_ivar
         return @name_of_ivar if defined? @name_of_ivar
         file = File.read(einfo.backtrace.first.path)
-        line = file.lines[einfo.backtrace.first.linenum-1]
+        line = file.lines.to_a[einfo.backtrace.first.linenum-1]
 
         tokens = Rouge::Lexers::Ruby.lex(line).to_a
         index  = tokens.index { |token, text| text == undefined_method_name }
