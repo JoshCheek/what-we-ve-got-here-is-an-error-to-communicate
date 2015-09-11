@@ -4,7 +4,7 @@ module ErrorToCommunicate
       raise NotImplementedError, "#{self} needs to implement .for? (subclass responsibility)"
     end
 
-    attr_accessor :project, :einfo, :error_binding
+    attr_accessor :project, :einfo
 
     def initialize(attributes)
       self.einfo   = attributes.fetch :einfo

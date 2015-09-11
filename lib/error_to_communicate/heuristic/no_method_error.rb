@@ -63,7 +63,8 @@ module ErrorToCommunicate
       end
 
       def existing_ivars
-        error_binding.eval('self').instance_variables
+        # TODO: this should get pushed into the location
+        einfo.backtrace[0].binding.eval('self').instance_variables
       end
 
       def misspelling?

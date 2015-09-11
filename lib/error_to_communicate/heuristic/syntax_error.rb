@@ -20,7 +20,8 @@ module ErrorToCommunicate
                                path:    reported_file,
                                linenum: reported_line,
                                label:   "unexpected #{unexpected}, expected: #{expected}",
-                               pred:    backtrace[0]
+                               pred:    backtrace[0],
+                               binding: nil
       end
 
       def semantic_info
