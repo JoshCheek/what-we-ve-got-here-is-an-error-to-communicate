@@ -20,11 +20,13 @@ RSpec.describe 'configuration', config: true do
 
   # helper methods
   def yes_accept!(config, ex)
-    expect(config.accept? ex).to eq true
+    binding = nil
+    expect(config.accept? ex, binding).to eq true
   end
 
   def no_accept!(config, ex)
-    expect(config.accept? ex).to eq false
+    binding = nil
+    expect(config.accept? ex, binding).to eq false
   end
 
   def config_for(attrs)
@@ -72,18 +74,20 @@ RSpec.describe 'configuration', config: true do
   end
 
   describe 'finding the heuristic for an exception' do
-    it 'raises an ArgumentError if given an acception that it won\'t accept' do
+    it 'raises an ArgumentError if given an ecception that it won\'t accept' do
       config = config_for blacklist:  allow_none, heuristics: [match_all]
-      expect { config.heuristic_for "not an error" }
+      binding = nil
+      expect { config.heuristic_for "not an error", binding }
         .to raise_error ArgumentError, /"not an error"/
     end
 
     it 'finds the first heuristic that is willing to accept it' do
+      binding = nil
       config = config_for blacklist:  allow_all,
                           heuristics: [match_no_method_error, match_all]
       exception = capture { sdfsdfsdf() }
-      expect(config.heuristic_for exception).to     be_a_kind_of match_no_method_error
-      expect(config.heuristic_for exception).to_not be_a_kind_of match_all
+      expect(config.heuristic_for exception, binding).to     be_a_kind_of match_no_method_error
+      expect(config.heuristic_for exception, binding).to_not be_a_kind_of match_all
     end
   end
 
@@ -92,11 +96,12 @@ RSpec.describe 'configuration', config: true do
 
     describe 'blacklist' do
       it 'doesn\'t accept a SystemExit' do
+        binding = nil
         system_exit = capture { exit 1 }
-        expect(default_config.accept? system_exit).to eq false
+        expect(default_config.accept? system_exit, binding).to eq false
 
         generic_exception = capture { raise }
-        expect(default_config.accept? generic_exception).to eq true
+        expect(default_config.accept? generic_exception, binding).to eq true
       end
     end
 

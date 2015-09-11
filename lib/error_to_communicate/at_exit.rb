@@ -1,9 +1,9 @@
 require 'interception'
 require 'error_to_communicate'
 
-seen = {}
-recording_code = lambda { |exception, binding|
-  seen = {exception: exception, binding: binding}
+error_binding  = nil
+recording_code = lambda { |_exc, binding|
+  error_binding = binding
 }
 
 Interception.listen &recording_code
@@ -14,10 +14,9 @@ at_exit do
   exception = $!
   config    = ErrorToCommunicate::Config.default
 
-  next unless config.accept? exception
+  next unless config.accept? exception, error_binding
 
-  heuristic = config.heuristic_for exception
-  heuristic.error_binding = seen[:binding] # uhm... :P
+  heuristic = config.heuristic_for exception, error_binding
 
   formatted = config.format heuristic, Dir.pwd
   $stderr.puts formatted

@@ -17,10 +17,11 @@ module ErrorToCommunicate
       self.failure_number = attributes.fetch :failure_number
       self.failure        = attributes.fetch :failure
       self.config         = attributes.fetch :config
+      binding = nil # FIXME: how to get this when RSpec wraps error handling?
 
       # initialize the heuristic
-      ExceptionInfo.parse(failure.exception).tap do |einfo|
-        einfo.backtrace = ExceptionInfo.parse_backtrace failure.formatted_backtrace
+      ExceptionInfo.parse(failure.exception, binding).tap do |einfo|
+        einfo.backtrace = ExceptionInfo.parse_backtrace failure.formatted_backtrace, binding
         super einfo: einfo, project: config.project
       end
 
@@ -41,7 +42,7 @@ module ErrorToCommunicate
               [:classname, failure.description]]]] # TODO: not classname
       else
         # wrap the heuristic that would otherwise be chosen
-        heuristic             = config.heuristic_for einfo
+        heuristic             = config.heuristic_for einfo, binding
         self.semantic_info    = heuristic.semantic_info
         self.semantic_summary =
           [:summary, [

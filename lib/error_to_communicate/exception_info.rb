@@ -6,7 +6,7 @@ module ErrorToCommunicate
 end
 
 class ErrorToCommunicate::ExceptionInfo::Location
-  attr_accessor :path, :linenum, :label, :pred, :succ
+  attr_accessor :path, :linenum, :label, :pred, :succ, :binding
 
   def initialize(attributes)
     self.path    = Pathname.new attributes.fetch(:path)
@@ -14,17 +14,19 @@ class ErrorToCommunicate::ExceptionInfo::Location
     self.label   = attributes.fetch :label
     self.pred    = attributes.fetch :pred, nil
     self.succ    = attributes.fetch :succ, nil
+    self.binding = attributes.fetch :binding
   end
 
   # What if the line doesn't match for some reason?
   # Raise an exception?
   # Use some reasonable default? (is there one?)
-  def self.parse(line)
+  def self.parse(line, binding)
     line =~ /^(.*?):(\d+):in `(.*?)'$/ # Are ^ and $ sufficient? Should be \A and (\Z or \z)?
     ErrorToCommunicate::ExceptionInfo::Location.new(
       path:    ($1||""),
       linenum: ($2||"-1").to_i,
       label:   ($3||line),
+      binding: binding
     )
   end
 
@@ -55,6 +57,7 @@ class ErrorToCommunicate::ExceptionInfo
   attr_accessor :classname
   attr_accessor :message
   attr_accessor :backtrace
+  attr_accessor :binding
 
   def initialize(attributes)
     self.exception = attributes.fetch :exception, nil
@@ -74,22 +77,22 @@ class ErrorToCommunicate::ExceptionInfo
     @exception
   end
 
-  def self.parseable?(exception)
+  def self.parseable?(exception, binding)
     exception.respond_to?(:message) && exception.respond_to?(:backtrace)
   end
 
-  def self.parse(exception)
+  def self.parse(exception, binding)
     return exception if exception.kind_of? self
     new exception: exception,
         classname: exception.class.name,
         message:   exception.message,
-        backtrace: parse_backtrace(exception.backtrace)
+        backtrace: parse_backtrace(exception.backtrace, binding)
   end
 
-  def self.parse_backtrace(backtrace)
+  def self.parse_backtrace(backtrace, binding)
     # Really, there are better methods, e.g. backtrace_locations,
     # but they're unevenly implemented across versions and implementations
-    backtrace = (backtrace||[]).map { |line| Location.parse line }
+    backtrace = (backtrace||[]).map { |line| Location.parse line, binding }
     backtrace.each_cons(2) { |crnt, pred| crnt.pred, pred.succ = pred, crnt }
     backtrace
   end

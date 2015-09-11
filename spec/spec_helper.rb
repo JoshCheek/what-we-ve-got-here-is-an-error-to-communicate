@@ -13,7 +13,8 @@ end
 
 module SpecHelpers
   def einfo_for(exception)
-    ErrorToCommunicate::ExceptionInfo.parse exception
+    binding = nil
+    ErrorToCommunicate::ExceptionInfo.parse exception, binding
   end
 
   def trap_warnings

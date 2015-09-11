@@ -50,15 +50,15 @@ module ErrorToCommunicate
       self.project     = Project.new root: root, loaded_features: loaded_features
     end
 
-    def accept?(exception)
-      return false unless ExceptionInfo.parseable? exception
-      einfo = ExceptionInfo.parse(exception)
+    def accept?(exception, binding)
+      return false unless ExceptionInfo.parseable? exception, binding
+      einfo = ExceptionInfo.parse(exception, binding)
       !blacklist.call(einfo) && !!heuristics.find { |h| h.for? einfo }
     end
 
-    def heuristic_for(exception)
-      accept?(exception) || raise(ArgumentError, "Asked for a heuristic on an object we don't accept: #{exception.inspect}")
-      einfo = ExceptionInfo.parse(exception)
+    def heuristic_for(exception, binding)
+      accept?(exception, binding) || raise(ArgumentError, "Asked for a heuristic on an object we don't accept: #{exception.inspect}")
+      einfo = ExceptionInfo.parse(exception, binding)
       heuristics.find { |heuristic| heuristic.for? einfo }
                 .new(einfo: einfo, project: project)
     end

@@ -63,7 +63,8 @@ RSpec.describe 'Parsing exceptions to ExceptionInfo', einfo: true do
     # it 'records the relative filepath if it cannot fild the file'
 
     def assert_parses_line(line, assertions)
-      parsed = ErrorToCommunicate::ExceptionInfo::Location.parse(line)
+      binding = nil
+      parsed = ErrorToCommunicate::ExceptionInfo::Location.parse(line, binding)
       assertions.each do |method_name, expected|
         expected = Pathname.new expected if method_name == :path
         actual   = parsed.__send__ method_name
@@ -85,11 +86,14 @@ RSpec.describe 'Parsing exceptions to ExceptionInfo', einfo: true do
 
     context 'fake backtraces (eg RSpec renders text in the `formatted_backtrace` to get it to print messages there)' do
       it 'has an empty path, linenum of -1, the entire string is the label' do
-        a, b, c = parsed = ErrorToCommunicate::ExceptionInfo.parse_backtrace([
-          "/Users/josh/.gem/ruby/2.1.1/gems/rspec-core-3.2.3/lib/rspec/core/runner.rb:29:in `block in autorun'",
-          "",
-          "  Showing full backtrace because every line was filtered out.",
-        ])
+        binding = nil
+        a, b, c = parsed = ErrorToCommunicate::ExceptionInfo.parse_backtrace(
+          [ "/Users/josh/.gem/ruby/2.1.1/gems/rspec-core-3.2.3/lib/rspec/core/runner.rb:29:in `block in autorun'",
+            "",
+            "  Showing full backtrace because every line was filtered out.",
+          ],
+          binding
+        )
 
         expect(parsed.map(&:path).map(&:to_s)).to eq [
           "/Users/josh/.gem/ruby/2.1.1/gems/rspec-core-3.2.3/lib/rspec/core/runner.rb",
@@ -158,6 +162,7 @@ RSpec.describe 'Parsing exceptions to ExceptionInfo', einfo: true do
 
   describe 'ExceptionInfo::Location' do
     def location_for(attrs)
+      attrs[:binding] ||= nil
       ErrorToCommunicate::ExceptionInfo::Location.new attrs
     end
 

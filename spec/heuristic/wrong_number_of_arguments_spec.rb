@@ -78,7 +78,7 @@ RSpec.describe 'heuristics for the WrongNumberOfArguments', heuristic: true do
                         context:   (-5..5),
                         emphasis: :code,
                         location: ErrorToCommunicate::ExceptionInfo::Location.new(
-                                    path: '/a', linenum: 1, label: 'b'
+                                    path: '/a', linenum: 1, label: 'b', binding: nil
                                   )
   end
 

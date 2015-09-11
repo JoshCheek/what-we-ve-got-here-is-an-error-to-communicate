@@ -4,7 +4,7 @@ require 'heuristic/spec_helper'
 
 RSpec.describe 'Heuristic', heuristic: true do
   let(:einfo)    { ErrorToCommunicate::ExceptionInfo.new classname: 'the classname', message: 'the message', backtrace: [
-                     ErrorToCommunicate::ExceptionInfo::Location.new(path: 'file', linenum: 12, label: 'a')
+                     ErrorToCommunicate::ExceptionInfo::Location.new(path: 'file', linenum: 12, label: 'a', binding: nil)
                    ]
                  }
   let(:subclass) { Class.new ErrorToCommunicate::Heuristic }
