@@ -47,7 +47,6 @@ RSpec.describe ErrorToCommunicate::Levenshtein do
   end
 
   specify 'it is not crazy stupid slow' do
-    skip 'find a better algorithm'
     # When comparing "aaa", "bbb",
     # This algorithm compares 94 pairs of strings.
     # When those pairs are uniqued, there are only 16 left,
@@ -56,22 +55,10 @@ RSpec.describe ErrorToCommunicate::Levenshtein do
     # At length 4 ("aaaa", "bbbb"), it does 481 comparisons instead of 25
     # At length 5, 2524 instead of 36
     # At length 10, 12_146_179 instead of 121, and it took 52.585554 seconds
-    #
-    # This is the code I used to count them:
-    #
-    # in algorithm:
-    #   pair = [target[0...target_length], actual[0...actual_length]]
-    #   $all[pair] += 1
-    #
-    # in test
-    #   $all = Hash.new 0
-    #   ...
-    #   p $all.values.inject(0, :+)
-    #   p $all.size
-    n = 10
+    n = 100
     start = Time.now
     assert_distance n, "a"*n, "b"*n
     time = Time.now - start
-    assert time < 1
+    expect(time).to be < 1
   end
 end
