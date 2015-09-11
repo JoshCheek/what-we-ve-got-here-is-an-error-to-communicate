@@ -29,4 +29,20 @@ RSpec.describe ErrorToCommunicate::Levenshtein do
     # swap "X" to "d"
     assert_distance 3, "abcdefg", "bcXefgh"
   end
+
+  describe 'some edge cases' do
+    [ ['--a', 'a', 2],
+      ['a', '--a', 2],
+      ['-a-', 'a', 2],
+      ['a', '-a-', 2],
+      ['---', 'a', 3],
+      ['a', '---', 3],
+      ['aaa', 'bbb', 3],
+      ['bbb', 'aaa', 3],
+    ].each do |s1, s2, distance|
+      example "distance(#{s1.inspect}, #{s2.inspect}) # => #{distance.inspect}" do
+        assert_distance distance, s1, s2
+      end
+    end
+  end
 end
