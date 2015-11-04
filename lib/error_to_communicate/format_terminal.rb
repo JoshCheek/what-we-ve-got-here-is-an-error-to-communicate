@@ -38,7 +38,12 @@ module ErrorToCommunicate
       when Array        then semantic_content.map { |c| format c }.join
       when :summary     then format([:separator]) + format(content)
       when :heuristic   then format([:separator]) + format(content)
-      when :backtrace   then format([:separator]) + format(content)
+      when :backtrace   then
+        if content.any?
+          format([:separator]) + format(content)
+        else
+          format([:separator]) + format([:message, "No backtrace available"]) # TODO: Not tested, I hit this with capybara, when RSpec filtered everything out of the backtrace
+        end
       when :separator   then theme.separator_line
       when :columns     then theme.columns     [content, *rest].map { |c| format c }
       when :classname   then theme.classname   format content
