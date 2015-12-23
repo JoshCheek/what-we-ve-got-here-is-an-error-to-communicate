@@ -199,6 +199,20 @@ RSpec.describe ErrorToCommunicate::RSpecFormatter, rspec_formatter: true do
 
       expect(heuristic.semantic_info).to eq "SEMANTICINFO"
     end
+
+    it 'provides the bindings needed for some of the advanced analysis', t:true do
+      formatter = new_formatter
+      context_around_failure = this_line_of_code
+      run_specs_against formatter do
+
+        example('suggests better name') {
+          @abc = 123
+          @abd.even? # misspelled
+        }
+      end
+      expect(get_printed formatter).to include '@abd'
+      expect(get_printed formatter).to include '@abc'
+    end
   end
 
   context 'fixing the message\'s whitespace' do

@@ -1,3 +1,4 @@
+require 'interception'
 require 'error_to_communicate'
 require 'rspec/core/formatters/documentation_formatter'
 
@@ -17,7 +18,7 @@ module ErrorToCommunicate
       self.failure_number = attributes.fetch :failure_number
       self.failure        = attributes.fetch :failure
       self.config         = attributes.fetch :config
-      binding = nil # FIXME: how to get this when RSpec wraps error handling?
+      binding = Thread.current[:e2c_last_binding_seen]
 
       # initialize the heuristic
       ExceptionInfo.parse(failure.exception, binding).tap do |einfo|
@@ -61,8 +62,21 @@ module ErrorToCommunicate
     end
   end
 
+  module ExceptionRecorder
+    extend self
+    def record_exception_bindings(config)
+      config.around do |spec|
+        recording_code = lambda { |_exc, binding| Thread.current[:e2c_last_binding_seen] = binding }
+        Interception.listen &recording_code
+        begin  spec.call
+        ensure Interception.unlisten recording_code
+        end
+      end
+    end
+    ::RSpec.configure { |config| record_exception_bindings config }
+  end
 
-  class RSpecFormatter < RSpec::Core::Formatters::DocumentationFormatter
+  class RSpecFormatter < ::RSpec::Core::Formatters::DocumentationFormatter
     # Register for notifications from our parent classes
     #   http://rspec.info/documentation/3.2/rspec-core/RSpec/Core/Formatters.html
     #
