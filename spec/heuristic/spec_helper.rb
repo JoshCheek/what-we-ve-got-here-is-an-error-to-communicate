@@ -10,7 +10,8 @@ module HeuristicSpecHelpers
 
   def heuristic_for(attributes={})
     heuristic_class.new project: build_default_project(attributes),
-                        einfo:   einfo_for(FakeException.new attributes)
+                        einfo:   einfo_for(FakeException.new(attributes),
+                                           attributes[:binding])
   end
 
   def build_default_project(attributes={})

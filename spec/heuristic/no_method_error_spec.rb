@@ -22,4 +22,54 @@ RSpec.describe 'Heuristic for a NoMethodError', heuristic: true do
     extracts_method_name! '<', "undefined method `<' for nil:NilClass"
     extracts_method_name! "ab `c' d", "undefined method `ab `c' d' for main:Object"
   end
+
+  describe 'on nil' do
+    describe 'for an instance variable' do
+      it 'suggest a closely spelled variable name if one exists' do
+        @abcd = 123
+        err = nil
+        begin
+          @abce.even?
+        rescue NoMethodError => no_method_error
+          err = no_method_error
+        end
+
+        heuristic = heuristic_class.new project: build_default_project,
+                                        einfo:   einfo_for(err, binding)
+        expect(heuristic.semantic_explanation).to match /@abcd/
+        expect(heuristic.semantic_explanation).to match /@abce/
+        expect(heuristic.semantic_explanation).to match /spell/
+      end
+
+      it 'does not suggest a misspelling when there is no spelled variable' do
+        @abcd = 123
+        err = nil
+        begin
+          @ablol.even?
+        rescue NoMethodError => no_method_error
+          err = no_method_error
+        end
+
+        heuristic = heuristic_class.new project: build_default_project,
+                                        einfo:   einfo_for(err, binding)
+        expect(heuristic.semantic_explanation).to_not match /spell/
+        expect(heuristic.semantic_explanation).to_not match /@abcd/
+      end
+
+      it 'doesn\'t suggest this when there is no binding provided' do
+        @abcd = 123
+        err = nil
+        begin
+          @abce.even?
+        rescue NoMethodError => no_method_error
+          err = no_method_error
+        end
+
+        heuristic = heuristic_class.new project: build_default_project,
+                                        einfo:   einfo_for(err, nil)
+        expect(heuristic.semantic_explanation).to_not match /spell/
+        expect(heuristic.semantic_explanation).to_not match /@abcd/
+      end
+    end
+  end
 end

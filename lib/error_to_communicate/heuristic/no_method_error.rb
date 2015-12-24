@@ -64,16 +64,18 @@ module ErrorToCommunicate
 
       def existing_ivars
         # TODO: this should get pushed into the location
-        einfo.backtrace[0].binding.eval('self').instance_variables
+        binding = einfo.backtrace[0].binding
+        return [] unless binding
+        binding.eval('self').instance_variables
       end
 
       def misspelling?
-        name_of_ivar &&
+        name_of_ivar && closest_name &&
           Levenshtein.call(closest_name, name_of_ivar) <= 2
       end
 
       def closest_name
-        existing_ivars.min_by { |varname| Levenshtein.call varname, name_of_ivar }
+        @closest_name ||= existing_ivars.min_by { |varname| Levenshtein.call varname, name_of_ivar }
       end
 
       def self.parse_undefined_name(message)

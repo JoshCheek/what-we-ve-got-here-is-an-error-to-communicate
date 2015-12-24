@@ -12,8 +12,7 @@ class FakeException
 end
 
 module SpecHelpers
-  def einfo_for(exception)
-    binding = nil
+  def einfo_for(exception, binding=nil)
     ErrorToCommunicate::ExceptionInfo.parse exception, binding
   end
 
