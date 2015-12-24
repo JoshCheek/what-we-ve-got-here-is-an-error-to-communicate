@@ -18,7 +18,7 @@ module ErrorToCommunicate
       self.failure_number = attributes.fetch :failure_number
       self.failure        = attributes.fetch :failure
       self.config         = attributes.fetch :config
-      binding = Thread.current[:e2c_last_binding_seen]
+      binding             = attributes.fetch :binding
 
       # initialize the heuristic
       ExceptionInfo.parse(failure.exception, binding).tap do |einfo|
@@ -66,11 +66,8 @@ module ErrorToCommunicate
     extend self
     def record_exception_bindings(config)
       config.around do |spec|
-        recording_code = lambda { |_exc, binding| Thread.current[:e2c_last_binding_seen] = binding }
-        Interception.listen &recording_code
-        begin  spec.call
-        ensure Interception.unlisten recording_code
-        end
+        Thread.current[:e2c_last_binding_seen] = nil
+        Interception.listen(spec) { |_exc, binding| Thread.current[:e2c_last_binding_seen] ||= binding }
       end
     end
     ::RSpec.configure { |config| record_exception_bindings config }
@@ -86,6 +83,22 @@ module ErrorToCommunicate
     #     }
     RSpec::Core::Formatters.register self
 
+    def initialize(*)
+      @num_failures = 0
+      super
+    end
+
+    def example_failed(failure_notification)
+      super
+      # we must create it here, because it won't have access to the callstack later
+      example = failure_notification.example
+      example.metadata[:heuristic] = Heuristic::RSpecFailure.new \
+        config:         Config.default, # E2C heuristic, not RSpec's
+        failure:        failure_notification,
+        failure_number: (@num_failures += 1),
+        binding:        Thread.current[:e2c_last_binding_seen]
+    end
+
     # Use ErrorToCommunicate to print error info
     # rather than default DocumentationFormatter.
     #
@@ -97,11 +110,8 @@ module ErrorToCommunicate
     #        but we can't currently turn colour off in our output
     def dump_failures(notification)
       output.puts "\nFailures:\n"
-      notification.failure_notifications.each.with_index(1) do |failure, failure_number|
-        heuristic = Heuristic::RSpecFailure.new \
-          config:         Config.default,
-          failure:        failure,
-          failure_number: failure_number
+      notification.failure_notifications.each do |notification|
+        heuristic = notification.example.metadata.fetch :heuristic
         formatted = Config.default.format heuristic, Dir.pwd
         output.puts formatted.chomp.gsub(/^/, '  ')
       end

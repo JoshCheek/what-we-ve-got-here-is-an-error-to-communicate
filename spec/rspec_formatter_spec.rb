@@ -122,7 +122,8 @@ RSpec.describe ErrorToCommunicate::RSpecFormatter, rspec_formatter: true do
       heuristic = ErrorToCommunicate::Heuristic::RSpecFailure.new \
         config:         ErrorToCommunicate::Config.default,
         failure:        failure_for(description: 'DESC', type: :assertion),
-        failure_number: 999
+        failure_number: 999,
+        binding:        binding
       summaryname, ((columnsname, *columns)) = heuristic.semantic_summary
       expect(summaryname).to eq :summary
       expect(columnsname).to eq :columns
@@ -132,9 +133,10 @@ RSpec.describe ErrorToCommunicate::RSpecFormatter, rspec_formatter: true do
     specify 'the info is the formatted error message and first line from the backtrace with some context' do
       config    = ErrorToCommunicate::Config.new
       heuristic = ErrorToCommunicate::Heuristic::RSpecFailure.new \
-        config:   ErrorToCommunicate::Config.default,
-        failure: failure_for(type: :assertion, message: 'MESSAGE', formatted_backtrace: ["/file:123:in `method'"]),
-        failure_number: 999
+        config:         ErrorToCommunicate::Config.default,
+        failure:        failure_for(type: :assertion, message: 'MESSAGE', formatted_backtrace: ["/file:123:in `method'"]),
+        failure_number: 999,
+        binding:        binding
       heuristicname, ((messagename, message), (codename, codeattrs), *rest) = heuristic.semantic_info
       expect(heuristicname).to eq :heuristic
       expect(messagename  ).to eq :message
@@ -151,7 +153,8 @@ RSpec.describe ErrorToCommunicate::RSpecFormatter, rspec_formatter: true do
       heuristic = ErrorToCommunicate::Heuristic::RSpecFailure.new \
         config:         ErrorToCommunicate::Config.default,
         failure_number: 999,
-        failure:        failure_for(type: :assertion, message: 'MESSAGE', formatted_backtrace: [])
+        failure:        failure_for(type: :assertion, message: 'MESSAGE', formatted_backtrace: []),
+        binding:        binding
       heuristicname, ((messagename, message), *rest) = heuristic.semantic_info
       expect(heuristicname).to eq :heuristic
       expect(messagename  ).to eq :message
@@ -180,7 +183,8 @@ RSpec.describe ErrorToCommunicate::RSpecFormatter, rspec_formatter: true do
         failure: failure_for(message:     "wrong number of arguments (1 for 0)",
                              description: 'DESC',
                              type:        :argument_error),
-        failure_number: 999
+        failure_number: 999,
+        binding:        binding
       summaryname, ((columnsname, *columns)) = heuristic.semantic_summary
       expect(summaryname).to eq :summary
       expect(columnsname).to eq :columns
@@ -193,25 +197,33 @@ RSpec.describe ErrorToCommunicate::RSpecFormatter, rspec_formatter: true do
         .to receive(:semantic_info).and_return("SEMANTICINFO")
 
       heuristic = ErrorToCommunicate::Heuristic::RSpecFailure.new \
-        config:  ErrorToCommunicate::Config.new,
-        failure: failure_for(message: "wrong number of arguments (1 for 0)", type: :argument_error),
-        failure_number: 999
+        config:         ErrorToCommunicate::Config.new,
+        failure:        failure_for(message: "wrong number of arguments (1 for 0)", type: :argument_error),
+        failure_number: 999,
+        binding:        binding
 
       expect(heuristic.semantic_info).to eq "SEMANTICINFO"
     end
 
-    it 'provides the bindings needed for some of the advanced analysis', t:true do
+    it 'provides the bindings needed for some of the advanced analysis' do
       formatter = new_formatter
       context_around_failure = this_line_of_code
       run_specs_against formatter do
-
-        example('suggests better name') {
+        example('suggests better name1') {
           @abc = 123
           @abd.even? # misspelled
         }
+        example('suggests better name2') {
+          @lol = 123
+          @lul.even? # misspelled
+        }
       end
-      expect(get_printed formatter).to include '@abd'
-      expect(get_printed formatter).to include '@abc'
+
+
+      # Sigh the above whitespace is important, or it can pass because the assertion is in the code displayed for context
+      # It's stupid, I know
+      expect(get_printed formatter).to include "Possible misspelling of `@lol'"
+      expect(get_printed formatter).to include "Possible misspelling of `@abc'"
     end
   end
 
