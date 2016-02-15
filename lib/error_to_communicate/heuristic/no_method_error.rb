@@ -48,6 +48,15 @@ module ErrorToCommunicate
         tokens = Rouge::Lexers::Ruby.lex(line).to_a
         index  = tokens.index { |token, text| text == undefined_method_name }
 
+        if !index
+          return nil
+          # this happens when the tokens don't match the name, eg
+          # method name of "[]", and tokens of:
+          # [[<Token Punctuation>, "["],
+          #  [<Token Literal.Number.Integer>, "0"],
+          #  [<Token Punctuation>, "]"]]
+        end
+
         while 0 <= index
           token, text = tokens[index]
           break if token.qualname == "Name.Variable.Instance"
