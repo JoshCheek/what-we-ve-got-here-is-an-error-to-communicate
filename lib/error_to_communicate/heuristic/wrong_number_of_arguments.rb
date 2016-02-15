@@ -19,10 +19,10 @@ module ErrorToCommunicate
       def semantic_explanation
         [ :message,
           [ [:explanation, explanation],
-            [:context, ' (expected '],
-            [:details, num_expected],
-            [:context, ', sent '],
+            [:context, ' (given '],
             [:details, num_received],
+            [:context, ', expected '],
+            [:details, num_expected],
             [:context, ')'],
           ]
         ]
