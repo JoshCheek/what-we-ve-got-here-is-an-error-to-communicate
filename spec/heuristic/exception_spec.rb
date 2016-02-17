@@ -14,4 +14,9 @@ RSpec.describe 'Heuristic for a Exception', heuristic: true do
     einfo = heuristic_for(message: 'message from exception')
     expect(einfo.explanation).to eq 'message from exception'
   end
+
+  it 'returns the null heuristic on empty backtrace' do
+    einfo = heuristic_for(backtrace: [])
+    expect(einfo.semantic_info).to eq [:heuristic, [:null]]
+  end
 end
