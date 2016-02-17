@@ -8,19 +8,19 @@ module ErrorToCommunicate
       end
 
       def semantic_info
-        [
-          :heuristic,
-          if backtrace.empty?
-             [:null]
-          else
-            [:code, {
-              location:  backtrace[0],
-              highlight: backtrace[0].label,
-              context:   -5..5,
-              emphasis:  :code,
-            }]
-          end
-        ]
+        [:heuristic, maybe_heuristic(backtrace)]
+      end
+
+      private
+
+      def maybe_heuristic(backtrace)
+        return [:null] if backtrace.empty?
+        [:code, {
+          location:  backtrace[0],
+          highlight: backtrace[0].label,
+          context:   -5..5,
+          emphasis:  :code,
+        }]
       end
     end
   end
