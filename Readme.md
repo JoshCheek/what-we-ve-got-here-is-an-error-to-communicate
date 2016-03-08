@@ -3,7 +3,7 @@
 What if error messages were compelling to read?
 -----------------------------------------------
 
-Blog explaining the goal [here](http://blog.turing.io/2015/01/18/what-we-ve-got-here-is-an-error-to-communicate/).
+Blog explaining the goal [here](https://www.turing.io/blog/2015/01/18/what-weve-got-here-error-communicate).
 
 A screenshot of the code rendering an `ArgumentError`.
 
